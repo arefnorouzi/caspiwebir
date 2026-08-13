@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class SnappPayService
 {
-    protected string $baseUrl = 'https://fms-gateway-staging.apps.public.teh-1.snappcloud.io/';
+    protected string $baseUrl = 'https://fms-gateway-staging.apps.public.okd4.teh-1.snappcloud.io/';
 
     public function get_token()
     {
@@ -22,12 +22,7 @@ class SnappPayService
             "Content-Type: application/x-www-form-urlencoded",
             "Authorization: Basic ".  base64_encode($payment_method->terminal_id. ":" . $payment_method->merchant)
         ];
-        $request_body = json_encode([
-            "username" => $payment_method->username,
-            "password" => $payment_method->password,
-            "grant_type" => "password",
-            "scope" => "online-merchant",
-        ]);
+        $request_body = "username=$payment_method->username&password=$payment_method->password&grant_type=password&scope=online-merchant";
         return $this->send_request(url: $url, payload: $request_body, headers: $headers);
     }
 
@@ -90,6 +85,13 @@ class SnappPayService
         curl_setopt($ch,CURLOPT_TIMEOUT, 20);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
+        if ($response === false) {
+            Log::error(curl_error($ch));
+        } else {
+            // Get the HTTP status code
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            Log::info("HTTP Status Code: " . $httpCode);
+        }
         curl_close ($ch);
         Log::info($response);
         return json_decode($response, true);

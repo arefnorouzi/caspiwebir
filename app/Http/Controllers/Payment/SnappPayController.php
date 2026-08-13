@@ -38,7 +38,7 @@ class SnappPayController extends Controller
             if (!$eligible_request || !isset($eligible_request['successful']) || !$eligible_request['successful'])
             {
                 return redirect('/checkout')
-                    ->with("error", "امکان پرداخت اقسازی برای این فاکتور وجود ندارد.");
+                    ->with("error", "امکان پرداخت اقساطی برای این فاکتور وجود ندارد.");
             }
 
             $items = [];
@@ -48,9 +48,9 @@ class SnappPayController extends Controller
                     "id" => $item->id,
                     "name" => $item->name,
                     "count" => $item->qty,
-                    "amount" => $item->unit_price,
+                    "amount" => intval($item->unit_price * 10),
                     "category" => $item->brand->name,
-                    "commissionType" => "100"
+                    "commissionType" => "1"
                 ];
             }
 
@@ -66,10 +66,13 @@ class SnappPayController extends Controller
             ];
             $payload = json_encode([
                 "amount" => $Amount,
-                "paymentMethodTypeDto" => [],
+                'discountAmount' => intval($invoice->discount * 10),
+                'externalSourceAmount' => 0,
                 "returnURL" => route('payment.snapp.callback'),
-                "transactionId" => $invoice->id,
-                "cartList" => [$cart]
+                //"returnURL" => "https://caspiweb.ir/payment/snapp/callback",
+                "transactionId" => $invoice->uuid,
+                "cartList" => [$cart],
+                "mobile" => "+98" . substr($invoice->customer_mobile,1)
             ]);
 
             $result = $snapp_pay_service->get_payment_url(

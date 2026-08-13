@@ -50,6 +50,14 @@ class PaymentController extends Controller
             {
                 return response()->json(['link' => route('payment.torob.pay', $invoice->id)]);
             }
+            elseif ($paymentMethod->code == 'snapppay')
+            {
+                return response()->json(['link' => route('payment.snapp.pay', $invoice->id)]);
+            }
+            elseif ($paymentMethod->code == 'digipay')
+            {
+                return response()->json(['link' => route('payment.digipay.pay', $invoice->id)]);
+            }
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());

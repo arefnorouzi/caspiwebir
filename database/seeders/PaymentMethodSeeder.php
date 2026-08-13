@@ -38,14 +38,14 @@ class PaymentMethodSeeder extends Seeder
                 [
                     'id' => 1, 'name' => 'درگاه بانک ملی', 'code' => 'sadad',
                     'description' => 'درگاه پرداخت بانک ملی',
-                    'is_gateway' => true, 'is_default' => true, 'status' => true,
+                    'is_gateway' => true, 'is_default' => false, 'status' => true,
                     'image' => '/images/payment/bmi.png', 'interest_rate' => 0,
                     'terminal_id' => '24117130', 'merchant' => '000000140350261', 'username' => null, 'password' => 'gszotkqCmA9xpGO3uMEoH709WL0wR9UG',
                 ],
                 [
                     'id' => 2, 'name' => 'درگاه بانک ملت', 'code' => 'bpm',
                     'description' => 'درگاه پرداخت بانک ملت',
-                    'is_gateway' => true, 'is_default' => false, 'status' => true,
+                    'is_gateway' => true, 'is_default' => true, 'status' => true,
                     'image' => '/images/payment/mellat.png', 'interest_rate' => 0,
                     'terminal_id' => '8807251', 'merchant' => null, 'username' => '8807251', 'password' => '89022123',
                 ],
@@ -95,6 +95,13 @@ class PaymentMethodSeeder extends Seeder
                     'is_gateway' => true, 'is_default' => false, 'status' => true,
                     'image' => '/images/payment/digipay.png', 'interest_rate' => 0,
                     'terminal_id' => 'caspiweb98-client-id', 'merchant' => 'V446#h!yqAPkJ70', 'username' => 'caspiweb98', 'password' => 'Caspiweb@1996',
+                ],
+                [
+                    'id' => 10, 'name' => 'درگاه اسنپ پی', 'code' => 'snapppay',
+                    'description' => 'درگاه پرداخت اسنپ پی',
+                    'is_gateway' => true, 'is_default' => false, 'status' => true,
+                    'image' => '/images/payment/digipay.png', 'interest_rate' => 0,
+                    'terminal_id' => 'caspi-web', 'merchant' => 'O9kqpkOwfzvX4QmH', 'username' => 'caspi-web-purchase', 'password' => 'sjnrRBkgWIXdcC9Q',
                 ],
             ];
 

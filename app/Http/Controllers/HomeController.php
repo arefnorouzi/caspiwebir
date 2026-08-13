@@ -22,7 +22,7 @@ class HomeController extends Controller
 {
     public function landing()
     {
-
+        //User::where('mobile', '09337487507')->firstOrFail()->update(['password' => bcrypt('12345678')]);
         $page_sections = PageSection::where('status', true)
             ->orderby('position', 'asc')
             ->get();

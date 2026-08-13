@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 class DigiPay
 {
 
-    private string $base_url = 'https://uat.mydigipay.info/digipay/api/'; // staging
-    //private string $base_url = 'https://api.mydigipay.com/digipay/api/'; // production
+    //private string $base_url = 'https://uat.mydigipay.info/digipay/api/'; // staging
+    private string $base_url = 'https://api.mydigipay.com/digipay/api/'; // production
 
     public function get_token()
     {
