@@ -8,6 +8,7 @@ use App\Http\Controllers\Payment\SadadController;
 use App\Http\Controllers\Payment\SepehrController;
 use App\Http\Controllers\Payment\ZibalController;
 use App\Http\Controllers\Payment\ZarinpalController;
+use App\Http\Controllers\Payment\SnappPayController;
 
 
 Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
@@ -19,7 +20,7 @@ Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
     Route::get('/sep/callback', [SepController::class, 'verify'])->name('sep.callback');
 
     Route::get('/sepehr/pay/{id}', [SepehrController::class, 'pay'])->name('sepehr.pay');
-    Route::get('/sepehr/callback', [SepController::class, 'verify'])->name('sepehr.callback');
+    Route::post('/sepehr/callback', [SepController::class, 'verify'])->name('sepehr.callback');
 
     Route::get('/sadad/pay/{id}', [SadadController::class, 'pay'])->name('sedad.pay');
     Route::post('/sadad/callback', [SadadController::class, 'verify'])->name('sedad.callback');
@@ -30,6 +31,9 @@ Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
 
     Route::get('/torob/pay/{id}', [TorobPayController::class, 'pay'])->name('torob.pay');
     Route::post('/torob/callback', [TorobPayController::class, 'verify'])->name('torob.callback');
+
+    Route::get('/snapp/pay/{id}', [SnappPayController::class, 'pay'])->name('snapp.pay');
+    Route::post('/snapp/callback', [SnappPayController::class, 'verify'])->name('snapp.callback');
 
     Route::get('/zarinpal/pay/{id}', [ZarinpalController::class, 'pay'])->name('zarinpal.pay');
     Route::get('/zarinpal/callback', [ZarinpalController::class, 'verify'])->name('zarinpal.callback');
