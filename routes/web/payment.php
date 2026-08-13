@@ -9,6 +9,7 @@ use App\Http\Controllers\Payment\SepehrController;
 use App\Http\Controllers\Payment\ZibalController;
 use App\Http\Controllers\Payment\ZarinpalController;
 use App\Http\Controllers\Payment\SnappPayController;
+use App\Http\Controllers\Payment\DigiPayController;
 
 
 Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
@@ -28,12 +29,14 @@ Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
     Route::get('/bpm/pay/{id}', [BehpardakhtController::class, 'pay'])->name('bpm.pay');
     Route::post('/bpm/callback', [BehpardakhtController::class, 'verify'])->name('bpm.callback');
 
-
     Route::get('/torob/pay/{id}', [TorobPayController::class, 'pay'])->name('torob.pay');
     Route::post('/torob/callback', [TorobPayController::class, 'verify'])->name('torob.callback');
 
     Route::get('/snapp/pay/{id}', [SnappPayController::class, 'pay'])->name('snapp.pay');
     Route::post('/snapp/callback', [SnappPayController::class, 'verify'])->name('snapp.callback');
+
+    Route::get('/digipay/pay/{id}', [DigiPayController::class, 'pay'])->name('digipay.pay');
+    Route::get('/digipay/callback', [DigiPayController::class, 'verify'])->name('digipay.callback');
 
     Route::get('/zarinpal/pay/{id}', [ZarinpalController::class, 'pay'])->name('zarinpal.pay');
     Route::get('/zarinpal/callback', [ZarinpalController::class, 'verify'])->name('zarinpal.callback');

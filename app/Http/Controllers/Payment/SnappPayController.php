@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\SnappPayCallbackRequest;
-use App\Http\Requests\TorobPayCallbackRequest;
 use App\Models\Invoice;
 use App\Models\InvoiceStatus;
 use App\Models\ShopSetting;
 use App\Services\Gateway\SnappPayService;
-use App\Services\Gateway\TorobPay;
 use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
