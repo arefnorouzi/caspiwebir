@@ -1,0 +1,29 @@
+@import "output.css";
+@import "font.css";
+@import "main.css";
+@import "owl.carousel.min.css";
+@import "owl.theme.default.min.css";
+@import "swiper-bundle.min.css";
+@import "style.product.slider.css";
+@import "flowbite.min.css";
+@import "toastify.css";
+
+.services-icon{
+    width: 150px;
+    height: 150px;
+}
+
+.size-radio:checked + label {
+    border-color: #3f4095;
+    color: #3f4095;
+}
+
+.color-radio:checked + label {
+    border-color: #3f4095;
+    color: #3f4095;
+}
+
+.shipping-radio:checked + label{
+    border-color: #f87171;
+    color: #f87171;
+}
