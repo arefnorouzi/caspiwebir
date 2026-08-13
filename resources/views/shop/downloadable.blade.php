@@ -569,6 +569,11 @@
                             body: JSON.stringify(this.product)
                         })
                         const data = await response.json()
+                        if (!response.ok) {
+                            // وضعیت خطا (۴xx یا ۵xx)
+                            this.show_toast(data.message || 'خطا در افزودن محصول به سبد خرید', 'error');
+                            return; // از ادامه کد خارج میشویم
+                        }
                         //alert(data.message || 'محصول با موفقیت افزوده شد!')
                         this.show_toast(data.message || 'محصول با موفقیت افزوده شد!', 'success');
                         await this.sleep(500)
