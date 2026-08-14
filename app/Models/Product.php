@@ -25,7 +25,7 @@ class Product extends Model
     private array $report_fields = [
         'id', 'name', 'slug', 'status', 'pinned', 'image', 'user_id', 'stock', 'price', 'offer_price',
         'published_at', 'created_at', 'updated_at', 'deleted_at', 'offer_end_date', 'brand_id', 'suggested',
-        'amazing', 'min_buy', 'pre_order', 'buyable', 'installment_purchase',
+        'amazing', 'min_buy', 'pre_order', 'buyable', 'installment_purchase', 'course_time', 'duration', 'meta'
     ];
 
     private array $product_cart_fields = [
@@ -141,6 +141,19 @@ class Product extends Model
             ->where('price', '>', 0)
             ->where('published_at', '!=', null);
     }
+    #[Scope]
+    protected function scopeRegular(Builder $query): void
+    {
+        $query->where('downloadable',  0);
+    }
+
+    #[Scope]
+    protected function scopeDownloadable(Builder $query): void
+    {
+        $query->where('downloadable',  1)
+        ->whereNotNull('duration')
+        ->whereNotNull('course_time');
+    }
 
     #[Scope]
     protected function scopeInstock(Builder $query): void
@@ -192,6 +205,20 @@ class Product extends Model
             ->paginate($per_page, $this->report_fields);
     }
 
+    public function search_products(string $q, int $per_page = 12)
+    {
+        return $this->active()->instock()
+            ->where(function($query) use ($q){
+                $query->where('name', 'like', "%{$q}%")
+                    ->orWhere('sku', 'like', "%{$q}%")
+                    ->orWhere('model', 'like', "%{$q}%")
+                    ->orWhereHas('brand', function($query) use ($q) {
+                        $query->where('name', 'like', "%{$q}%");
+                    });
+            })->orderBy('views', 'desc')
+            ->paginate($per_page, $this->report_fields);
+    }
+
     public function suggested_products(int $per_page = 12)
     {
         return $this->active()->instock()->suggested()->orderBy('updated_at', 'desc')
@@ -211,6 +238,11 @@ class Product extends Model
             ->paginate($per_page, $this->report_fields);
     }
 
+    public function downloadable_products(int $per_page = 12)
+    {
+        return $this->active()->instock()->downloadable()->orderBy('sales', 'desc')
+            ->paginate($per_page, $this->report_fields);
+    }
     public function best_sellers_products(int $per_page = 12)
     {
         return $this->active()->instock()->orderBy('sales', 'desc')

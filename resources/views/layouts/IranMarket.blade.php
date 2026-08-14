@@ -590,6 +590,12 @@
                     <img class="w-5 h-5 text-gray-500" src="/template/assets/image/search.png" alt="" />
                 </div>
                 <div class="absolute w-full bg-gray-50 shadow-2xl h-auto mt-2 z-50 rounded-2xl hidden" id="showModalSearch">
+                    <div class="flex flex-wrap mb-2 justify-between bg-white p-2">
+                        <div>نتایج جستجو</div>
+                        <div>
+                            <a href="" id="search_resluts_url">مشاهده همه</a>
+                        </div>
+                    </div>
                     <ul id="searchResults" class="search-results" role="listbox" aria-hidden="true"></ul>
                 </div>
             </div>

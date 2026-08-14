@@ -32,6 +32,7 @@ use App\Http\Controllers\ProductRolePriceController;
 use App\Http\Controllers\ProductRelatedController;
 use App\Http\Controllers\SocialNetworkController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\Excel\ImportController;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'verified', 'is_admin']], function () {
 
@@ -39,6 +40,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'v
     require __DIR__.'/admin/settings.php';
     require __DIR__.'/admin/invoices.php';
     require __DIR__.'/admin/command.php';
+
+    Route::post('/products-import', [ImportController::class, 'import_products'])
+        ->name('import_products');
 
     Route::post('/store-product-related', [ProductRelatedController::class, 'store'])
         ->name('store_product_related');

@@ -18,6 +18,51 @@ use Illuminate\Support\Facades\Log;
 class ShopController extends Controller
 {
 
+    public function downloadable_products(Request $request)
+    {
+        try {
+            $product_model = new Product();
+            $products = $product_model->downloadable_products(per_page: 20);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+            $products = [];
+        }
+        $authorized = false;
+        if (auth()->check())
+        {
+            $authorized = true;
+        }
+        $page = "shop";
+        return view('shop.downloadable-products', compact(
+            'products', 'page', 'authorized'
+        ));
+    }
+
+    public function search_result(Request $request)
+    {
+        $q = $request->input('s');
+        if(!$q || strlen(trim($q)) < 1) {
+            return redirect('/shop');
+        }
+        try {
+            $product_model = new Product();
+            $products = $product_model->search_products(q: $q, per_page: 20);
+        }
+        catch (\Exception $e) {
+            return redirect('/shop');
+        }
+        $authorized = false;
+        if (auth()->check())
+        {
+            $authorized = true;
+        }
+        $page = "shop";
+        return view('shop.search', compact(
+            'products', 'page', 'authorized'
+        ));
+    }
+
     public function search(Request $request)
     {
         $q = $request->input('q');

@@ -6,6 +6,8 @@ use App\Http\Controllers\ShoppingCartController;
 
 Route::group(['prefix' => 'shop', 'as' => 'shop.'], function () {
     Route::get('/', [ShopController::class, 'index'])->name('index');
+    Route::get('/courses', [ShopController::class, 'downloadable_products'])->name('downloadable_products');
+    Route::get('/search', [ShopController::class, 'search_result'])->name('search_result');
     Route::post('/search', [ShopController::class, 'search'])->name('search');
     Route::get('/filter', [ShopController::class, 'filter'])->name('filter');
     Route::get('/off', [ShopController::class, 'off'])->name('off');

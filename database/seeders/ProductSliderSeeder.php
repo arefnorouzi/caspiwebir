@@ -23,6 +23,7 @@ class ProductSliderSeeder extends Seeder
                 ['id' => 5, 'name' => 'جدیدترین محصولات', 'slug' => 'latest', 'rank' => 1, 'position' => 3, 'page_section_id' => 5],
                 ['id' => 6, 'name' => 'محبوب‌ترین محصولات', 'slug' => 'popular', 'rank' => 2, 'position' => 3, 'page_section_id' => 5],
                 ['id' => 7, 'name' => 'پرفروش‌ترین‌ها', 'slug' => 'best_seller', 'rank' => 3, 'position' => 3, 'page_section_id' => 5],
+                ['id' => 8, 'name' => 'دوره ها', 'slug' => 'downloadable_products', 'rank' => 3, 'position' => 3, 'page_section_id' => 1],
             ];
 
             DB::table('product_sliders')->insert($items);

@@ -22,6 +22,10 @@ class HomeController extends Controller
 {
     public function landing()
     {
+//        Product::where('downloadable', 1)->update([
+//            'duration' => rand(7, 20),
+//            'course_time' => rand(1, 12) . " ساعت"
+//        ]);
         //User::where('mobile', '09337487507')->firstOrFail()->update(['password' => bcrypt('12345678')]);
         $page_sections = PageSection::where('status', true)
             ->orderby('position', 'asc')
@@ -110,6 +114,14 @@ class HomeController extends Controller
                     'name' => $product_slider->name,
                     'link' => str_replace('_', '-', $product_slider->slug),
                     'products' => $product_model->best_sellers_products(per_page: $product_slider->product_limit),
+                ],
+                'downloadable_products' => [
+                    'bg_color' => $product_slider->background_color,
+                    'text_color' => $product_slider->text_color,
+                    'rank' => $product_slider->rank,
+                    'name' => $product_slider->name,
+                    'link' => 'courses',
+                    'products' => $product_model->downloadable_products(per_page: $product_slider->product_limit),
                 ],
             };
         }

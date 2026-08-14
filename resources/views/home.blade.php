@@ -5,18 +5,28 @@
 @section('content')
     <!-- HERO SLIDER -->
     @if(isset($sliders) && count($sliders))
-    <div class="md:w-[100%] mx-auto md:mt-5 md:block">
-        <div dir="ltr" class="owl-carousel">
-            @foreach($sliders as $slide)
-            <div class="box-border">
-                <a href="{{$slide->link}}"
-                ><img class="rounded-md md:rounded-3xl md:px-2 box-border"
-                      src="{{$slide->image}}" alt="{{$slide->name}}" /></a>
-            </div>
-            @endforeach
+        <div class="md:w-[100%] mx-auto md:mt-5 md:block ">
+            <div dir="ltr" class="owl-carousel hidden-mobile">
+                @foreach($sliders->where('mobile', 0) as $slide)
+                    <div class="box-border">
+                        <a href="{{$slide->url}}"
+                        ><img class="rounded-md md:rounded-3xl md:px-2 box-border"
+                              src="{{$slide->image}}" alt="{{$slide->name}}" /></a>
+                    </div>
+                @endforeach
 
+            </div>
+            <div dir="ltr" class="owl-carousel hidden-desktop">
+                @foreach($sliders->where('mobile', 1) as $slide)
+                    <div class="box-border">
+                        <a href="{{$slide->url}}"
+                        ><img class="rounded-md md:rounded-3xl md:px-2 box-border"
+                              src="{{$slide->image}}" alt="{{$slide->name}}" /></a>
+                    </div>
+                @endforeach
+
+            </div>
         </div>
-    </div>
     @endif
 
     @if(isset($categories) && count($categories))
