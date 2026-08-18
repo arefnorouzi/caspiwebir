@@ -81,7 +81,7 @@ async function submit() {
                                 <SelectComponent label="وضعیت" id="status" v-model="form.status"
                                                  :input_error="form?.errors?.status"
                                                  :value="form.status"
-                                                 :options="[{id: false, name: 'غیرفعال'}, {id: true, name: 'فعال'}]"
+                                                 :options="[{id: 0, name: 'غیرفعال'}, {id: 1, name: 'فعال'}]"
                                 />
                             </div>
                             <div>
@@ -89,12 +89,12 @@ async function submit() {
                                                  v-model="form.home_page"
                                                  :value="form.home_page"
                                                  :input_error="form?.errors?.home_page"
-                                                 :options="[{id: false, name: 'خیر'}, {id: true, name: 'بله'}]"
+                                                 :options="[{id: 0, name: 'خیر'}, {id: 1, name: 'بله'}]"
                                 />
                             </div>
 
                             <div>
-                                <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر محصول</label>
+                                <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر</label>
                                 <MediaPicker @select="(url) => form.image = url" />
                                 <div v-if="form.errors.image" class="text-red-500 text-sm mt-1">
                                     {{ form.errors.image }}

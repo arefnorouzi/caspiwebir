@@ -33,6 +33,7 @@ use App\Http\Controllers\ProductRelatedController;
 use App\Http\Controllers\SocialNetworkController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\Excel\ImportController;
+use App\Http\Controllers\InvoiceStatusController;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'verified', 'is_admin']], function () {
 
@@ -71,6 +72,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'v
         'page' => PageController::class,
         'page-section' => PageSectionController::class,
         'product-slider' => ProductSliderController::class,
+        'invoice-status' => InvoiceStatusController::class,
         'media' => MediaController::class,
         'banner' => BannerController::class,
         'slider' => SliderController::class,
@@ -181,5 +183,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'v
     Route::delete('/restore-comment/{comment}', [CommentController::class, 'restore'])
         ->name('comment.restore')->withTrashed();
 
-
+    Route::delete('/restore-invoice-status/{invoiceStatus}', [InvoiceStatusController::class, 'restore'])
+        ->name('invoice-status.restore')->withTrashed();
 });

@@ -93,6 +93,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                         <div class="card mb-2 border border-gray-300 rounded-md">
                             <div class="card-title bg-gray-100 p-2 text-black">
+                                تنظیمات وضعیت فاکتور
+                            </div>
+                            <div class="card-body p-2" style="word-wrap: break-word">
+                                <div class="mb-2">
+                                    <p>تنظیمات وضعیت فاکتور و سیکل سفارش</p>
+                                </div>
+                            </div>
+                            <div class="card-footer p-2">
+                                <Link href="/admin/invoice-status">
+                                    <button class="bg-gray-500 w-50 text-white rounded-md shadow-md px-4 py-2 cursor-pointer">ویرایش تنظیمات</button>
+                                </Link>
+                            </div>
+                        </div>
+
+
+                        <div class="card mb-2 border border-gray-300 rounded-md">
+                            <div class="card-title bg-gray-100 p-2 text-black">
                                 شبکه های اجتماعی
                             </div>
                             <div class="card-body p-2" style="word-wrap: break-word">

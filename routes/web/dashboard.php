@@ -33,6 +33,7 @@ Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.', 'middleware' => ['a
     Route::put('/invoice-item-decrease/{invoice_item}', [UserInvoiceController::class, 'decrease_item_qty'])
         ->name('invoice_item.decrease_item_qty');
 
+    Route::get('/factor/{invoice}', [UserInvoiceController::class, 'factor']);
 
 
     Route::get('/ticket', [UserTicketController::class, 'index'])->name('ticket.index');

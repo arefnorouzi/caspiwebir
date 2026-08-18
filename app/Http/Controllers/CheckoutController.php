@@ -12,6 +12,7 @@ use App\Models\ShippingMethod;
 use App\Models\ShopSetting;
 use App\Models\User;
 use App\Services\CartService;
+use App\Services\InvoiceStepService;
 use App\Services\PregStr;
 use App\Services\SmsService;
 use Illuminate\Http\Request;
@@ -174,6 +175,7 @@ class CheckoutController extends Controller
                     'name'  => $item->product->name,
                 ]);
             }
+            InvoiceStepService::store_step($invoice, 1);
             // غیرفعال کردن سبد فعلی
             $cart->update(['status' => false, 'user_id' => $user->id]);
             InvoiceLog::create([

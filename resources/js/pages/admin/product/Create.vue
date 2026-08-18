@@ -41,6 +41,8 @@ const form = useForm({
     amazing: 0,
     suggested: 0,
     downloadable: 0,
+    is_service: 0,
+    is_addon: 0,
     source: 0,
     course_time: null,
     duration: null,

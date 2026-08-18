@@ -74,6 +74,13 @@ async function restore(id: number) {
                         </div>
                     </div>
                 </div>
+                <Link href="/admin/invoice/create">
+                    <button
+                        class="me-1 cursor-pointer text-oklch(44.8% 0.119 151.328) bg-green-200 hover:bg-green-300 focus:ring-4 focus:ring-green-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">
+                        <svg width="15px" height="15px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 12H18M12 6V18" stroke="#008080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                        <span class="ms-1"> افزودن آیتم</span>
+                    </button>
+                </Link>
                 <Link href="/admin/invoice" class="m-1">
                     <button
                         class="me-1 cursor-pointer text-indigo-500 border border-indigo-500 hover:border-indigo-600 focus:ring-4 focus:ring-indigo-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">

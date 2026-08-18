@@ -36,6 +36,8 @@ class StoreProductRequest extends FormRequest
             'min_buy' => 'bail|required|integer|min:1|max:10000',
             'status' => 'bail|required|boolean',
             'downloadable' => 'bail|required|boolean',
+            'is_service' => 'bail|required|boolean',
+            'is_addon' => 'bail|required|boolean',
             'source' => 'bail|required|boolean',
             'course_time' => 'bail|nullable|string',
             'duration' => 'bail|nullable|integer|min:1',

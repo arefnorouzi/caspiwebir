@@ -48,7 +48,7 @@ class SmsService
         $api = new Melipayamak\MelipayamakApi($username, $password);
         $smsSoap = $api->sms('soap');
         try {
-            $smsSoap->sendByBaseNumber($data['message'], $data['to'], $data['body_id']);
+            //$smsSoap->sendByBaseNumber($data['message'], $data['to'], $data['body_id']);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
         }

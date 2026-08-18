@@ -9,6 +9,7 @@ use App\Models\InvoiceStatus;
 use App\Models\Product;
 use App\Models\ShopSetting;
 use App\Services\Gateway\SepService;
+use App\Services\InvoiceStepService;
 use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -77,13 +78,35 @@ class SepController extends Controller
                 $result = $sep_service->verify($ref_num);
                 if ($result['Success']) {
                     Log::info("sep callback was ok");
-                    $invoice->invoice_status_id = InvoiceStatus::get_status(code: 'paid');
+                    $invoice_status = InvoiceStatus::get_status(code: 'paid');
+                    if ($invoice_status)
+                    {
+                        $invoice->invoice_status_id = $invoice_status;
+                        InvoiceStepService::store_step($invoice, $invoice_status);
+                    }
+
                     $invoice->payment_status = true;
                     $invoice->purchased_at = now();
                     $invoice->bank_payment_code = $ref_num;
                     $invoice->bank_trans_id = $request->TraceNo;
                     $invoice->update();
+                    $invoice->load('items');
+                    foreach ($invoice->items as $item)
+                    {
+                        if ($item->product_id && isset($item->product))
+                        {
+                            $product = Product::where('id', '=', $item->product_id)->first();
+                            if ($product){
+                                $product->sales += $item->qty;
+                                if (!$product->downloadable)
+                                {
+                                    $product->stock = max(0, $product->stock - $item->qty);
+                                }
+                                $product->update();
+                            }
 
+                        }
+                    }
                     // send sms
                     SmsService::invoice_sms(
                         to: $invoice->customer_mobile,

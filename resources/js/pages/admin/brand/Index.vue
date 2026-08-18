@@ -89,9 +89,6 @@ const toggleStatus = (id: number) => {
                         <span class="ms-1"> افزودن آیتم</span>
                     </button>
                 </Link>
-                <div class="my-2 p-2 rounded-md">
-                    <FlashMessage />
-                </div>
                 <div class="relative flex mt-2 flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
 
                     <table class="w-full text-right table-auto min-w-max">
@@ -119,7 +116,7 @@ const toggleStatus = (id: number) => {
                             </th>
                             <th class="p-4 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
-                                    سایت
+                                    لینک
                                 </p>
                             </th>
                             <th class="p-4 border-b border-slate-300 bg-slate-50">
@@ -158,7 +155,7 @@ const toggleStatus = (id: number) => {
                                 </button>
                             </td>
                             <td class="p-4 border-b border-slate-200 py-1" style="direction: ltr">
-                                <p class="text-sm text-slate-500">{{ item.website }}</p>
+                                <p class="text-sm text-slate-500">{{ item.slug }}</p>
                             </td>
                             <td class="p-4 border-b border-slate-200 py-1">
                                 <Link :href="`/admin/brand/${item.id}/edit`">

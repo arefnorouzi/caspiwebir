@@ -17,6 +17,7 @@ interface Props {
     user: object;
     tickets: object;
     notifications: object;
+    admin_mobile: string;
 
 }
 const props = defineProps<Props>()
@@ -36,17 +37,30 @@ const validation_message = ref(null)
 
 
         <div class="flex flex-wrap mt-2 p-2">
-
+            <div class="w-full mb-3">
+                <a href="/"
+                   class="p-2 m-2 rounded-md bg-blue-500 shadow-md text-white cursor-pointer">مشاهده سایت</a>
+                <a href="/shop"
+                   class="p-2 rounded-md bg-blue-500 shadow-md text-white cursor-pointer"
+                >بازدید فروشگاه</a>
+            </div>
             <div class="w-1/1 p-1 mb-5">
                 <div
-                    class="grid auto-rows-min gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-2 mb-3"
+                    class="grid auto-rows-min gap-3 md:grid-cols-3 sm:grid-cols-1 lg:grid-cols-3 mb-3"
                 >
+                    <div
+                         class="card border border-gray-300 bg-blue-100 rounded-md mb-2 shadow-md" style="align-content: center">
+                        <div class="card-body text-center py-5 px-3">
+                                <p class="mb-2 font-bold">اگر نیاز به دوره آموزشی خاص دارید، میتوانید درخواست خود را از طریق تیکت یا ارسال پیام به پشتیبانی پیگیری نمایید</p>
+                            <p>شماره پشتیبانی: <strong>{{ admin_mobile }}</strong></p>
+                        </div>
+                    </div>
                     <div v-if="!user.authenticated"
                         class="card border border-gray-300 rounded-md mb-2 shadow-md" style="align-content: center">
                         <div class="card-body text-center py-5 px-3">
                             <Link href="/dashboard/profile">
                                 <p class="mb-2">احراز هویت حساب کاربری شما تکمیل نشده است.</p>
-                                <button class="p-2 rounded-md bg-orange-300 text-black cursor-pointer">تکمیل پروفایل</button>
+                                <button class="p-2 rounded-md bg-blue-500 text-white cursor-pointer">تکمیل پروفایل</button>
                             </Link>
                         </div>
                     </div>
@@ -117,7 +131,7 @@ const validation_message = ref(null)
                         <tr v-for="(item, index) in invoices.data" :key="index">
 
                             <td class="p-4 border-b border-slate-200 py-1">
-                                <a :href="`/checkout/${item.uuid}`" target="_blank">
+                                <a :href="`/dashboard/invoice/${item.id}`" target="_blank">
                                     <p class="block font-semibold text-sm text-blue-800">{{ item.id }}</p>
                                 </a>
                             </td>

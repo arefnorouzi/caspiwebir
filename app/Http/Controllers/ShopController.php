@@ -18,6 +18,26 @@ use Illuminate\Support\Facades\Log;
 class ShopController extends Controller
 {
 
+    public function services_products()
+    {
+        try {
+            $product_model = new Product();
+            $products = $product_model->service_products(per_page: 20);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+            $products = [];
+        }
+        $authorized = false;
+        if (auth()->check())
+        {
+            $authorized = true;
+        }
+        $page = "shop";
+        return view('shop.service-products', compact(
+            'products', 'page', 'authorized'
+        ));
+    }
     public function downloadable_products(Request $request)
     {
         try {
@@ -401,6 +421,41 @@ class ShopController extends Controller
         $category_name = $category->name;
         return view('shop.caregory', compact('products',
             'categories', 'page', 'authorized', 'brands', 'category_name'
+        ));
+    }
+
+    public function brand($slug)
+    {
+        $slug = PregStr::preg_slug($slug);
+        try {
+            $brand = Brand::where('status', true)->where('slug', $slug)->firstOrFail();
+            $product_model = new Product();
+            $products = $product_model->brand_products($brand->id, $request->search ?? '');
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return redirect("/shop");
+        }
+
+        try {
+            $categories = Category::where('id', '>=', 1)
+                ->where('status', 1)
+                ->with(['childrenRecursive:id,name,parent_id,slug'])
+                ->get(['id', 'name', 'slug', 'parent_id']);
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage());
+            $categories = [];
+        }
+        $authorized = false;
+        if (auth()->check())
+        {
+            $authorized = true;
+        }
+        $page = "shop";
+        return view('shop.brand', compact('products',
+            'categories', 'page', 'authorized', 'brand'
         ));
     }
 

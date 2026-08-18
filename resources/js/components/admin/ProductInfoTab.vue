@@ -85,20 +85,57 @@ const props = defineProps({
 
                     </div>
                     <div>
+                        <SelectComponent label="افزودنی (addons)"
+                                         :value="props.form.is_addon"
+                                         id="is_addon" v-model="props.form.is_addon"
+                                         :input_error="form?.errors?.is_addon"
+                                         :options="[{id: 0, name: 'خیر'}, {id: 1, name: 'بله'}]"
+                        />
+                    </div>
+                    <div>
+                        <SelectComponent label="کالا / سرویس"
+                                         :value="props.form.is_service"
+                                         id="is_service" v-model="props.form.is_service"
+                                         :input_error="form?.errors?.is_service"
+                                         :options="[{id: 0, name: 'محصول عادی'}, {id: 1, name: 'سرویس و خدمات'}]"
+                        />
+                    </div>
+                    <div>
                         <SelectComponent label="نوع محصول"
                                          :value="props.form.downloadable"
-                                         id="brand" v-model="props.form.downloadable"
+                                         id="downloadable" v-model="props.form.downloadable"
                                          :input_error="form?.errors?.downloadable"
-                                         :options="[{id: 0, name: 'فیزیکی'}, {id: 1, name: 'دانلودی'}]"
+                                         :options="[{id: 0, name: 'عادی'}, {id: 1, name: 'فایل و دوره مجازی'}]"
                         />
                     </div>
                     <div v-if="props.form.downloadable == 1">
                         <SelectComponent label="دسترسی به منابع"
                                          :value="props.form.source"
-                                         id="brand" v-model="props.form.source"
+                                         id="source" v-model="props.form.source"
                                          :input_error="form?.errors?.source"
                                          :options="[{id: 0, name: 'ندارد'}, {id: 1, name: 'دارد'}]"
                         />
+                    </div>
+                    <div v-if="props.form.downloadable == 1">
+                        <InputComponent v-model="props.form.duration"
+                                        :value="props.form.duration"
+                                        label="تعداد جلسات"
+                                        id="duration"
+                                        placeholder="1"
+                                        :input_error="props.form?.errors?.duration"
+                                        type="number"
+                        />
+
+                    </div>
+                    <div v-if="props.form.downloadable == 1">
+                        <InputComponent v-model="props.form.course_time"
+                                        :value="props.form.course_time"
+                                        label="زمان دوره"
+                                        id="course_time"
+                                        placeholder="3 ساعت"
+                                        :input_error="props.form?.errors?.course_time"
+                        />
+
                     </div>
                     <div>
                         <SelectComponent label="واحد شمارش محصول"

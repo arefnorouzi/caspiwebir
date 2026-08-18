@@ -24,7 +24,7 @@ class ProductsExport implements FromQuery, WithHeadings, WithMapping
             ->orderby('id','desc')
             ->orderBy('views','desc')
             ->with(['brand:id,name', 'role_prices', 'categories:id,name'])
-            ->select('id','name', 'brand_id', 'sku', 'rank', 'stock', 'price', 'offer_price', 'offer_end_date', 'status', 'pinned', 'installment_purchase', 'buyable', 'pre_order', 'amazing', 'suggested', 'downloadable');
+            ->select('id','name', 'brand_id', 'sku', 'rank', 'stock', 'price', 'offer_price', 'offer_end_date', 'status', 'pinned', 'installment_purchase', 'buyable', 'pre_order', 'amazing', 'suggested', 'downloadable', 'is_service', 'is_addon');
         if (isset($this->filters['categories']) && count($this->filters['categories']))
         {
             $category_ids = $this->filters['categories'];
@@ -73,12 +73,14 @@ class ProductsExport implements FromQuery, WithHeadings, WithMapping
             $product->amazing ? "1" : "0",
             $product->suggested ? "1" : "0",
             $product->downloadable ? "1" : "0",
-
+            $product->is_service ? "1" : "0",
+            $product->is_addon ? "1" : "0",
+            $product->sales > 0 ? "$product->sales" : "0",
         ];
     }
 
     public function headings(): array
     {
-        return ['id', 'name', 'code', 'brand', 'categories', 'rank', 'stock', 'price', 'offer_price', 'offer_end_date', 'publish', 'feature', 'installment_purchase', 'buyable', 'pre_order', 'amazing', 'suggested', 'downloadable'];
+        return ['id', 'name', 'code', 'brand', 'categories', 'rank', 'stock', 'price', 'offer_price', 'offer_end_date', 'publish', 'feature', 'installment_purchase', 'buyable', 'pre_order', 'amazing', 'suggested', 'downloadable', 'is_service', 'is_addon', 'sales'];
     }
 }

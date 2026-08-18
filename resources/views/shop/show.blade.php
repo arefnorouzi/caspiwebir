@@ -119,125 +119,7 @@
                         </div>
                     </div>
 
-                    <!-- TABS -->
-                    <div class="lg:w-1/1 w-full mt-10">
-                        <div class="border-b border-gray-200 mb-4">
-                            <ul class="flex justify-center flex-wrap -mb-px text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
-                                <li class="mr-2" role="presentation">
-                                    <button class="inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-4 px-4 text-sm font-medium text-center border-transparent border-b-2" id="about-tab" data-tabs-target="#about" type="button" role="tab" aria-controls="about" aria-selected="false">درباره محصول</button>
-                                </li>
-                                <li class="mr-2" role="presentation">
-                                    <button class="inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-4 px-4 text-sm font-medium text-center border-transparent border-b-2 active" id="test-tab" data-tabs-target="#test" type="button" role="tab" aria-controls="test" aria-selected="true">بررسی تخصصی</button>
-                                </li>
-                                <li class="mr-2" role="presentation">
-                                    <button class="inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-4 px-4 text-sm font-medium text-center border-transparent border-b-2 " id="details-tab" data-tabs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="false">مشخصات</button>
-                                </li>
-                                <li class="mr-2" role="presentation">
-                                    <button class="inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-4 px-4 text-sm font-medium text-center border-transparent border-b-2 " id="comments-tab" data-tabs-target="#comments" type="button" role="tab" aria-controls="comments" aria-selected="false">نظرات</button>
-                                </li>
 
-
-                            </ul>
-                        </div>
-                        <div id="myTabContent">
-                            <div class="bg-gray-50 p-4 rounded-xl hidden" id="about" role="tabpanel" aria-labelledby="about-tab">
-                                <h4 class="mb-3">
-                                    <span class="border-b-red-500 border-b">
-                                        معرفی محصول
-                                    </span>
-                                </h4>
-                                <div class="text-gray-500 text-sm leading-7 mt-3">
-                                    {!! $product->description !!}
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-xl " id="test" role="tabpanel" aria-labelledby="test-tab">
-                                <div class="flex flex-col items-start gap-y-4">
-                                    <span class="border-b-red-500 border-b">
-                                      بررسی تخصصی محصول
-                                    </span>
-                                </div>
-                                <div class="md:flex gap-3 text-gray-500 text-sm leading-7 mt-3">
-                                    {!! $product->excerpt_review !!}
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-xl hidden" id="details" role="tabpanel" aria-labelledby="details-tab">
-                              <span class="border-b-red-500 border-b">
-                                مشخصات فنی محصول
-                              </span>
-                                <div class="text-gray-500 text-sm grid grid-cols-1 gap-x-3 md:grid-cols-2">
-                                    @foreach($product->properties as $property)
-                                        <div class="flex items-center justify-between bg-gray-100 p-3 w-full my-3 mx-auto rounded-xl">
-                                            <div class="text-xs opacity-80">
-                                                {{$property->property_name}}:
-                                            </div>
-                                            <div class="text-xs opacity-70">
-                                                {{$property->property_value}}
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-xl hidden" id="comments" role="tabpanel" aria-labelledby="comments-tab">
-                              <span class="border-b-red-500 border-b">
-                                پرسش های محصول
-                              </span>
-                                <p class="text-gray-500 text-sm">
-                                <div class="flex flex-col py-4 px-4 mx-auto my-6 max-w-7xl rounded-2xl bg-white">
-                                    <!-- UO COMMENTS -->
-                                    <div>
-                                        <div>نظرات</div>
-                                        <div class="pr-5 opacity-70 text-xs">{{count($product->confirmed_comments)}} نظر</div>
-                                    </div>
-                                    @foreach($product->confirmed_comments as $comment)
-                                        <!-- COMMENT -->
-                                        <div class="bg-gray-50 rounded-xl px-5 py-3 my-2">
-                                            <div class="flex items-center">
-                                                <div>
-                                                    <img class="w-10" src="/template/assets/image/userNotImage.png" alt="{{$comment?->user?->name}}">
-                                                </div>
-                                                <div class="text-sm opacity-60 pr-1">
-                                                    نوشته شده توسط: {{$comment?->user?->name ?? "کاربر $comment->user_id"}}
-                                                </div>
-                                            </div>
-                                            <div class="opacity-60 text-sm py-3">
-                                                {{$comment->description}}
-                                            </div>
-
-                                            @if($comment->support_reply)
-                                                <!-- RESPONSE -->
-                                                <div class="bg-gray-100 rounded-xl pl-2 pr-5 sm:pr-8 py-3">
-                                                    <div class="flex items-center">
-                                                        <div>
-                                                            <img class="w-10" src="/template/assets/image/userNotImage.png" alt="{{$comment?->support?->name}}">
-                                                        </div>
-                                                        <div class="text-sm opacity-60 pr-1">
-                                                            پاسخ داده شده: {{$comment?->support?->name}}
-                                                        </div>
-                                                    </div>
-                                                    <div class="opacity-60 text-sm py-3">
-                                                        {{$comment->support_reply}}
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @endforeach
-
-                                    @auth
-                                        <!-- BOX SENT COMMENT -->
-                                        <div class="mb-4">
-                                            <label for="mailTicket" class="inline-block mb-2 ml-1 font-semibold text-xs text-slate-700">نظر شما:</label>
-                                            <textarea id="comment_input" cols="30" rows="3" placeholder="نظر خود را بنویسید" class="text-sm block w-full rounded-lg border border-gray-400 bg-white px-3 py-2 font-normal text-gray-700 outline-none focus:border-red-300"></textarea>
-                                        </div>
-                                        <button
-                                            onclick="sendComment()"
-                                            class="inline-block px-8 py-2 ml-auto font-semibold text-center text-white bg-red-500 rounded-lg shadow-md text-xs">ارسال نظر</button>
-                                    @endauth
-                                </div>
-                                </p>
-                            </div>
-
-                        </div>
-                    </div>
 
                 </div>
                 <div class="w-full lg:w-1/3 mt-5 md:mt-0" id="vueapp">
@@ -346,7 +228,125 @@
                     </div>
                 </div>
             </div>
+            <!-- TABS -->
+            <div class="lg:w-1/1 w-full mt-10">
+                <div class="border-b border-gray-200 mb-4">
+                    <ul class="flex justify-center flex-wrap -mb-px text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-4 px-4 text-sm font-medium text-center border-transparent border-b-2" id="about-tab" data-tabs-target="#about" type="button" role="tab" aria-controls="about" aria-selected="false">درباره محصول</button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-4 px-4 text-sm font-medium text-center border-transparent border-b-2 active" id="test-tab" data-tabs-target="#test" type="button" role="tab" aria-controls="test" aria-selected="true">بررسی تخصصی</button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-4 px-4 text-sm font-medium text-center border-transparent border-b-2 " id="details-tab" data-tabs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="false">مشخصات</button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-4 px-4 text-sm font-medium text-center border-transparent border-b-2 " id="comments-tab" data-tabs-target="#comments" type="button" role="tab" aria-controls="comments" aria-selected="false">نظرات</button>
+                        </li>
 
+
+                    </ul>
+                </div>
+                <div id="myTabContent">
+                    <div class="bg-gray-50 p-4 rounded-xl hidden" id="about" role="tabpanel" aria-labelledby="about-tab">
+                        <h4 class="mb-3">
+                                    <span class="border-b-red-500 border-b">
+                                        معرفی محصول
+                                    </span>
+                        </h4>
+                        <div class="text-gray-500 text-sm leading-7 mt-3">
+                            {!! $product->description !!}
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl " id="test" role="tabpanel" aria-labelledby="test-tab">
+                        <div class="flex flex-col items-start gap-y-4">
+                                    <span class="border-b-red-500 border-b">
+                                      بررسی تخصصی محصول
+                                    </span>
+                        </div>
+                        <div class="md:flex gap-3 text-gray-500 text-sm leading-7 mt-3">
+                            {!! $product->excerpt_review !!}
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl hidden" id="details" role="tabpanel" aria-labelledby="details-tab">
+                              <span class="border-b-red-500 border-b">
+                                مشخصات فنی محصول
+                              </span>
+                        <div class="text-gray-500 text-sm grid grid-cols-1 gap-x-3 md:grid-cols-2">
+                            @foreach($product->properties as $property)
+                                <div class="flex items-center justify-between bg-gray-100 p-3 w-full my-3 mx-auto rounded-xl">
+                                    <div class="text-xs opacity-80">
+                                        {{$property->property_name}}:
+                                    </div>
+                                    <div class="text-xs opacity-70">
+                                        {{$property->property_value}}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl hidden" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+                              <span class="border-b-red-500 border-b">
+                                پرسش های محصول
+                              </span>
+                        <p class="text-gray-500 text-sm">
+                        <div class="flex flex-col py-4 px-4 mx-auto my-6 max-w-7xl rounded-2xl bg-white">
+                            <!-- UO COMMENTS -->
+                            <div>
+                                <div>نظرات</div>
+                                <div class="pr-5 opacity-70 text-xs">{{count($product->confirmed_comments)}} نظر</div>
+                            </div>
+                            @foreach($product->confirmed_comments as $comment)
+                                <!-- COMMENT -->
+                                <div class="bg-gray-50 rounded-xl px-5 py-3 my-2">
+                                    <div class="flex items-center">
+                                        <div>
+                                            <img class="w-10" src="/template/assets/image/userNotImage.png" alt="{{$comment?->user?->name}}">
+                                        </div>
+                                        <div class="text-sm opacity-60 pr-1">
+                                            نوشته شده توسط: {{$comment?->user?->name ?? "کاربر $comment->user_id"}}
+                                        </div>
+                                    </div>
+                                    <div class="opacity-60 text-sm py-3">
+                                        {{$comment->description}}
+                                    </div>
+
+                                    @if($comment->support_reply)
+                                        <!-- RESPONSE -->
+                                        <div class="bg-gray-100 rounded-xl pl-2 pr-5 sm:pr-8 py-3">
+                                            <div class="flex items-center">
+                                                <div>
+                                                    <img class="w-10" src="/template/assets/image/userNotImage.png" alt="{{$comment?->support?->name}}">
+                                                </div>
+                                                <div class="text-sm opacity-60 pr-1">
+                                                    پاسخ داده شده: {{$comment?->support?->name}}
+                                                </div>
+                                            </div>
+                                            <div class="opacity-60 text-sm py-3">
+                                                {{$comment->support_reply}}
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+
+                            @auth
+                                <!-- BOX SENT COMMENT -->
+                                <div class="mb-4">
+                                    <label for="mailTicket" class="inline-block mb-2 ml-1 font-semibold text-xs text-slate-700">نظر شما:</label>
+                                    <textarea id="comment_input" cols="30" rows="3" placeholder="نظر خود را بنویسید" class="text-sm block w-full rounded-lg border border-gray-400 bg-white px-3 py-2 font-normal text-gray-700 outline-none focus:border-red-300"></textarea>
+                                </div>
+                                <button
+                                    onclick="sendComment()"
+                                    class="inline-block px-8 py-2 ml-auto font-semibold text-center text-white bg-red-500 rounded-lg shadow-md text-xs">ارسال نظر</button>
+                            @endauth
+                        </div>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
 
             <!-- SLIDER -->
             <div class="bg-white rounded-2xl pt-10">

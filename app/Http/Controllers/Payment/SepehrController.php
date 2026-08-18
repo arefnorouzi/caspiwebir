@@ -10,6 +10,7 @@ use App\Models\InvoiceStatus;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\ShopSetting;
+use App\Services\InvoiceStepService;
 use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -99,11 +100,32 @@ class SepehrController extends Controller
             $result = json_decode($response, true);
             if (strtoupper($result['Status']) == 'OK') {
                 Log::info("sepehr callback was ok");
-                $invoice->invoice_status_id = InvoiceStatus::get_status(code: 'paid');
+                $invoice_status = InvoiceStatus::get_status(code: 'paid');
+                if ($invoice_status)
+                {
+                    $invoice->invoice_status_id = $invoice_status;
+                    InvoiceStepService::store_step($invoice, $invoice_status);
+                }
                 $invoice->payment_status = true;
                 $invoice->purchased_at = now();
                 $invoice->update();
+                $invoice->load('items');
+                foreach ($invoice->items as $item)
+                {
+                    if ($item->product_id && isset($item->product))
+                    {
+                        $product = Product::where('id', '=', $item->product_id)->first();
+                        if ($product){
+                            $product->sales += $item->qty;
+                            if (!$product->downloadable)
+                            {
+                                $product->stock = max(0, $product->stock - $item->qty);
+                            }
+                            $product->update();
+                        }
 
+                    }
+                }
                 // sms
                 SmsService::invoice_sms(
                     to: $invoice->customer_mobile,

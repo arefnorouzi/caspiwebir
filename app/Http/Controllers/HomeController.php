@@ -27,6 +27,7 @@ class HomeController extends Controller
 //            'course_time' => rand(1, 12) . " ساعت"
 //        ]);
         //User::where('mobile', '09337487507')->firstOrFail()->update(['password' => bcrypt('12345678')]);
+        //User::where('mobile', '09192138510')->firstOrFail()->update(['password' => bcrypt('12345678')]);
         $page_sections = PageSection::where('status', true)
             ->orderby('position', 'asc')
             ->get();
@@ -122,6 +123,22 @@ class HomeController extends Controller
                     'name' => $product_slider->name,
                     'link' => 'courses',
                     'products' => $product_model->downloadable_products(per_page: $product_slider->product_limit),
+                ],
+                'services' => [
+                    'bg_color' => $product_slider->background_color,
+                    'text_color' => $product_slider->text_color,
+                    'rank' => $product_slider->rank,
+                    'name' => $product_slider->name,
+                    'link' => 'services',
+                    'products' => $product_model->service_products(per_page: $product_slider->product_limit),
+                ],
+                'addons' => [
+                    'bg_color' => $product_slider->background_color,
+                    'text_color' => $product_slider->text_color,
+                    'rank' => $product_slider->rank,
+                    'name' => $product_slider->name,
+                    'link' => 'addons',
+                    'products' => $product_model->addons_products(per_page: $product_slider->product_limit),
                 ],
             };
         }

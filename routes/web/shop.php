@@ -7,6 +7,7 @@ use App\Http\Controllers\ShoppingCartController;
 Route::group(['prefix' => 'shop', 'as' => 'shop.'], function () {
     Route::get('/', [ShopController::class, 'index'])->name('index');
     Route::get('/courses', [ShopController::class, 'downloadable_products'])->name('downloadable_products');
+    Route::get('/services', [ShopController::class, 'services_products'])->name('services_products');
     Route::get('/search', [ShopController::class, 'search_result'])->name('search_result');
     Route::post('/search', [ShopController::class, 'search'])->name('search');
     Route::get('/filter', [ShopController::class, 'filter'])->name('filter');
@@ -16,6 +17,8 @@ Route::group(['prefix' => 'shop', 'as' => 'shop.'], function () {
     Route::get('/product/{slug}', [ShopController::class, 'show_product'])->name('show_product');
     Route::get('/p/{id}', [ShopController::class, 'single_product'])->name('single_product');
     Route::get('/category/{slug}', [ShopController::class, 'category'])->name('category');
+    Route::get('/brand', [ShopController::class, 'brands'])->name('brands');
+    Route::get('/brand/{slug}', [ShopController::class, 'brand'])->name('brand');
 });
 
 

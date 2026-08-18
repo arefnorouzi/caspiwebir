@@ -71,6 +71,10 @@ const form = useForm({
     amazing: props.model.amazing,
     suggested: props.model.suggested,
     downloadable: props.model.downloadable,
+    is_service: props.model.is_service,
+    is_addon: props.model.is_addon,
+    course_time: props.model.course_time,
+    duration: props.model.duration,
     brand_id: props.model.brand_id,
     product_unit_id: props.model.product_unit_id,
     categories: [...props.selected_categories]

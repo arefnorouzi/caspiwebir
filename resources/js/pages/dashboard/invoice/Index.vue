@@ -101,12 +101,12 @@ const formatDate = (d) =>
                         <tbody v-if="models && models.data">
                         <tr v-for="(item, index) in models.data" :key="index" :class="item.deleted_at ? 'bg-red-100' : ''">
                             <td class="p-4 border-b border-slate-200 py-1">
-                                <a :href="`/checkout/${item.uuid}`" target="_blank">
+                                <a :href="`/dashboard/invoice/${item.id}`" target="_blank">
                                     <p class="block font-semibold text-sm text-blue-800">{{ item.id }}</p>
                                 </a>
                             </td>
                             <td class="p-4 border-b border-slate-200 py-1">
-                                <a :href="`/checkout/${item.uuid}`" target="_blank">
+                                <a :href="`/dashboard/invoice/${item.id}`" target="_blank">
                                     <button class="p-2 cursor-pointer bg-indigo-500 text-gray-100 rounded-md border border-green-800">جزئیات</button>
 
                                 </a>

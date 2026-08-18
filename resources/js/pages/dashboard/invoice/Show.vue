@@ -4,8 +4,10 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import ValidationErrors from '@/components/validation/ValidationErrors.vue';
 import { onMounted, ref } from 'vue';
-import { showToast } from '@/composables/useToast.js'
 import axios from 'axios';
+import SelectComponent from "@/components/form/SelectComponent.vue";
+import TextareaComponent from "@/components/form/TextareaComponent.vue";
+import InputComponent from "@/components/form/InputComponent.vue";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,12 +19,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface Props {
     user: object;
     invoice: object;
-    wallet: object;
     payment_methods: object;
     shop_setting: object;
+    documents: object;
+    check_method: object;
+    banks: object;
+    checks: object;
+    check_amount: number,
+    ctc_method: object
 }
 const props = defineProps<Props>()
-
 const form = useForm({
     payment_method_id: null,
     invoice_id: props.invoice.id,
@@ -35,38 +41,109 @@ onMounted(() => {
             form.payment_method_id = item.id
         }
     })
-})
 
-const validation_errors = ref(null)
+})
+const payment_description = ref('')
+const interest = ref(0)
 
 
 const formatDate = (d) =>
     new Date(d).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
 
+const check_form = useForm({
+    invoice_id: props.invoice.id,
+    check_count: 1,
+    check_request: null,
+});
+const upload_check_form = useForm({
+    invoice_id: props.invoice.id,
+    bank_id: 1,
+    serial: '',
+    seri: '',
+    sheba: 'IR',
+    sayadi: '',
+    note: '',
+    check_front: '',
+    check_back: ''
+});
 
-
-async function payInvoice() {
-    await axios.post('/payment', form)
-        .then(res => {
-            showToast("درگاه با موفقیت انتخاب شد", "success")
-            window.location.replace(res.data.link)
-        })
-        .catch(err => {
-            if (err?.response?.data?.errors)
-            {
-                validation_errors.value = err.response.data.errors
-            }
-            if (err?.response?.data?.message)
-            {
-                showToast(err.response.data.message, "error")
-            }
-            else {
-                showToast("خطا در انتخاب درگاه", "error")
-            }
-        })
+const receipt_form = useForm({
+    invoice_id: props.invoice.id,
+    note: '',
+    image: null,
+});
+async function store_receipt(){
+    receipt_form.post('/dashboard/document/receipt',{
+        onSuccess(){
+            receipt_form.reset()
+        }
+    })
 }
 
+async function store_check(){
+    upload_check_form.post('/dashboard/document/check',{
+        onSuccess(){
+            upload_check_form.reset()
+        }
+    })
+}
 
+async function handleReceiptFileChange(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('folder_name', 'receipt')
+    try {
+        const res = await axios.post('/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+
+        receipt_form.image = res.data.path   // آدرس در دیتابیس ذخیره میشه
+        await store_receipt()
+    } catch (err) {
+        alert('خطا در آپلود تصویر')
+    }
+}
+
+async function handleCheckFront(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('folder_name', 'checks')
+    try {
+        const res = await axios.post('/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+
+        upload_check_form.check_front = res.data.path   // آدرس در دیتابیس ذخیره میشه
+    } catch (err) {
+        alert('خطا در آپلود تصویر')
+    }
+}
+
+async function handleCheckBackend(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('folder_name', 'checks')
+    try {
+        const res = await axios.post('/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+
+        upload_check_form.check_back = res.data.path   // آدرس در دیتابیس ذخیره میشه
+    } catch (err) {
+        alert('خطا در آپلود تصویر')
+    }
+}
+
+async function click_file_input(input_id: string)
+{
+   document.getElementById(input_id).click()
+}
 
 </script>
 
@@ -75,14 +152,20 @@ async function payInvoice() {
 
     <AppLayout :breadcrumbs="breadcrumbs">
 
-        <div class="flex flex-wrap mt-2 p-2">
+        <div class="flex flex-wrap p-2">
 
-            <div class="lg:w-2/3 md:w-1/1 sm:w-1/1 w-1/1 p-1">
+            <div class="w-full p-1">
                 <div class="card border border-gray-100 rounded-md shadow-md">
 
                     <!-- جدول کالاها -->
-                    <div class="p-2 my-3">
+                    <div class="p-2 my-1">
                         <h2 class="text-lg text-indigo-500">جزئیات سفارش</h2>
+                    </div>
+                    <div class="p-2 my-1">
+                        <a class="py-2 px-3 bg-indigo-600 text-white rounded-md shadow-md"
+                            :href="`/dashboard/factor/${props.invoice.id}`">
+                            <span>مشاهده پیش فاکتور</span>
+                        </a>
                     </div>
                     <div class="p-2 my-3 overflow-x-scroll">
                         <table class="w-full text-right table-auto min-w-max mb-5">
@@ -137,7 +220,7 @@ async function payInvoice() {
 
                                 <td class="p-4 border-b border-slate-200 py-2">
                                     <p v-if="item.product_id">
-                                        <a :href="`/shop/product/${item?.product_id}`" target="_blank">
+                                        <a :href="`/shop/p/${item?.product_id}`" target="_blank">
                                             {{ item?.name }}
                                         </a>
                                     </p>
@@ -162,6 +245,33 @@ async function payInvoice() {
 
                             </tr>
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">جمع سفارش</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.sub_total).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">مالیات</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.tax).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">هزینه ارسال</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.shipping_cost).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">-</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">تخفیف</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.discount).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">*</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">مبلغ نهایی</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.amount).toLocaleString()}} تومان</td>
+                            </tr>
+                            </tfoot>
                         </table>
 
                     </div>
@@ -170,89 +280,259 @@ async function payInvoice() {
 
             </div>
 
-            <div class="lg:w-1/3 md:w-1/1 sm:w-1/1 w-1/1 p-1">
+            <div v-if="!invoice.payment_status" class="lg:w-1/3 md:w-1/1 sm:w-1/1 w-1/1 p-1 my-2">
                 <div class="card border border-gray-100 rounded-md mb-2 shadow">
                     <div class="card-header bg-gray-100 p-2">
                         <h4>روش های پرداخت</h4>
                     </div>
                     <div class="card-body px-2 py-4">
-                        <div class="mb-4 border border-gray-200 p-2">
-                            <h3 class="text-sm font-bold text-gray-800">جمع آیتم ها: {{Number(invoice.sub_total).toLocaleString()}} تومان</h3>
-                        </div>
-
-                        <div class="mb-4 border border-gray-200 p-2">
-                            <h3 class="text-sm font-bold text-gray-800">هزینه ارسال: {{Number(invoice.shipping_cost).toLocaleString()}} تومان</h3>
-                        </div>
-
-                        <div class="mb-4 border border-gray-200 p-2">
-                            <h3 class="text-sm font-bold text-gray-800">مالیات: {{Number(invoice.tax).toLocaleString()}} تومان</h3>
-                        </div>
-
-                        <div class="mb-4 border border-gray-200 p-2">
-                            <h3 class="text-sm font-bold text-rose-800">تخفیف: {{Number(invoice.discount).toLocaleString()}} تومان</h3>
-                        </div>
 
                         <div class="mb-4 border border-gray-200 p-2">
                             <h3 class="text-sm font-bold text-green-800">مبلغ قابل پرداخت: {{Number(invoice.amount).toLocaleString()}} تومان</h3>
                         </div>
 
 
-                        <div class="mb-3 mt-5">
-                            <label for="stock" class="text-sm font-bold p-2 block mb-2">انتخاب روش پرداخت</label>
-                            <div v-for="pament_method in payment_methods" class="mb-1" :key="pament_method.id">
-                                <input type="radio" v-model="form.payment_method_id" :value="pament_method.id"
-                                       class="w-4 h-4 text-blue-800 focus:ring-blue-500 focus:ring-2 mb-5"
-                                >
-                                <span class="ms-2 text-sm">{{pament_method.name}}</span>
-                            </div>
-                        </div>
-
-                        <div v-if="form.payment_method_id == 5" class="mb-2 px-2 py-4 bg-blue-100 text-blue-800 rounded-md">
-                            <h4 class="mb-2 text-sm font-bold">صاحب حساب: شرکت رخشان مطبوع سازان نوین</h4>
-
-                            <p class="mb-4 border border-gray-200 p-2">
-                                <span>شماره کارت: </span> <strong>6037691990547879</strong>
-                            </p>
-                            <p class="mb-4 border border-gray-200 p-2">
-                                <span>شماره شبا: </span> <strong>IR220190000000117069147000</strong>
-                            </p>
-                            <p class="mb-2 text-sm border border-gray-200 p-2">
-                                ارسال فیش یا رسید واریزی
-                            </p>
-                            <div class="text-center flex flex-wrap gap-2 justify-center">
-                                <div>
-                                    <a href="https://wa.me/989111355171" class="share-btn" target="_blank">
-                                        <button class="cursor-pointer bg-green-700 rounded-md py-2 px-4 flex">
-                                        <span>
-                                            <svg width="25px" height="25px" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M16 31C23.732 31 30 24.732 30 17C30 9.26801 23.732 3 16 3C8.26801 3 2 9.26801 2 17C2 19.5109 2.661 21.8674 3.81847 23.905L2 31L9.31486 29.3038C11.3014 30.3854 13.5789 31 16 31ZM16 28.8462C22.5425 28.8462 27.8462 23.5425 27.8462 17C27.8462 10.4576 22.5425 5.15385 16 5.15385C9.45755 5.15385 4.15385 10.4576 4.15385 17C4.15385 19.5261 4.9445 21.8675 6.29184 23.7902L5.23077 27.7692L9.27993 26.7569C11.1894 28.0746 13.5046 28.8462 16 28.8462Z" fill="#BFC8D0"></path> <path d="M28 16C28 22.6274 22.6274 28 16 28C13.4722 28 11.1269 27.2184 9.19266 25.8837L5.09091 26.9091L6.16576 22.8784C4.80092 20.9307 4 18.5589 4 16C4 9.37258 9.37258 4 16 4C22.6274 4 28 9.37258 28 16Z" fill="url(#paint0_linear_87_7264)"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M16 30C23.732 30 30 23.732 30 16C30 8.26801 23.732 2 16 2C8.26801 2 2 8.26801 2 16C2 18.5109 2.661 20.8674 3.81847 22.905L2 30L9.31486 28.3038C11.3014 29.3854 13.5789 30 16 30ZM16 27.8462C22.5425 27.8462 27.8462 22.5425 27.8462 16C27.8462 9.45755 22.5425 4.15385 16 4.15385C9.45755 4.15385 4.15385 9.45755 4.15385 16C4.15385 18.5261 4.9445 20.8675 6.29184 22.7902L5.23077 26.7692L9.27993 25.7569C11.1894 27.0746 13.5046 27.8462 16 27.8462Z" fill="white"></path> <path d="M12.5 9.49989C12.1672 8.83131 11.6565 8.8905 11.1407 8.8905C10.2188 8.8905 8.78125 9.99478 8.78125 12.05C8.78125 13.7343 9.52345 15.578 12.0244 18.3361C14.438 20.9979 17.6094 22.3748 20.2422 22.3279C22.875 22.2811 23.4167 20.0154 23.4167 19.2503C23.4167 18.9112 23.2062 18.742 23.0613 18.696C22.1641 18.2654 20.5093 17.4631 20.1328 17.3124C19.7563 17.1617 19.5597 17.3656 19.4375 17.4765C19.0961 17.8018 18.4193 18.7608 18.1875 18.9765C17.9558 19.1922 17.6103 19.083 17.4665 19.0015C16.9374 18.7892 15.5029 18.1511 14.3595 17.0426C12.9453 15.6718 12.8623 15.2001 12.5959 14.7803C12.3828 14.4444 12.5392 14.2384 12.6172 14.1483C12.9219 13.7968 13.3426 13.254 13.5313 12.9843C13.7199 12.7145 13.5702 12.305 13.4803 12.05C13.0938 10.953 12.7663 10.0347 12.5 9.49989Z" fill="white"></path> <defs> <linearGradient id="paint0_linear_87_7264" x1="26.5" y1="7" x2="4" y2="28" gradientUnits="userSpaceOnUse"> <stop stop-color="#5BD066"></stop> <stop offset="1" stop-color="#27B43E"></stop> </linearGradient> </defs> </g></svg>
-                                        </span>
-                                            <span class="ms-3 text-white text-sm">ارسال در واتساپ</span>
-                                        </button>
-                                    </a>
+                        <div class="mb-3 mt-5 grid grid-cols-1 md:grid-cols-2 sm:grid-cols-2 gap-2 w-full">
+                            <a v-for="payment_method in payment_methods"
+                               :href="`/payment/${payment_method.code}/pay/${props.invoice.id}`"
+                                  :key="payment_method.id">
+                                <div class="w-full text-center border border-teal-700 text-teal-800 rounded-md p-3 mb-1 shadow-md"
+                                   >
+                                    <div class="payment-icon text-center mb-2">
+                                        <img :src="payment_method.image" style="width: 50px; height: 50px; margin: auto">
+                                    </div>
+                                    <p>پرداخت با
+                                        {{payment_method.name}}</p>
                                 </div>
 
-                            </div>
+                            </a>
                         </div>
-                        <div v-else class="mb-2 px-2 py-2 bg-blue-100 text-blue-800 rounded-md">
-                            <p class="p-2">
-                                امکان پرداخت با تمامی کارت های عضو شتاب
-                            </p>
-
-                        </div>
-
-
-                        <div class="my-2">
-                            <ValidationErrors :errors="validation_errors" />
-
-                        </div>
-                        <div v-if="form.payment_method_id" class="my-2 text-center">
-
-                            <button @click="payInvoice" class="cursor-pointer border border-2 bg-teal-700 text-gray-100 rounded-md py-2 px-3 m-1">تایید و پرداخت</button>
-                       </div>
 
                     </div>
                 </div>
             </div>
+
+            <div v-if="props.documents.length" class="lg:w-1/3 md:w-1/1 sm:w-1/1 w-1/1 p-1 my-2">
+                <div class="card border border-gray-100 rounded-md mb-2 shadow">
+                    <div class="card-header bg-gray-100 p-2">
+                        <h4>اسناد</h4>
+                    </div>
+                    <div class="card-body px-2 py-4">
+
+                        <div v-for="(doc, _d) in props.documents"
+                             :key="_d"
+                             class="mb-4 border border-gray-200 flex flex-wrap justify-between p-2">
+                            <div class="text-sm font-bold text-gray-800">
+                                <h5 class="text-sm">{{doc.name}}</h5>
+                            </div>
+                            <div class="text-sm">
+                                <a :href="`/dashboard/download-document/${doc.id}`"
+                                   target="_blank"
+                                   class="p-2 rounded-md bg-blue-500 text-white">دانلود</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="!props.invoice.payment_status" class="lg:w-1/3 md:w-1/1 sm:w-1/1 w-1/1 p-1 my-2">
+                <div class="card border border-gray-100 rounded-md mb-2 shadow">
+                    <div class="card-header bg-gray-100 p-2">
+                        <h4>بارگزاری فیش واریز</h4>
+                    </div>
+                    <div class="card-body px-2 py-4">
+                        <div v-if="ctc_method" class="p-2 border border-indigo-500 rounded-md"
+                             v-html="ctc_method.description">
+                        </div>
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">کاربر عزیز چنانچه پرداخت شما از طریق کارت به کارت، حواله پایا، ساتنا، پل و دیگر موارد مشابه بوده، میتوانید برگه فیش یا رسید واریز را در اینجا بارگزاری نمایید.</p>
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">پس از بارگزاری فیش، نیاز به تایید امور مالی میباشد.</p>
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">حجم فایل زیر 2 مگابایت باشد.</p>
+
+                        <input type="file" id="receiptFile" style="visibility: hidden"
+                               accept=".jpg, .jpeg, .png"
+                               @change="handleReceiptFileChange">
+
+                        <button @click="click_file_input('receiptFile')"
+                            class="cursor-pointer border bg-blue-700 text-gray-100 rounded-md py-2 px-3 m-1">بارگزاری فیش واریز
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="!props.invoice.payment_status && check_method && props.invoice.check_count === 0" class="lg:w-1/3 md:w-1/1 sm:w-1/1 w-1/1 p-1 my-2">
+                <div class="card border border-gray-100 rounded-md mb-2 shadow">
+                    <div class="card-header bg-gray-100 p-2">
+                        <h4>پرداخت با چک صیادی</h4>
+                    </div>
+                    <div class="card-body px-2 py-4">
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">لطفا قبل از ثبت چک با مدیریت سایت هماهنگ نمایید.</p>
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">کارمزد پرداخت چکی به ازای هر ماه
+                        <strong>{{check_method?.interest_rate}}%</strong> میباشد که به مبلغ فاکتور افزوده میشود.
+                        </p>
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">پرداخت حداکثر در 3 فقره چک و بصورت 3 ماه متوالی خواهد بود.</p>
+                        <p class="mb-4 p-2 rounded-md bg-orange-200">درخواست ثبت چک را ثبت نمایید</p>
+
+                        <div class="my-4">
+                            <SelectComponent
+                                label="تعداد چک"
+                                id="check_count"
+                                :value="check_form.check_count"
+                                v-model="check_form.check_count"
+                                :options="[{id: 1, name: '1 فقره چک'},{id:2, name: '2 فقره چک'}, {id:3, name: '3 فقره چک'}]" />
+                        </div>
+                        <div class="mb-2">
+                            <TextareaComponent
+                                label="متن درخواست"
+                                id="check_request"
+                                placeholder="متن پیام شما در مورد شرایط پرداخت چکی"
+                                v-model="check_form.check_request" />
+                        </div>
+                        <div class="mb-2">
+                            <button
+                                    class="cursor-pointer pay-btn">ثبت درخواست
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="!props.invoice.payment_status && checks && check_method && props.invoice.check_count >= 0" class="lg:w-1/2 md:w-1/1 sm:w-1/1 w-1/1 p-1 my-2">
+                <div class="card border border-gray-100 rounded-md mb-2 shadow">
+                    <div class="card-header bg-gray-100 p-2">
+                        <h4>ثبت چک صیادی</h4>
+                    </div>
+                    <div class="card-body px-2 py-4">
+
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">پس از بارگزاری چک، نیاز به تایید امور مالی میباشد.</p>
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">لطفا تصویر پشت و رو چک در بخش زیر بارگزاری نمایید.لطفا اطلاعات شناسه صیادی و سریال و ... را به درستی وارد نمایید.</p>
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">حجم فایل زیر 2 مگابایت باشد.</p>
+                        <p class="mb-2 p-2 rounded-md bg-orange-200">کارمزد پرداخت چکی به ازای هر ماه
+                            <strong>{{check_method?.interest_rate}}%</strong> میباشد که به مبلغ فاکتور افزوده میشود.
+                        </p>
+                        <p class="mb-2 p-2 rounded-md border border-indigo-300 font-bold text-indigo-700">
+                            مبلغ فاکتور:
+                            {{Number(props.invoice.amount).toLocaleString()}} تومان
+                        </p>
+                        <p class="mb-2 p-2 rounded-md border border-indigo-300 font-bold text-indigo-700">
+                            مبلغ سود پرداخت چکی:
+                            {{Number(props.invoice.interest_amount).toLocaleString()}} تومان
+                        </p>
+                        <p class="mb-2 p-2 rounded-md border border-indigo-300 font-bold text-indigo-700">
+                            مبلغ فاکتور برای پرداخت بصورت چک:
+                            {{Number(check_amount * props.invoice.check_count).toLocaleString()}} تومان
+                        </p>
+                        <p class="mb-2 p-2 rounded-md border border-indigo-300 font-bold text-indigo-700">
+                            مبلغ هر چک:
+                            {{Number(check_amount).toLocaleString()}} تومان
+                        </p>
+
+
+                        <div class="my-1">
+                            <input type="file" id="checkFront" style="visibility: hidden"
+                                   accept=".jpg, .jpeg, .png"
+                                   @change="handleCheckFront"
+                            >
+                            <input type="file" id="checkBackend" style="visibility: hidden"
+                                   accept=".jpg, .jpeg, .png"
+                                   @change="handleCheckBackend"
+                            >
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div class="my-2">
+                                <SelectComponent
+                                    label="انتخاب بانک"
+                                    id="bank"
+                                    :value="upload_check_form.bank_id"
+                                    v-model="check_form.bank_id"
+                                    :options="props.banks" />
+
+                            </div>
+                            <div class="my-2">
+                                <InputComponent
+                                    label="سری چک *"
+                                    :value="upload_check_form.seri"
+                                    id="check_seri" v-model="upload_check_form.seri"
+                                    css_class="ltr"
+                                />
+                            </div>
+                            <div class="my-2">
+                                <InputComponent
+                                    label="سریال چک *"
+                                    :value="upload_check_form.serial"
+                                    id="serial" v-model="upload_check_form.serial"
+                                    css_class="ltr"
+                                />
+                            </div>
+                            <div class="my-2">
+                                <InputComponent
+                                    label="شناسه صیادی *"
+                                    :value="upload_check_form.sayadi"
+                                    id="serial" v-model="upload_check_form.sayadi"
+                                    css_class="ltr"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="my-2">
+                            <InputComponent
+                                label="شماره شبا (با IR) *"
+                                id="sheba" v-model="upload_check_form.sheba"
+                                :value="upload_check_form.sheba"
+                                css_class="ltr"
+                            />
+                        </div>
+                        <div class="my-2">
+                            <TextareaComponent
+                                label="متن یادداشت"
+                                id="check_note"
+                                placeholder="متن یادداشت در مورد چک"
+                                :value="upload_check_form.note"
+                                v-model="upload_check_form.note" />
+                        </div>
+                        <p class="mb-2 p-2 rounded-md text-indigo-500">با لمس یا کلیک روی کادر آبی رنگ زیر، حالت انتخاب تصویر فعال میشود.</p>
+
+                        <div class="my-5 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div v-if="!upload_check_form.check_front"
+                                @click="click_file_input('checkFront')"
+                                class="p-10 cursor-pointer bg-blue-100 text-blue-700 rounded-md content-center items-center text-center">
+                                <div class="font-bold">انتخاب تصویر جلو چک</div>
+                                <div class="content-center items-center">
+                                    <svg width="64px" height="64px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M771.676772 844.966484l-493.818868-2.409202C155.877326 826.595933 63.123554 722.814917 63.123554 597.698178c0-130.716368 102.592286-238.521254 231.509687-246.711313 49.19257-103.481018 153.09031-169.576911 268.529285-169.576911 163.496056 0 296.588862 132.64332 297.338346 295.968388 60.968276 35.243157 98.267394 99.284112 98.267394 170.402163 0 97.314157-71.032044 179.008943-165.167037 194.371318l-21.924457 2.814661z m-459.914953-43.849937l458.661718-0.48225c81.031308-4.62489 144.493769-71.770266 144.493768-152.854816 0-59.084327-33.145216-111.895308-86.501928-137.82418l-12.921432-6.284608 0.888732-19.292047c0.127986-1.87371 0.267234-3.736158 0.267234-5.63137 0-139.772633-113.715776-253.488409-253.488409-253.488409-102.463276 0-194.264834 61.086022-233.875886 155.627498l-5.598605 13.370918-14.495144 0.086007c-111.499064 0.653239-202.219399 91.876302-202.2194 203.353864 0 108.704881 85.142208 197.830003 193.825588 202.904379l10.963764 0.515014z" fill="#22C67F"></path><path d="M532.875998 390.961396L370.321916 553.516502l34.921657 34.921657 102.935287-102.935287V711.5317h49.385061V485.502872l102.934263 102.935287 34.93292-34.921657z" fill="#74E8AE"></path></g></svg>
+
+                                </div>
+                            </div>
+                            <div v-else
+                                 class="p-10 cursor-pointer bg-blue-100 text-blue-700 rounded-md content-center items-center text-center">
+                                <img :src="upload_check_form.check_front" style="width: 100%; height: 100%">
+                                <button
+                                    @click="upload_check_form.check_front = ''"
+                                    class="p-2 text-xs bg-red-500 text-white rounded-md">حذف</button>
+                            </div>
+                            <div v-if="!upload_check_form.check_back"
+                                @click="click_file_input('checkBackend')"
+                                class="p-10 cursor-pointer bg-blue-100 text-blue-700 rounded-md content-center items-center text-center">
+                                <div class="font-bold">انتخاب تصویر پشت چک</div>
+                                <div class="content-center items-center">
+                                    <svg width="64px" height="64px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M771.676772 844.966484l-493.818868-2.409202C155.877326 826.595933 63.123554 722.814917 63.123554 597.698178c0-130.716368 102.592286-238.521254 231.509687-246.711313 49.19257-103.481018 153.09031-169.576911 268.529285-169.576911 163.496056 0 296.588862 132.64332 297.338346 295.968388 60.968276 35.243157 98.267394 99.284112 98.267394 170.402163 0 97.314157-71.032044 179.008943-165.167037 194.371318l-21.924457 2.814661z m-459.914953-43.849937l458.661718-0.48225c81.031308-4.62489 144.493769-71.770266 144.493768-152.854816 0-59.084327-33.145216-111.895308-86.501928-137.82418l-12.921432-6.284608 0.888732-19.292047c0.127986-1.87371 0.267234-3.736158 0.267234-5.63137 0-139.772633-113.715776-253.488409-253.488409-253.488409-102.463276 0-194.264834 61.086022-233.875886 155.627498l-5.598605 13.370918-14.495144 0.086007c-111.499064 0.653239-202.219399 91.876302-202.2194 203.353864 0 108.704881 85.142208 197.830003 193.825588 202.904379l10.963764 0.515014z" fill="#22C67F"></path><path d="M532.875998 390.961396L370.321916 553.516502l34.921657 34.921657 102.935287-102.935287V711.5317h49.385061V485.502872l102.934263 102.935287 34.93292-34.921657z" fill="#74E8AE"></path></g></svg>
+
+                                </div>
+                            </div>
+                            <div v-else
+                                 class="p-10 cursor-pointer bg-blue-100 text-blue-700 rounded-md content-center items-center text-center">
+                                <img :src="upload_check_form.check_back" style="width: 100%; height: 100%">
+                                <button @click="upload_check_form.check_back = ''"
+                                    class="p-2 text-xs bg-red-500 text-white rounded-md">حذف</button>
+
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <button @click="store_check" class="pay-btn">ثبت چک</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
 
@@ -260,5 +540,9 @@ async function payInvoice() {
 </template>
 
 <style scoped>
+
+.is_pending{
+    opacity: 25%;
+}
 
 </style>

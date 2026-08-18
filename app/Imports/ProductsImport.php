@@ -55,6 +55,11 @@ class ProductsImport implements OnEachRow, WithHeadingRow, WithValidation, Skips
             $data['rank'] = trim($data['rank']);
             $data['rank'] = intval($data['rank']);
         }
+        if (isset($data['sales']))
+        {
+            $data['sales'] = trim($data['sales']);
+            $data['sales'] = intval($data['sales']);
+        }
         if (isset($data['publish']) && $data['publish'])
         {
             $data['publish'] = 1;
@@ -112,6 +117,20 @@ class ProductsImport implements OnEachRow, WithHeadingRow, WithValidation, Skips
         else{
             $data['downloadable'] = 0;
         }
+        if (isset($data['is_addon']) && $data['is_addon'])
+        {
+            $data['is_addon'] = 1;
+        }
+        else{
+            $data['is_addon'] = 0;
+        }
+        if (isset($data['is_service']) && $data['is_service'])
+        {
+            $data['is_service'] = 1;
+        }
+        else{
+            $data['is_service'] = 0;
+        }
         // آپدیت فیلدهای محصول
         $data['brand'] = trim($data['brand']);
         if ($data['brand'] != $product?->brand?->name)
@@ -141,6 +160,9 @@ class ProductsImport implements OnEachRow, WithHeadingRow, WithValidation, Skips
         $product->suggested = $data['suggested'];
         $product->amazing = $data['amazing'];
         $product->downloadable = $data['downloadable'];
+        $product->is_service = $data['is_service'];
+        $product->is_addon = $data['is_addon'];
+        $product->sales = $data['sales'];
         $product->update();
         if (isset($data['categories']) && $data['categories'])
         {
@@ -172,6 +194,9 @@ class ProductsImport implements OnEachRow, WithHeadingRow, WithValidation, Skips
             'amazing'         => 'required',
             'suggested'         => 'required',
             'downloadable'         => 'required',
+            'is_service'         => 'required',
+            'is_addon'         => 'required',
+            'sales'         => 'required',
         ];
     }
 }

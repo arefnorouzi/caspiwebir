@@ -2,6 +2,7 @@
 import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
 import Toast from '@/components/Toast.vue'
+import FlashMessage from '@/components/FlashMessage.vue';
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
@@ -16,6 +17,7 @@ withDefaults(defineProps<Props>(), {
     <AppLayout :breadcrumbs="breadcrumbs">
         <slot />
         <Toast />
+        <FlashMessage />
     </AppLayout>
 </template>
 

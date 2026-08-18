@@ -12,6 +12,9 @@ class UpdateInvoiceStatusRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        if (auth()->check()) {
+            return true;
+        }
         return false;
     }
 
@@ -23,7 +26,10 @@ class UpdateInvoiceStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'bail|required|string|min:3|max:100',
+            'status' => 'bail|required|boolean',
+            'lifecycle' => 'bail|required|boolean',
+            'image' => 'bail|nullable|string|max:200'
         ];
     }
 }

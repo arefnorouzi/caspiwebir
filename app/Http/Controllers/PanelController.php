@@ -47,8 +47,10 @@ class PanelController extends Controller
             $notifications = [];
         }
 
+        $admin_mobile = env('ADMIN_MOBILE');
+
         return Inertia::render('Dashboard', [
-            'invoices' => $invoices, 'user' => $user,
+            'invoices' => $invoices, 'user' => $user, 'admin_mobile' => $admin_mobile,
             'tickets' => $tickets, 'notifications' => $notifications
         ]);
     }

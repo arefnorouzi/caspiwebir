@@ -2,11 +2,12 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import {Head, Link, router, useForm} from '@inertiajs/vue3';
-import ValidationErrors from '@/components/validation/ValidationErrors.vue';
 import { ref } from 'vue';
-import SelectComponent from "@/components/form/SelectComponent.vue";
-import InputComponent from "@/components/form/InputComponent.vue";
-import FlashMessage from "@/components/FlashMessage.vue";
+import TabContainer from "@/components/admin/TabContainer.vue";
+import InvoiceDocumentsTab from "@/components/admin/invoice/InvoiceDocumentsTab.vue";
+import InvoiceCheckTab from "@/components/admin/invoice/InvoiceCheckTab.vue";
+import InvoiceReviewTab from "@/components/admin/invoice/InvoiceReviewTab.vue";
+import InvoiceDetailsTab from "@/components/admin/invoice/InvoiceDetailsTab.vue";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,37 +18,66 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Props {
     invoice: object;
+    documents: object;
     shop_setting: object;
     statuses: object;
     payment_methods: object;
     shipping_methods: object;
+    document_types: object;
+    invoice_steps: object;
+    status_steps: object;
 }
 const props = defineProps<Props>()
 
 const form = useForm({
     payment_method_id: props.invoice.payment_method_id,
     invoice_status_id: props.invoice.invoice_status_id,
-    payment_status: props.invoice.payment_status,
-    payable: props.invoice.payable,
+    payment_status: Number(props.invoice.payment_status),
+    payable: Number(props.invoice.payable),
     customer_name: props.invoice.customer_name,
     customer_mobile: props.invoice.customer_mobile,
     customer_note: props.invoice.customer_note,
-    confirmed_by_user: props.invoice.confirmed_by_user,
+    confirmed_by_user: Number(props.invoice.confirmed_by_user),
     shipping_method_id: props.invoice.shipping_method_id,
     post_tracking_code: props.invoice.post_tracking_code,
+    customer_review: props.invoice.customer_review,
+    customer_score: props.invoice.customer_score,
+    description: props.invoice.description,
+    official_invoice: props.invoice.official_invoice,
+    official_invoice_number: props.invoice.official_invoice_number,
 });
 
-
-const validation_errors = ref(null)
 
 
 const formatDate = (d) =>
     new Date(d).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
 
 
-async function updateInvoice() {
-    form.patch('/admin/invoice/' + props.invoice.id)
+async function updateItemStepStatus(invoice_item_id: number, invoice_item_step_id: number){
+    if (confirm('از تغییر وضعیت آیتم مطمئنی؟')) {
+        router.post('/admin/invoice-item-step/' + props?.invoice?.id, {
+            invoice_item_id: invoice_item_id,
+            invoice_item_step_id: invoice_item_step_id
+        }, {
+            preserveScroll: true,
+        })
+    }
 }
+//product_stock_deducted
+async function product_stock_deducted(invoice_item_id: number){
+    if (confirm('از کسر تعداد موجودی انبار مطمئنی؟')) {
+        router.put('/admin/product_stock_deducted/' + invoice_item_id, {}, {
+            preserveScroll: true,
+        })
+    }
+}
+
+const form_tabs = ref([
+    { key: 'details', label: 'جزئیات فاکتور', status: true },
+    { key: 'documents', label: 'اسناد', status: true },
+    { key: 'bank_check', label: 'شرایط پرداخت' , status: true },
+    { key: 'review', label: 'نظر مشتری' , status: true },
+])
 
 </script>
 
@@ -55,20 +85,18 @@ async function updateInvoice() {
     <Head title="جزئیات فاکتور" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="my-2 p-2 rounded-md">
-            <FlashMessage />
-        </div>
-        <div class="flex flex-wrap mt-2 p-2">
 
-            <div class="lg:w-2/3 md:w-1/1 sm:w-1/1 w-1/1 p-1">
+        <div class="flex flex-wrap p-2">
+
+            <div class="lg:w-full p-1">
                 <div class="card border border-gray-100 rounded-md shadow-md">
-                    <div class="p-2 my-3">
+                    <div class="p-2 my-1">
                         <div class="w-full flex justify-between items-center mb-3 mt-1 pl-3">
                             <div>
                                 <h3 class="text-lg font-semibold text-slate-800">جزئیات فاکتور</h3>
                             </div>
                             <div class="ml-3">
-                                <a :href="`/admin/invoice/${invoice.id}/edit`" class="m-1" target="_blank">
+                                <Link :href="`/admin/invoice/${invoice.id}/edit`" class="m-1">
                                     <button
                                         class="me-1 cursor-pointer text-blue-600 border border-blue-600 hover:border-indigo-600 focus:ring-4 focus:ring-indigo-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">
 
@@ -80,7 +108,7 @@ async function updateInvoice() {
                                         </svg>
                                         <span class="ms-1"> ویرایش فاکتور</span>
                                     </button>
-                                </a>
+                                </Link>
                                 <a :href="`/admin/factor/${invoice.id}`" class="m-1" target="_blank">
                                     <button
                                         class="me-1 cursor-pointer text-indigo-500 border border-indigo-500 hover:border-indigo-600 focus:ring-4 focus:ring-indigo-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">
@@ -99,7 +127,7 @@ async function updateInvoice() {
                             </div>
                         </div>
                     </div>
-                    <div class="p-2 mb-3 ">
+                    <div class="p-2 mb-2 ">
                         <p class="bg-orange-200 text-black p-2 rounded-md mb-2">قیمت ها براساس تومان میباشد</p>
                         <table class="w-full text-right table-auto min-w-max mb-5 overflow-x-scroll">
                             <thead>
@@ -154,7 +182,7 @@ async function updateInvoice() {
 
                                 <td class="p-2 border-b border-slate-200">
                                     <p v-if="item.product_id" class="text-xs">
-                                        <a :href="`/shop/product/${item?.product?.slug}`" target="_blank">
+                                        <a :href="`/shop/p/${item?.product?.id}`" target="_blank">
                                             {{ item?.name }}
                                         </a>
                                     </p>
@@ -176,32 +204,40 @@ async function updateInvoice() {
                                     <p class="text-xs text-slate-500">{{ Number(item.unit_price * item.qty).toLocaleString()}}</p>
                                 </td>
                             </tr>
-
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">جمع سفارش</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.sub_total).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">مالیات</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.tax).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">هزینه ارسال</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.shipping_cost).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">-</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">تخفیف</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.discount).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-slate-200">*</td>
+                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">مبلغ نهایی</td>
+                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.amount).toLocaleString()}} تومان</td>
+                            </tr>
+                            </tfoot>
                         </table>
 
-                        <hr class="my-2">
+                        <hr class="my-1">
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-1 mt-3">
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <h3 class="text-xs text-gray-800">جمع آیتم ها: {{Number(invoice.sub_total).toLocaleString()}} تومان</h3>
-                            </div>
 
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <h3 class="text-xs text-gray-800">هزینه ارسال: {{Number(invoice.shipping_cost).toLocaleString()}} تومان</h3>
-                            </div>
-
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <h3 class="text-xs text-gray-800">مالیات: {{Number(invoice.tax).toLocaleString()}} تومان</h3>
-                            </div>
-
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <h3 class="text-xs text-rose-800">تخفیف: {{Number(invoice.discount).toLocaleString()}} تومان</h3>
-                            </div>
-
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <h3 class="text-xs text-green-800">مبلغ قابل پرداخت: {{Number(invoice.amount).toLocaleString()}} تومان</h3>
-                            </div>
 
                             <div class="mb-1 border border-gray-200 p-2">
                                 <p class="text-xs">استان / شهر:
@@ -234,111 +270,74 @@ async function updateInvoice() {
             </div>
 
 
-            <div class="lg:w-1/3 md:w-1/1 sm:w-1/1 w-1/1 p-1">
-                <div class="card border border-gray-100 rounded-md mb-2 shadow">
-                    <div class="card-header bg-gray-100 p-2">
-                        <h4>بروزرسانی فاکتور</h4>
-                    </div>
-                    <div class="card-body px-1 py-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-1 mt-3">
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <InputComponent v-model="form.customer_name"
-                                                :value="form.customer_name"
-                                                label="نام مشتری"
-                                                id="customer_name"
-                                                placeholder="مهراد شاهرخی"
-                                                :input_error="form?.errors?.customer_name"
-                                />
-                            </div>
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <InputComponent v-model="form.customer_mobile"
-                                                :value="form.customer_mobile"
-                                                label="شماره تماس مشتری"
-                                                id="customer_mobile"
-                                                placeholder="09123456789"
-                                                :input_error="form?.errors?.customer_mobile"
-                                                css_class="ltr"
-                                />
-                            </div>
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <SelectComponent label="امکان پرداخت"
-                                                 :value="form.payable"
-                                                 id="brand" v-model="form.payable"
-                                                 :input_error="form?.errors?.payable"
-                                                 :options="[{id: 0, name: 'غیرفعال'}, {id: 1, name: 'فعال'}]"
-                                />
-                            </div>
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <SelectComponent label="وضعیت پرداخت"
-                                                 :value="form.payment_status"
-                                                 id="brand" v-model="form.payment_status"
-                                                 :input_error="form?.errors?.payment_status"
-                                                 :options="[{id: 0, name: 'در انتظار پرداخت'}, {id: 1, name: 'پرداخت شده'}]"
-                                />
-                            </div>
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <SelectComponent label="تایید توسط مشتری"
-                                                 :value="form.confirmed_by_user"
-                                                 id="brand" v-model="form.confirmed_by_user"
-                                                 :input_error="form?.errors?.confirmed_by_user"
-                                                 :options="[{id: 0, name: 'تایید نشده'}, {id: 1, name: 'تایید شده'}]"
-                                />
-                            </div>
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <SelectComponent label="وضعیت فاکتور"
-                                                 :value="form.invoice_status_id"
-                                                 id="brand" v-model="form.invoice_status_id"
-                                                 :input_error="form?.errors?.invoice_status_id"
-                                                 :options="statuses"
-                                />
-                            </div>
+            <div class="my-2 w-full">
+                <TabContainer
+                    :tabs="form_tabs"
+                >
+                    <!-- Slot برای نمایش محتوا -->
+                    <template #default="{ activeTab }">
 
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <SelectComponent label="انتخاب روش ارسال"
-                                                 :value="form.shipping_method_id"
-                                                 id="brand" v-model="form.shipping_method_id"
-                                                 :input_error="form?.errors?.shipping_method_id"
-                                                 :options="shipping_methods"
-                                />
-                            </div>
-                            <div class="mb-1 border border-gray-200 p-2">
-                                <SelectComponent label="انتخاب روش پرداخت"
-                                                 :value="form.payment_method_id"
-                                                 id="brand" v-model="form.payment_method_id"
-                                                 :input_error="form?.errors?.payment_method_id"
-                                                 :options="payment_methods"
-                                />
-                            </div>
-                            <div class="mb-1 border border-gray-200 p-2 col-span-2">
-                                <InputComponent v-model="form.post_tracking_code"
-                                                :value="form.post_tracking_code"
-                                                label="بارکد بسته پستی"
-                                                id="post_tracking_code"
-                                                placeholder="123456"
-                                                :input_error="form?.errors?.post_tracking_code"
-                                                css_class="ltr"
-                                />
-                            </div>
-                            <div class="mb-1 border border-gray-200 p-2 col-span-2">
-                                <label for="product-name" class="text-xs font-medium text-gray-900 block mb-2">یادداشت مشتری</label>
-                                <textarea rows="3" v-model="form.customer_note" class="border border-gray-300 p-2 rounded-md w-full text-xs" placeholder="یادداشت مشتری"></textarea>
-                            </div>
+                        <div v-if="activeTab === 'details'">
+                            <InvoiceDetailsTab
+                                :model="props.invoice"
+                                :form="form"
+                                :shipping_methods="shipping_methods"
+                                :payment_methods="payment_methods"
+                                :statuses="statuses"
+                            />
+                        </div>
 
+                        <div v-if="activeTab === 'documents'">
+                            <InvoiceDocumentsTab
+                                :model="props.invoice"
+                                :documents="props.documents"
+                                :document_types="props.document_types"
+                            />
+                        </div>
 
-
-                            <div class="my-1">
-                                <ValidationErrors :errors="validation_errors" />
-
-                            </div>
-                            <div v-if="form.payment_method_id != 4" class="my-1 text-center">
-                                <button @click="updateInvoice" class="confirm-btn">بروزرسانی فاکتور</button>
-                            </div>
+                        <div v-if="activeTab === 'bank_check'">
+                            <InvoiceCheckTab
+                                :model="props.invoice"
+                            />
                         </div>
 
 
+                        <div v-if="activeTab === 'review'">
+                            <InvoiceReviewTab
+                                :model="props.invoice"
+                                :form="form"
+                            />
+                        </div>
 
+                    </template>
+                </TabContainer>
+            </div>
+
+            <div class="w-full my-3">
+                <div class="card shadow-md rounded-md">
+                    <div class="bg-gray-100 p-2">
+                        <h4 class="text-sm">سیکل سفارش</h4>
+                    </div>
+                    <div class="card-body p-1">
+                        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-3 text-center">
+                            <div v-for="(invoice_status, inv_st) in status_steps" :key="inv_st"
+                                 class=" max-w-[100px] justify-between text-right cursor-pointer"
+
+                            >
+                                <div :class="invoice_steps.includes(invoice_status.id) ? 'is_done' : 'is_pending'">
+                                    <div
+                                        :class="`${invoice_steps.includes(invoice_status.id) ? 'border-green-700' : 'border-gray-500'} border cycle-icon rounded-full w-[50px] h-[50px] items-center content-center text-center`"
+                                    >
+                                        <img :src="invoice_status?.image" class="w-[30px] mx-auto">
+                                    </div>
+                                    <div class="cycle-name text-xs mt-1" style="word-break: break-word">{{invoice_status?.name}}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
             </div>
 
         </div>
@@ -347,5 +346,12 @@ async function updateInvoice() {
 </template>
 
 <style scoped>
+.is_pending{
+    opacity: 35%;
+    color: #7b7b7b;
+}
+.is_done{
+    color: #05392f;
+}
 
 </style>

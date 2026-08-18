@@ -23,7 +23,7 @@ class Product extends Model
     protected $appends = ['active_price']; // optional: include in JSON/array output
 
     private array $report_fields = [
-        'id', 'name', 'slug', 'status', 'pinned', 'image', 'user_id', 'stock', 'price', 'offer_price',
+        'id', 'name', 'slug', 'status', 'pinned', 'image', 'user_id', 'stock', 'price', 'offer_price', 'sales',
         'published_at', 'created_at', 'updated_at', 'deleted_at', 'offer_end_date', 'brand_id', 'suggested',
         'amazing', 'min_buy', 'pre_order', 'buyable', 'installment_purchase', 'course_time', 'duration', 'meta'
     ];
@@ -144,15 +144,27 @@ class Product extends Model
     #[Scope]
     protected function scopeRegular(Builder $query): void
     {
-        $query->where('downloadable',  0);
+        $query->where('downloadable',  0)
+        ->where('is_service', 0)
+        ->where('is_addon', 0);
+    }
+
+    #[Scope]
+    protected function scopeService(Builder $query): void
+    {
+        $query->where('is_service',  1);
+    }
+
+    #[Scope]
+    protected function scopeAddon(Builder $query): void
+    {
+        $query->where('is_addon',  1);
     }
 
     #[Scope]
     protected function scopeDownloadable(Builder $query): void
     {
-        $query->where('downloadable',  1)
-        ->whereNotNull('duration')
-        ->whereNotNull('course_time');
+        $query->where('downloadable',  1);
     }
 
     #[Scope]
@@ -240,7 +252,19 @@ class Product extends Model
 
     public function downloadable_products(int $per_page = 12)
     {
-        return $this->active()->instock()->downloadable()->orderBy('sales', 'desc')
+        return $this->active()->instock()->downloadable()->orderBy('rank', 'asc')
+            ->paginate($per_page, $this->report_fields);
+    }
+
+    public function service_products(int $per_page = 12)
+    {
+        return $this->active()->instock()->service()->orderBy('rank', 'asc')
+            ->paginate($per_page, $this->report_fields);
+    }
+
+    public function addons_products(int $per_page = 12)
+    {
+        return $this->active()->instock()->addon()->orderBy('rank', 'asc')
             ->paginate($per_page, $this->report_fields);
     }
     public function best_sellers_products(int $per_page = 12)
@@ -270,6 +294,20 @@ class Product extends Model
             ->whereHas('categories', function ($q) use ($ids) {
                 $q->whereIn('categories.id', $ids);
             })
+            ->orderby('rank', 'asc')
+            ->orderBy('views', 'desc')
+            ->when($search_text, function ($query, $search_text) {
+                $query->where('name', 'like', '%'.$search_text.'%')
+                    ->orWhere('sku', 'like', '%'.$search_text.'%');
+            })
+            ->paginate($per_page, $this->report_fields)
+            ->withQueryString();
+    }
+
+    public function brand_products(int $brand_id, $search_text = '', int $per_page = 20)
+    {
+        return $this->active()
+            ->where('brand_id', $brand_id)
             ->orderby('rank', 'asc')
             ->orderBy('views', 'desc')
             ->when($search_text, function ($query, $search_text) {

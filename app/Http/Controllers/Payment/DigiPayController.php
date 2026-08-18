@@ -9,6 +9,7 @@ use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\ShopSetting;
 use App\Services\Gateway\DigiPay;
+use App\Services\InvoiceStepService;
 use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -81,8 +82,13 @@ class DigiPayController extends Controller
                 $digipay_service = new DigiPay();
                 $response = $digipay_service->verify($invoice, $request->trackingCode);
                 if($response['result']['status'] == 0) {
+                    $invoice_status = InvoiceStatus::get_status(code: 'paid');
+                    if ($invoice_status)
+                    {
+                        $invoice->invoice_status_id = $invoice_status;
+                        InvoiceStepService::store_step($invoice, $invoice_status);
+                    }
                     $invoice->payment_status = true;
-                    $invoice->invoice_status_id = InvoiceStatus::get_status(code: 'paid');
                     $invoice->bank_payment_code = $response['trackingCode'];
                     $invoice->purchased_at = now();
                     $invoice->update();

@@ -15,12 +15,13 @@ const form = useForm({
     user_id: null,
     payment_status: false,
     invoice_status_id: 1,
-    invoice_type_id: 3,
+    invoice_type_id: 1,
     customer_note: null,
+    official_invoice: 0,
     items: [],
 });
 
-const validation_errors = ref(null)
+
 const props = defineProps({
     users: Object,
     plans: Object,
@@ -76,6 +77,15 @@ async function submit() {
                                     <option v-for="(user, index) in users"
                                             :key="index" :value="user.id"
                                     >{{user.name}} ({{user.mobile}})</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="brand" class="text-sm font-medium text-gray-900 block mb-2">فرمت فاکتور</label>
+                                <select v-model="form.official_invoice"
+                                        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                >
+                                    <option :value="0">عادی</option>
+                                    <option :value="1">رسمی</option>
                                 </select>
                             </div>
                             <div>

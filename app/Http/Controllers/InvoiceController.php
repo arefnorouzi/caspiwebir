@@ -13,11 +13,13 @@ use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\InvoiceItem;
 use App\Models\InvoiceItemStatus;
 use App\Models\InvoiceStatus;
+use App\Models\InvoiceStep;
 use App\Models\PaymentMethod;
 use App\Models\ShippingMethod;
 use App\Models\ShopSetting;
 use App\Models\User;
 use App\Services\InvoiceService;
+use App\Services\InvoiceStepService;
 use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -111,10 +113,15 @@ class InvoiceController extends Controller
         $statuses = InvoiceStatus::get(['id', 'name']);
         $payment_methods = PaymentMethod::get(['id', 'name']);
         $shipping_methods = ShippingMethod::get(['id', 'name']);
+        $status_steps = InvoiceStatus::where('lifecycle', 1)->get(['id', 'name', 'lifecycle', 'image']);
+        $invoice_steps = InvoiceStep::where('invoice_id', $invoice->id)
+            ->pluck('invoice_status_id')
+            ->toArray();
 
         return Inertia::render('admin/invoice/Show', [
             'invoice' => $invoice, 'shop_setting' => $shop_setting, 'statuses' => $statuses,
-            'payment_methods' => $payment_methods, 'shipping_methods' => $shipping_methods
+            'payment_methods' => $payment_methods, 'shipping_methods' => $shipping_methods,
+            'invoice_steps' => $invoice_steps, 'status_steps' => $status_steps,
         ]);
     }
 
@@ -154,8 +161,14 @@ class InvoiceController extends Controller
     {
         $validated = $request->validated();
         try {
+            $invoice_status = InvoiceStatus::findOrFail($validated['invoice_status_id']);
+            if ($invoice_status->purchased)
+            {
+                $validated['payment_status'] = 1;
+            }
             $invoice->update($validated);
             $invoice->refresh();
+            InvoiceStepService::store_step($invoice, $invoice->invoice_status_id);
         }
         catch (\Exception $e)
         {
@@ -184,7 +197,7 @@ class InvoiceController extends Controller
 
     public function factor(Invoice $invoice)
     {
-        $invoice->load(['status', 'invoice_type', 'user', 'items']);
+        $invoice->load(['status', 'invoice_type', 'user', 'items', 'payment_method', 'shipping_method']);
         $shop_setting = ShopSetting::first();
         return Inertia::render('admin/invoice/Factor', [
             'invoice' => $invoice, 'shop_setting' => $shop_setting

@@ -30,6 +30,7 @@ const props = defineProps<Props>()
 const form_item = useForm({
     product_id: null,
     invoice_item_status_id: 1,
+    is_discount: 0,
     unit_price: 0,
     item_price: 0,
     qty: 1,
@@ -74,7 +75,11 @@ const formatDate = (d) =>
     new Date(d).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
 
 async function addItem(){
-    form_item.post('/admin/add-invoice-item/' + props?.invoice?.id)
+    form_item.post('/admin/add-invoice-item/' + props?.invoice?.id, {
+        onSuccess(){
+            form_item.reset()
+        }
+    })
 }
 
 async function increaseQty(item_id: number) {
@@ -105,7 +110,11 @@ async function changeItemStatus(item: object) {
         invoice_item_status_id: item.invoice_item_status_id
     })
 }
-
+async function sendSms() {
+    if (confirm('از ارسال پیام مطمئنی؟')) {
+        router.put('/admin/new-invoice-sms/' + props.invoice.id)
+    }
+}
 </script>
 
 <template>
@@ -143,6 +152,14 @@ async function changeItemStatus(item: object) {
                                         :key="prd" :value="product.id"
                                 >{{product.name}} ({{product.sku}})</option>
                             </select>
+                        </div>
+                        <div class="mb-1 border border-gray-200 p-2">
+                            <SelectComponent label="نوع ردیف"
+                                             :value="form_item.is_discount"
+                                             id="is_discount" v-model="form_item.is_discount"
+                                             :input_error="form_item?.errors?.is_discount"
+                                             :options="[{id: 0, name: 'افزایش مبلغ'}, {id: 1, name: 'تخفیف و کسر از مبلغ فاکتور'}]"
+                            />
                         </div>
                         <div class="mb-1 border border-gray-200 p-2">
                             <InputComponent v-model="form_item.name"
@@ -214,7 +231,7 @@ async function changeItemStatus(item: object) {
                                 <h3 class="text-lg font-bold text-slate-800">ویرایش فاکتور</h3>
                             </div>
                             <div class="ml-3">
-                                <a :href="`/admin/invoice/${invoice.id}`" class="m-1" target="_blank">
+                                <Link :href="`/admin/invoice/${invoice.id}`" class="m-1">
                                     <button
                                         class="me-1 cursor-pointer text-blue-600 border border-blue-600 hover:border-indigo-600 focus:ring-4 focus:ring-indigo-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">
 
@@ -222,7 +239,7 @@ async function changeItemStatus(item: object) {
 
                                         <span class="ms-1"> جزئیات فاکتور</span>
                                     </button>
-                                </a>
+                                </Link>
                                 <a :href="`/admin/factor/${invoice.id}`" class="m-1" target="_blank">
                                     <button
                                         class="me-1 cursor-pointer text-indigo-500 border border-indigo-500 hover:border-indigo-600 focus:ring-4 focus:ring-indigo-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">
@@ -230,6 +247,13 @@ async function changeItemStatus(item: object) {
                                         <span class="ms-1"> چاپ فاکتور</span>
                                     </button>
                                 </a>
+                                <button
+                                    v-if="!props.invoice.payment_status && props.invoice.invoice_status_id == 1"
+                                    @click="sendSms"
+                                    class="me-1 cursor-pointer text-indigo-500 border border-indigo-500 hover:border-indigo-600 focus:ring-4 focus:ring-indigo-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M17 3.5H7C4 3.5 2 5 2 8.5V15.5C2 19 4 20.5 7 20.5H17C20 20.5 22 19 22 15.5V8.5C22 5 20 3.5 17 3.5ZM17.47 9.59L14.34 12.09C13.68 12.62 12.84 12.88 12 12.88C11.16 12.88 10.31 12.62 9.66 12.09L6.53 9.59C6.21 9.33 6.16 8.85 6.41 8.53C6.67 8.21 7.14 8.15 7.46 8.41L10.59 10.91C11.35 11.52 12.64 11.52 13.4 10.91L16.53 8.41C16.85 8.15 17.33 8.2 17.58 8.53C17.84 8.85 17.79 9.33 17.47 9.59Z" fill="#292D32"></path> </g></svg>
+                                    <span class="ms-1"> ارسال پیامک</span>
+                                </button>
                                 <Link :href="`/admin/invoice`">
                                     <button
                                         class="me-1 cursor-pointer text-black bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 rounded-md inline-flex items-center px-3 py-2.5 text-center mr-2">
@@ -296,34 +320,34 @@ async function changeItemStatus(item: object) {
                             <tbody>
                             <tr v-for="(item, i) in invoice.items" :key="item.id">
                                 <td class="p-2 border-b border-slate-200 py-2">
-                                    <p class="block font-semibold text-sm text-blue-800">{{ i + 1 }}</p>
+                                    <p class="block font-semibold text-xs text-blue-800">{{ i + 1 }}</p>
 
                                 </td>
 
                                 <td class="p-2 border-b border-slate-200 py-2">
-                                    <p class="text-sm text-slate-500">{{ item.name}}</p>
+                                    <p class="text-xs text-slate-500">{{ item.name}}</p>
 
                                 </td>
 
                                 <td class="p-2 border-b border-slate-200 py-2">
-                                    <p class="text-sm text-slate-500">{{ Number(item.qty).toLocaleString()}}</p>
+                                    <p class="text-xs text-slate-500">{{ Number(item.qty).toLocaleString()}}</p>
                                 </td>
                                 <td class="p-2 border-b border-slate-200 py-2">
-                                    <p class="text-sm text-slate-500">{{ Number(item.item_price).toLocaleString()}}</p>
+                                    <p class="text-xs text-slate-500">{{ Number(item.item_price).toLocaleString()}}</p>
                                 </td>
                                 <td class="p-2 border-b border-slate-200 py-2">
-                                    <p class="text-sm text-slate-500">{{ Number(item.item_price * item.qty).toLocaleString()}}</p>
+                                    <p class="text-xs text-slate-500">{{ Number(item.item_price * item.qty).toLocaleString()}}</p>
                                 </td>
                                 <td class="p-2 border-b border-slate-200 py-2">
-                                    <p class="text-sm text-slate-500">{{ Number(item.discount * item.qty).toLocaleString()}}</p>
+                                    <p class="text-xs text-slate-500">{{ Number(item.discount * item.qty).toLocaleString()}}</p>
                                 </td>
                                 <td class="p-2 border-b border-slate-200 py-2">
-                                    <p class="text-sm text-slate-500">{{ Number(item.unit_price * item.qty).toLocaleString()}}</p>
+                                    <p class="texttext-xs-sm text-slate-500">{{ Number(item.unit_price * item.qty).toLocaleString()}}</p>
                                 </td>
                                 <td class="p-2 border-b border-slate-200 py-2">
                                     <select v-model="item.invoice_item_status_id"
                                             @change="changeItemStatus(item)"
-                                            class="block w-[120px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                            class="block w-[120px] rounded-md border border-gray-300 bg-white px-2 py-2 text-xs text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                     >
                                         <option value="" disabled>تعیین وضعیت</option>
                                         <option
