@@ -25,7 +25,8 @@ class Product extends Model
     private array $report_fields = [
         'id', 'name', 'slug', 'status', 'pinned', 'image', 'user_id', 'stock', 'price', 'offer_price', 'sales',
         'published_at', 'created_at', 'updated_at', 'deleted_at', 'offer_end_date', 'brand_id', 'suggested',
-        'amazing', 'min_buy', 'pre_order', 'buyable', 'installment_purchase', 'course_time', 'duration', 'meta'
+        'amazing', 'min_buy', 'pre_order', 'buyable', 'installment_purchase', 'course_time', 'duration', 'meta',
+        'views', 'sales'
     ];
 
     private array $product_cart_fields = [

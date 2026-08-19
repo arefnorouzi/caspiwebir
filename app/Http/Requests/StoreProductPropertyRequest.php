@@ -30,7 +30,6 @@ class StoreProductPropertyRequest extends FormRequest
             'property_name' => 'bail|required|string|min:1|max:150',
             'property_value' => 'bail|required|string|min:1|max:250',
             'pinned' => 'bail|required|boolean',
-            'property_status' => 'bail|required|boolean',
         ];
     }
 }

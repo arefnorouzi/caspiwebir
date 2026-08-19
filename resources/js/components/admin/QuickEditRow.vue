@@ -18,7 +18,7 @@ const form = useForm({
     suggested: props.product.suggested,
     pre_order: props.product.pre_order,
     buyable: props.product.buyable,
-    torobpay: props.product.torobpay,
+    installment_purchase: props.product.installment_purchase,
     min_buy: props.product.min_buy,
 })
 const emit = defineEmits(['close'])
@@ -131,7 +131,7 @@ const submit = () => {
                 </div>
                 <div>
                     <label class="text-xs text-gray-500 mb-1">فروش قسطی</label>
-                    <BaseSwitch v-model="form.torobpay" class="" />
+                    <BaseSwitch v-model="form.installment_purchase" class="" />
                 </div>
             </div>
 

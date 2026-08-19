@@ -126,6 +126,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'v
     Route::put('/menu-status/{menu}', [MenuController::class, 'toggle_status'])
         ->name('menu_status');
 
+    Route::put('/property-pin/{property}', [ProductPropertyController::class, 'toggle_pin'])
+        ->name('property_pin');
+
     Route::put('/payment-status/{payment}', [PaymentMethodController::class, 'toggle_status'])
         ->name('payment_status');
     Route::put('/payment-default/{payment}', [PaymentMethodController::class, 'toggle_default'])

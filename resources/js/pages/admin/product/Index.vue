@@ -31,7 +31,7 @@ const filterForm = useForm({
     amazing: props.filters.amazing ?? null,
     suggested: props.filters.suggested ?? null,
     pinned: props.filters.pinned ?? null,
-    torobpay: props.filters.torobpay ?? null,
+    installment: props.filters.installment ?? null,
     buyable: props.filters.buyable ?? null,
     pre_order: props.filters.pre_order ?? null,
 })
@@ -58,7 +58,7 @@ const resetFilters = () => {
     filterForm.status = null;
     filterForm.amazing = null;
     filterForm.suggested = null;
-    filterForm.torobpay = null;
+    filterForm.installment = null;
     filterForm.buyable = null;
     filterForm.pre_order = null;
     applyFilters()
@@ -287,7 +287,7 @@ const formatDate = (d) =>
                         </div>
                         <div>
                             <span class="text-sm">فروش قسطی</span>
-                            <BaseSwitch v-model="filterForm.torobpay" @update:modelValue="applyFilters" />
+                            <BaseSwitch v-model="filterForm.installment" @update:modelValue="applyFilters" />
                         </div>
 
 
@@ -371,6 +371,11 @@ const formatDate = (d) =>
                             </th>
                             <th class="p-4 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
+                                    بازدید
+                                </p>
+                            </th>
+                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <p class="block text-sm font-normal leading-none text-slate-500">
                                     وضعیت
                                 </p>
                             </th>
@@ -424,6 +429,9 @@ const formatDate = (d) =>
                             </td>
                             <td class="p-4 border-b border-slate-200 py-1">
                                 <p class="text-sm text-slate-500">{{ item.stock }}</p>
+                            </td>
+                            <td class="p-4 border-b border-slate-200 py-1">
+                                <p class="text-sm text-slate-500">{{ item.views }}</p>
                             </td>
                             <td class="p-4 border-b border-slate-200 py-1" style="direction: ltr">
                                 <button

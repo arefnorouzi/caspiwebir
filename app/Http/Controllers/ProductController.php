@@ -65,7 +65,7 @@ class ProductController extends Controller
                 'suggested',
                 'pinned',
                 'buyable',
-                'torobpay',
+                'installment',
                 'pre_order'
             ]),
             'today' => date('Y-m-d'),

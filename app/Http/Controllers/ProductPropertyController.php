@@ -91,4 +91,11 @@ class ProductPropertyController extends Controller
         $property->delete();
         return back()->with('message', config('messages.deleted'));
     }
+
+    public function toggle_pin(ProductProperty $property): \Illuminate\Http\RedirectResponse
+    {
+        $property->pinned = !$property->pinned;
+        $property->update();
+        return back()->with('message', 'وضعیت رکورد تغییر کرد');
+    }
 }

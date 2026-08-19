@@ -32,6 +32,9 @@ class ProductFastUpdateRequest extends FormRequest
             'stock' => 'bail|required|integer|min:0',
             'status' => 'bail|required|boolean',
             'amazing' => 'bail|required|boolean',
+            'pre_order' => 'bail|required|boolean',
+            'buyable' => 'bail|required|boolean',
+            'installment_purchase' => 'bail|required|boolean',
             'pinned' => 'bail|required|boolean',
             'suggested' => 'bail|required|boolean',
             'image' => 'bail|nullable|string|max:255'
