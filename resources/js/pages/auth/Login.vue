@@ -89,18 +89,26 @@ async function verify_code(){
     else {
         await axios.post('/authentication/verify-code', verify_form)
             .then((res) => {
-                const response = res.data
-                showToast(response?.message, "success")
-                window.location.replace("/dashboard");
+                if(res?.data?.successful)
+                {
+                    showToast("خوش آمدید", "success")
+                    if(res?.data?.url)
+                    {
+                        window.location.replace(res?.data?.url);
+                    }
+                    else {
+                        window.location.replace("/dashboard");
+                    }
+                }
             })
             .catch(err => {
                 if (err?.response?.data?.errors)
                 {
                     validation_errors.value = err.response.data.errors
                 }
-                if (err?.response?.data?.message)
+                if (err?.response?.data?.error)
                 {
-                    showToast(err.response.data.message, "error")
+                    showToast(err.response.data.error, "error")
                 }
                 else {
                     showToast("خطا در تایید کد", "error")

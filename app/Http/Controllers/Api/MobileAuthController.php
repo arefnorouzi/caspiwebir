@@ -46,19 +46,29 @@ class MobileAuthController extends Controller
         $user = User::withTrashed()->where('mobile', $validated['mobile'])->first();
         if ($user && ($user->deleted_at || $user->ban))
         {
-            return back()->withErrors([
-                'mobile' => 'حساب کاربری شما مسدود شده.',
-            ]);
+            return response()->json([
+                'successful' => false,
+                'error' => 'حساب کاربری شما مسدود شده.'
+            ], 400);
         }
         if (!Auth::attempt($credentials, true)) {
-            return back()->withErrors([
-                'mobile' => 'کاربری با این مشخصات پیدا نشد.',
-            ]);
+            return response()->json([
+                'successful' => false,
+                'error'=> 'کاربری با این مشخصات پیدا نشد.'
+            ], 400);
         }
         auth()->login($user, true);
         //$request->session()->regenerate();
 
-        return redirect()->intended('dashboard');
+        return response()->json([
+            'successful' => true,
+            'message' => 'ورود با موفقیت انجام شد.',
+            'url' => $request->session()->pull(
+                'url.intended',
+                route('dashboard.index')
+            )
+        ]);
+        //return redirect($redirectTo);
     }
 
     public function register(MobileRegisterRequest $request)
@@ -146,10 +156,20 @@ class MobileAuthController extends Controller
                     $user->update();
                 }
                 auth()->login($user, true);
-                return response()->json(['message' => 'ورود با موفقیت انجام شد.']);
+                return response()->json([
+                    'successful' => true,
+                    'message' => 'ورود با موفقیت انجام شد.',
+                    'url' => $request->session()->pull(
+                        'url.intended',
+                        route('dashboard.index')
+                    )
+                ]);
             }
             else{
-                return response()->json(['message' => 'کد تایید نامعتبر است.'], status: 400);
+                return response()->json([
+                    'successful' => false,
+                    'error' => 'کد تایید نامعتبر است.'
+                ], status: 400);
 
             }
         }
@@ -157,7 +177,10 @@ class MobileAuthController extends Controller
         {
             Log::error($e->getMessage());
         }
-        return response()->json(['message' => 'اطلاعات وارد شده نامعتبر است.'], status: 400);
+        return response()->json([
+            'successful' => false,
+            'error' => 'اطلاعات وارد شده نامعتبر است.'
+        ], status: 400);
 
     }
 

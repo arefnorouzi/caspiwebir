@@ -40,21 +40,31 @@ async function login(){
         processing.value = true
         await axios.post('/authentication/login', login_form)
             .then((res) => {
-                showToast("خوش آمدید", "success")
-                window.location.replace("/dashboard");
+                if(res?.data?.successful)
+                {
+                    showToast("خوش آمدید", "success")
+                    if(res?.data?.url)
+                    {
+                        window.location.replace(res?.data?.url);
+                    }
+                    else {
+                        window.location.replace("/dashboard");
+                    }
+                }
+
+
             })
             .catch(err => {
                 if (err?.response?.data?.errors)
                 {
                     validation_errors.value = err.response.data.errors
                 }
-                if (err?.response?.data?.message)
+                if (err?.response?.data?.error)
                 {
-                    showToast(err.response.data.message, "error")
+                    showToast(err?.response?.data?.error, "error")
+
                 }
-                else {
-                    showToast("اطلاعات ورود نامعتبر است", "error")
-                }
+
             })
         processing.value = false
     }
