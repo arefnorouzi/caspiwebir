@@ -334,7 +334,7 @@
                         note: null,
                         zip_code: null,
                         shipping_method_id: 1,
-                        payment_method_id: 1,
+                        payment_method_id: {{$default_payment_method}},
                         national_code: null
                     },
                     interest: 0,

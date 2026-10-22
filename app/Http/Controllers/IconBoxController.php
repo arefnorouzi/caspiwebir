@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IconBox;
 use App\Http\Requests\StoreIconBoxRequest;
 use App\Http\Requests\UpdateIconBoxRequest;
+use App\Models\PageSection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
@@ -34,7 +35,8 @@ class IconBoxController extends Controller
      */
     public function create(): \Inertia\Response
     {
-        return Inertia::render('admin/icon-box/Create', []);
+        $page_sections = PageSection::where('status', true)->get(['id', 'name']);
+        return Inertia::render('admin/icon-box/Create', ['page_sections' => $page_sections]);
     }
 
     /**
@@ -45,15 +47,12 @@ class IconBoxController extends Controller
         try {
             $validated = $request->validated();
             IconBox::create($validated);
-            Inertia::flash(['message' => config('messages.created')]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            Inertia::flash(['message' => config('messages.error')]);
-
-            return to_route('admin.icon-box.index')->withErrors($e->getMessage());
+            return to_route('admin.box.index')->with('error', config('messages.error'));
         }
 
-        return to_route('admin.icon-box.index');
+        return to_route('admin.box.index')->with('message', config('messages.created'));
     }
 
     /**
@@ -67,57 +66,59 @@ class IconBoxController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(IconBox $iconBox): \Inertia\Response
+    public function edit(IconBox $box): \Inertia\Response
     {
-        return Inertia::render('admin/icon-box/Edit', ['model' => $iconBox]);
+        $page_sections = PageSection::where('status', true)->get(['id', 'name']);
+        return Inertia::render('admin/icon-box/Edit', [
+            'model' => $box, 'page_sections' => $page_sections]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIconBoxRequest $request, IconBox $iconBox): \Illuminate\Http\RedirectResponse
+    public function update(UpdateIconBoxRequest $request, IconBox $box): \Illuminate\Http\RedirectResponse
     {
         try {
             $validated = $request->validated();
-            $iconBox->update($validated);
-            Inertia::flash(['message' => config('messages.updated')]);
+            $box->update($validated);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             Inertia::flash(['message' => config('messages.error')]);
 
-            return to_route('admin.icon-box.index')->withErrors($e->getMessage());
+            return to_route('admin.box.index')->withErrors($e->getMessage());
         }
 
-        return to_route('admin.icon-box.index');
+        return to_route('admin.box.index')->with('message', config('messages.updated'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(IconBox $iconBox): \Illuminate\Http\RedirectResponse
+    public function destroy(IconBox $box): \Illuminate\Http\RedirectResponse
     {
-        $iconBox->delete();
-        Inertia::flash(['message' => config('messages.deleted')]);
-
-        return back();
+        $box->delete();
+        return back()->with('message', config('messages.deleted'));
     }
 
-    public function restore(IconBox $iconBox): \Illuminate\Http\RedirectResponse
+    public function restore(IconBox $box): \Illuminate\Http\RedirectResponse
     {
-        $iconBox->restore();
-        Inertia::flash(['message' => config('messages.restored')]);
-
-        return back();
+        $box->restore();
+        return back()->with('message', config('messages.restored'));
     }
 
     /**
      * Force Delete the specified resource from storage.
      */
-    public function force_delete(IconBox $iconBox): \Illuminate\Http\RedirectResponse
+    public function force_delete(IconBox $box): \Illuminate\Http\RedirectResponse
     {
-        $iconBox->forceDelete();
-        Inertia::flash(['message' => config('messages.deleted')]);
+        $box->forceDelete();
+        return back()->with('message', config('messages.deleted'));
+    }
 
-        return back();
+    public function toggle_status(IconBox $box): \Illuminate\Http\RedirectResponse
+    {
+        $box->status = !$box->status;
+        $box->update();
+        return back()->with('message', 'وضعیت رکورد تغییر کرد');
     }
 }

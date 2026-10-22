@@ -6,6 +6,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import FlashMessage from '@/components/FlashMessage.vue';
 import MediaPicker from "@/components/admin/MediaPicker.vue";
+import InputComponent from '@/components/form/InputComponent.vue';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'تنظیمات عمومی سایت',
@@ -16,19 +17,14 @@ interface Props {
     model: object;
 }
 const props = defineProps<Props>()
-const preview = ref(null)
-const uploading = ref(false)
 
-onMounted(() => {
-    // همه‌ی attributesها رو به object واقعی تبدیل کن
-    preview.value = props.model.logo
-})
 
 const form = useForm({
     name: props.model.name,
     meta: props.model.meta,
     mobile: props.model.mobile,
     logo: props.model.logo,
+    favicon: props.model.favicon,
     email: props.model.email,
     phone: props.model.phone,
     x: props.model.x,
@@ -47,36 +43,14 @@ const form = useForm({
 
 function removeImage(){
     form.logo = props.model.logo
-    preview.value = props.model.logo
+}
+function removeFavicon(){
+    form.favicon = props.model.favicon
 }
 async function updateRecord() {
     form.post('/admin/setting/website')
 }
 
-
-async function handleFileChange(e) {
-    const file = e.target.files[0]
-    if (!file) return
-
-    uploading.value = true
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('folder_name', 'logo')
-
-    try {
-        const res = await axios.post('/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        })
-
-        preview.value = res.data.url // نمایش پیش‌نمایش
-        form.logo = res.data.path
-
-    } catch (err) {
-        alert('خطا در آپلود تصویر')
-    } finally {
-        uploading.value = false
-    }
-}
 </script>
 
 <template>
@@ -104,91 +78,188 @@ async function handleFileChange(e) {
                         </Link>
                     </div>
                 </div>
-                <div class="my-2 p-2 rounded-md">
-                    <FlashMessage />
-                </div>
                 <div class="relative flex mt-2 flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
 
                     <div class="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 mt-3 p-1">
                         <div>
-                            <label for="product-name" class="text-sm font-medium text-gray-900 block mb-2">نام سایت</label>
-                            <input type="text" v-model="form.name" name="product-name" id="product-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                                   placeholder="عنوان را وارد نمایید" required="">
+                            <InputComponent v-model="form.name"
+                                            :value="form.name"
+                                            label="نام سایت"
+                                            id="name"
+                                            placeholder="عنوان را وارد کنید"
+                                            :input_error="form?.errors?.name"
+                            />
+
                         </div>
+
                         <div>
-                            <label for="stock" class="text-sm font-medium text-gray-900 block mb-2">تلفن</label>
-                            <input type="text" v-model="form.phone" name="stock" id="stock" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
+                            <InputComponent v-model="form.phone"
+                                            :value="form.phone"
+                                            label="تلفن"
+                                            id="phone"
+                                            placeholder="0213456789"
+                                            :input_error="form?.errors?.phone"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.email"
+                                            :value="form.email"
+                                            label="ایمیل"
+                                            id="email"
+                                            placeholder="info@site.com"
+                                            type="email"
+                                            :input_error="form?.errors?.email"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.address"
+                                            :value="form.address"
+                                            label="آدرس شرکت / فروشگاه"
+                                            id="address"
+                                            placeholder="تهران، میدان آزادی"
+                                            :input_error="form?.errors?.address"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.telegram"
+                                            :value="form.telegram"
+                                            label="پروفایل تلگرام"
+                                            id="telegram"
+                                            placeholder="https://t.me/username"
+                                            :input_error="form?.errors?.telegram"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.instagram"
+                                            :value="form.instagram"
+                                            label="پروفایل اینستاگرام"
+                                            id="instagram"
+                                            placeholder="https://instagram.com/username"
+                                            :input_error="form?.errors?.instagram"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.whatsapp"
+                                            :value="form.whatsapp"
+                                            label="پروفایل واتساپ"
+                                            id="whatsapp"
+                                            placeholder="https://wa.me/989123456789"
+                                            :input_error="form?.errors?.whatsapp"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.meta"
+                                            :value="form.meta"
+                                            label="توضیحات متا"
+                                            id="meta"
+                                            placeholder="معرفی کوتاه شرکت / فروشگاه"
+                                            :input_error="form?.errors?.meta"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.enamad"
+                                            :value="form.enamad"
+                                            label="کد اینماد"
+                                            id="enamad"
+                                            placeholder=""
+                                            :input_error="form?.errors?.enamad"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.x"
+                                            :value="form.x"
+                                            label="پروفایل ایکس (توییتر)"
+                                            id="twitter"
+                                            placeholder="https://x.com/username"
+                                            :input_error="form?.errors?.x"
+                            />
+
+                        </div>
+
+                        <div>
+                            <InputComponent v-model="form.youtube"
+                                            :value="form.youtube"
+                                            label="کانال یوتیوب"
+                                            id="youtube"
+                                            placeholder="https://youtube.com/username"
+                                            :input_error="form?.errors?.youtube"
+                            />
+
                         </div>
 
 
                         <div>
-                            <label for="price" class="text-sm font-medium text-gray-900 block mb-2">ایمیل</label>
-                            <input type="email" v-model="form.email" name="price" id="price" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                                   placeholder="info@domain.ir" required="">
-                        </div>
-                        <div>
-                            <label for="offer_price" class="text-sm font-medium text-gray-900 block mb-2">آدرس</label>
-                            <input type="text" v-model="form.address" name="offer_price" id="offer_price" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                                   placeholder="تهران، خیابان انقلاب" required="">
-                        </div>
-                        <div>
-                            <label for="telegram" class="text-sm font-medium text-gray-900 block mb-2">تلگرام</label>
-                            <input type="text" v-model="form.telegram" name="telegram" id="telegram" class="shadow-sm bg-gray-50 ltr border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                                   placeholder="" required="">
-                        </div>
-                        <div>
-                            <label for="instagram" class="text-sm font-medium text-gray-900 block mb-2">اینستاگرام</label>
-                            <input type="text" v-model="form.instagram" name="instagram" id="instagram" class="shadow-sm bg-gray-50 ltr border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
+                            <InputComponent v-model="form.aparat"
+                                            :value="form.aparat"
+                                            label="کانال آپارات"
+                                            id="aparat"
+                                            placeholder="https://aparat.com/username"
+                                            :input_error="form?.errors?.aparat"
+                            />
+
                         </div>
 
                         <div>
-                            <label for="whatsapp" class="text-sm font-medium text-gray-900 block mb-2">واتس اپ</label>
-                            <input type="text" v-model="form.whatsapp" name="whatsapp" id="stock" class="shadow-sm bg-gray-50 ltr border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
-                        </div>
+                            <InputComponent v-model="form.rubika"
+                                            :value="form.rubika"
+                                            label="روبیکا"
+                                            id="rubika"
+                                            placeholder=""
+                                            :input_error="form?.errors?.rubika"
+                            />
 
-                        <div class="col-span-4">
-                            <label for="product-meta" class="text-sm font-medium text-gray-900 block mb-2">معرفی کوتاه</label>
-                            <input type="text" v-model="form.meta" id="product-meta" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-4" placeholder="توضیحات متا">
-                        </div>
-                        <div class="col-span-4">
-                            <label for="enamad" class="text-sm font-medium text-gray-900 block mb-2">کد اینماد</label>
-                            <input type="text" v-model="form.enamad" id="enamad" class="bg-gray-50 border ltr border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-4" placeholder="کد اینماد">
                         </div>
 
                         <div>
-                            <label for="x" class="text-sm font-medium text-gray-900 block mb-2">ایکس (توییتر)</label>
-                            <input type="text" v-model="form.x" name="stock" id="x" class="shadow-sm bg-gray-50 border ltr border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
+                            <InputComponent v-model="form.igap"
+                                            :value="form.igap"
+                                            label="آیگپ"
+                                            id="igap"
+                                            placeholder=""
+                                            :input_error="form?.errors?.igap"
+                            />
+
                         </div>
 
                         <div>
-                            <label for="youtube" class="text-sm font-medium text-gray-900 block mb-2">بوتیوب</label>
-                            <input type="text" v-model="form.youtube" name="youtube" id="youtube" class="shadow-sm bg-gray-50 ltr border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
+                            <InputComponent v-model="form.soroush"
+                                            :value="form.soroush"
+                                            label="سروش"
+                                            id="soroush"
+                                            placeholder=""
+                                            :input_error="form?.errors?.soroush"
+                            />
+
                         </div>
 
                         <div>
-                            <label for="aparat" class="text-sm font-medium text-gray-900 block mb-2">آپارات</label>
-                            <input type="text" v-model="form.aparat" name="aparat" id="aparat" class="shadow-sm bg-gray-50 border ltr border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
+                            <InputComponent v-model="form.ita"
+                                            :value="form.ita"
+                                            label="ایتا"
+                                            id="ita"
+                                            placeholder=""
+                                            :input_error="form?.errors?.ita"
+                            />
+
                         </div>
 
-                        <div>
-                            <label for="rubika" class="text-sm font-medium text-gray-900 block mb-2">روبیکا</label>
-                            <input type="text" v-model="form.rubika" name="rubika" id="rubika" class="shadow-sm bg-gray-50 ltr border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
-                        </div>
 
-                        <div>
-                            <label for="igap" class="text-sm font-medium text-gray-900 block mb-2">آیگپ</label>
-                            <input type="text" v-model="form.igap" name="igap" id="igap" class="ltr shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
-                        </div>
-
-                        <div>
-                            <label for="soroush" class="text-sm font-medium text-gray-900 block mb-2">سروش</label>
-                            <input type="text" v-model="form.soroush" name="soroush" id="soroush" class="shadow-sm ltr bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
-                        </div>
-
-                        <div>
-                            <label for="ita" class="text-sm font-medium text-gray-900 block mb-2">ایتا</label>
-                            <input type="text" v-model="form.ita" name="soroush" id="ita" class="shadow-sm bg-gray-50 ltr border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
-                        </div>
                         <div>
                             <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر لوگو</label>
                             <MediaPicker @select="(url) => form.logo = url" />
@@ -200,6 +271,20 @@ async function handleFileChange(e) {
                             <img :src="form.logo" class="object-cover border rounded" />
 
                             <button @click="removeImage" class="py-1 px-2 rounded-md bg-red-500 text-white">حذف</button>
+
+                        </div>
+
+                        <div>
+                            <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر فاوایکون</label>
+                            <MediaPicker @select="(url) => form.favicon = url" />
+                            <div v-if="form.errors.favicon" class="text-red-500 text-sm mt-1">
+                                {{ form.errors.favicon }}
+                            </div>
+                        </div>
+                        <div v-if="form.favicon && form.favicon != props?.model?.favicon">
+                            <img :src="form.favicon" class="object-cover border rounded" />
+
+                            <button @click="removeFavicon" class="py-1 px-2 rounded-md bg-red-500 text-white">حذف</button>
 
                         </div>
                     </div>

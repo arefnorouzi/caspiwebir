@@ -56,6 +56,8 @@ class StoreProductRequest extends FormRequest
             'slug' => 'bail|required|string|min:3|max:255|unique:products,slug',
             'image' => 'bail|nullable|string|max:250',
             'video' => 'bail|nullable|string|max:250',
+            'video_poster' => 'bail|nullable|string|max:250',
+            'note' => 'bail|nullable|string|max:1000',
             'product_unit_id' => 'bail|required|integer|min:1|exists:product_units,id',
             'categories' => 'bail|required|array|min:1',
             'categories.*' => 'bail|required|integer|exists:categories,id',

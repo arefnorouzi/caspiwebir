@@ -47,7 +47,7 @@ async function updateUser() {
 }
 
 const formatDate = (d) =>
-    new Date(d).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+    new Date(d).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric' })
 
 
 </script>
@@ -243,13 +243,13 @@ const formatDate = (d) =>
 
             </div>
 
-            <div class="w-1/1 p-1 my-3">
+            <div class="w-full p-1 my-3">
                 <div class="card border border-gray-100 rounded-md mb-5 shadow">
                     <div class="card-header bg-gray-100 p-2">
                         <h4>فاکتورهای کاربر</h4>
                     </div>
                     <div class="card-body px-2 py-4">
-                        <table class="w-full text-center table-auto">
+                        <table class="w-full text-right table-auto min-w-max">
                             <thead>
                             <tr>
                                 <th class="p-4 border-b border-slate-300 bg-slate-50">
@@ -282,11 +282,6 @@ const formatDate = (d) =>
                                         پرداخت
                                     </p>
                                 </th>
-                                <th class="p-4 border-b border-slate-300 bg-slate-50">
-                                    <p class="block text-sm font-normal leading-none text-slate-500">
-                                        انقضا
-                                    </p>
-                                </th>
 
                             </tr>
                             </thead>
@@ -298,22 +293,19 @@ const formatDate = (d) =>
                                         class="text-sm text-blue-500">{{ item.id}}</a>
                                 </td>
                                 <td class="p-4 border-b border-slate-200 py-1">
-                                    <span :class="`text-sm p-1 rounded-md ${item.invoice_type.css_class}`">{{ item.invoice_type.name }}</span>
+                                    <span :class="`${item?.invoice_type?.css_class} text-xs`">{{ item?.invoice_type?.name }}</span>
                                 </td>
                                 <td class="p-4 border-b border-slate-200 py-1">
                                     <p class="text-sm text-slate-500">{{ Number(item.amount).toLocaleString() }}</p>
                                 </td>
                                 <td class="p-4 border-b border-slate-200 py-1">
-                                    <span :class="`text-sm p-1 rounded-md ${item.status.css_class}`">{{ item.status.name }}</span>
+                                    <span :class="`${item?.status?.css_class} text-xs`">{{ item?.status?.name }}</span>
                                 </td>
                                 <td class="p-4 border-b border-slate-200 py-2" style="direction: ltr">
                                     <p class="text-sm text-slate-500">{{ item.created_at ? formatDate(item.created_at) : '-'}}</p>
                                 </td>
                                 <td class="p-4 border-b border-slate-200 py-2" style="direction: ltr">
                                     <p class="text-sm text-slate-500">{{ item.purchased_at ? formatDate(item.purchased_at) : '-'}}</p>
-                                </td>
-                                <td class="p-4 border-b border-slate-200 py-2" style="direction: ltr">
-                                    <p class="text-sm text-slate-500">{{ item.expired_at ? formatDate(item.expired_at) : '-'}}</p>
                                 </td>
 
                             </tr>

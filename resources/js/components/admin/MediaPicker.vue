@@ -2,8 +2,8 @@
     <div>
         <!-- دکمه باز کردن مودال -->
         <button type="button" @click="openModal"
-                class="cursor-pointer text-black bg-orange-200 hover:bg-orange-300 focus:ring-4 focus:ring-orange-500 rounded-md inline-flex items-center px-5 py-2.5 text-center">
-            انتخاب تصویر
+                class="cursor-pointer text-black border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 rounded-md inline-flex items-center px-5 py-2.5 text-center">
+            انتخاب از گالری / آپلود
         </button>
 
         <!-- مودال -->

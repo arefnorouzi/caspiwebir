@@ -204,12 +204,14 @@ const printSection = (elementId) => {
                                     {{ Number(invoice.sub_total).toLocaleString() }} تومان</p>
                                 <p>هزینه ارسال:
                                     {{ Number(invoice.shipping_cost).toLocaleString() }} تومان</p>
+                                <p>کارمزد درگاه:
+                                    {{ Number(invoice.interest_amount).toLocaleString() }} تومان</p>
                                 <p>مالیات:
                                     {{ Number(invoice.tax).toLocaleString() }} تومان</p>
                                 <p>تخفیف:
                                     {{Number(invoice.discount).toLocaleString()}} تومان</p>
                                 <p class="font-bold">قابل پرداخت:
-                                    {{ Number(invoice.amount).toLocaleString() }} تومان</p>
+                                    {{ Number(invoice.amount + invoice.interest_amount).toLocaleString() }} تومان</p>
 
                             </div>
                             <div class="text-right border border-gray-800 w-[65%] mt-1 p-1 rounded-md flex flex-wrap justify-around items-center">

@@ -16,6 +16,7 @@ function main_menu()
         return Menu::where('position', 'main_menu')
             ->where('parent_id', null)
             ->where('status', true)
+            ->orderBy('rank', 'asc')
             ->with(['children'])->get();
     });
 }

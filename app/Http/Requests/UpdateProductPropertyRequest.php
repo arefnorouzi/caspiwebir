@@ -12,6 +12,9 @@ class UpdateProductPropertyRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        if (auth()->check()) {
+            return true;
+        }
         return false;
     }
 
@@ -23,7 +26,11 @@ class UpdateProductPropertyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'product_id' => 'bail|required|exists:products,id',
+            'property_name' => 'bail|required|string|min:1|max:150',
+            'property_value' => 'bail|required|string|min:1|max:250',
+            'pinned' => 'bail|required|boolean',
+            'property_status' => 'bail|required|boolean',
         ];
     }
 }

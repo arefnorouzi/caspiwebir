@@ -17,7 +17,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 const form = useForm({
     name: '',
     slug: 'p-' + Math.floor(Math.random() * 1000000),
-    video: '',
+    video: null,
+    video_poster: null,
     sku: String(new Date().getTime()),
     stock: 1,
     product_unit_id: 1,

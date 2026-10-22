@@ -34,6 +34,7 @@ use App\Http\Controllers\SocialNetworkController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\Excel\ImportController;
 use App\Http\Controllers\InvoiceStatusController;
+use App\Http\Controllers\IconBoxController;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'verified', 'is_admin']], function () {
 
@@ -64,6 +65,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'v
 
 
     Route::resources([
+        'box' => IconBoxController::class,
         'menu' => MenuController::class,
         'social' => SocialNetworkController::class,
         'role' => RoleController::class,
@@ -128,6 +130,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'v
 
     Route::put('/property-pin/{property}', [ProductPropertyController::class, 'toggle_pin'])
         ->name('property_pin');
+    Route::put('/property-status/{property}', [ProductPropertyController::class, 'toggle_status'])
+        ->name('property_status');
 
     Route::put('/payment-status/{payment}', [PaymentMethodController::class, 'toggle_status'])
         ->name('payment_status');

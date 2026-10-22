@@ -10,6 +10,9 @@
             />
             {{ label }}
         </label>
+        <div v-if="input_error" class="text-red-500 text-sm mt-1">
+            {{ input_error }}
+        </div>
     </div>
 </template>
 
@@ -18,7 +21,11 @@ export default {
     props: {
         value: Boolean,
         label: String,
-        id: String
+        id: String,
+        input_error: {
+            type: String,
+            default: ''
+        },
     }
 }
 </script>

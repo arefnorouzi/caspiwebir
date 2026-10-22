@@ -11,8 +11,8 @@ const props = defineProps({
 const property_form = useForm({
     property_name: '',
     property_value: '',
-    pinned: true,
-    property_status: true,
+    pinned: 1,
+    property_status: 1,
     product_id: props.product_id
 })
 
@@ -20,7 +20,8 @@ const edit_form = useForm({
     id: null,
     property_name: '',
     property_value: '',
-    pinned: false,
+    pinned: 0,
+    property_status: 1,
     product_id: props.product_id
 })
 
@@ -30,6 +31,7 @@ async function setEditForm(property: object)
     edit_form.property_name = property.property_name;
     edit_form.property_value = property.property_value;
     edit_form.pinned = property.pinned;
+    edit_form.property_status = property.property_status;
 }
 
 async function storeProperty() {
@@ -61,20 +63,35 @@ const togglePin = (id: number) => {
         }
     )
 }
+const toggleStatus = (id: number) => {
+    router.put('/admin/property-status/' + id,
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    )
+}
 </script>
 
 <template>
     <div class="border border-gray-200 rounded-md mb-5 flex flex-wrap">
-        <div class="w-full lg:w-1/2 md:w-1/2 p-2">
+        <div class="w-full lg:w-2/5 p-2">
             <div class="w-full p-2 border bg-gray-200 rounded-md">
                 <h4>افزودن ویژگی های محصول</h4>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
                 <div>
-                    <SelectComponent label="سنجاق شده" id="status" v-model="property_form.pinned"
+                    <SelectComponent label="سنجاق شده" id="pinned" v-model="property_form.pinned"
                                      :input_error="property_form?.errors?.pinned"
                                      :value="property_form.pinned"
                                      :options="[{id: 0, name: 'خیر'}, {id: 1, name: 'بله'}]"
+                    />
+                </div>
+                <div>
+                    <SelectComponent label="نوع نمایش" id="status" v-model="property_form.property_status"
+                                     :input_error="property_form?.errors?.property_status"
+                                     :value="property_form.property_status"
+                                     :options="[{id: 0, name: 'منفی'}, {id: 1, name: 'مثبت'}]"
                     />
                 </div>
                 <div>
@@ -107,35 +124,40 @@ const togglePin = (id: number) => {
 
             </div>
         </div>
-        <div class="w-full lg:w-1/2 md:w-1/2 p-2">
+        <div class="w-full lg:w-3/5 p-2">
             <div class="w-full p-2 border bg-gray-200 rounded-md">
                 <h4>لیست ویژگی های محصول</h4>
             </div>
             <table class="w-full text-right table-auto min-w-max">
                 <thead>
                 <tr>
-                    <th class="p-4 border-b border-slate-300 bg-slate-50">
+                    <th class="p-2 border-b border-slate-300 bg-slate-50">
                         <p class="block text-sm font-normal leading-none text-slate-500">
                             #
                         </p>
                     </th>
-                    <th class="p-4 border-b border-slate-300 bg-slate-50">
+                    <th class="p-2 border-b border-slate-300 bg-slate-50">
                         <p class="block text-sm font-normal leading-none text-slate-500">
                             نام ویژگی
                         </p>
                     </th>
-                    <th class="p-4 border-b border-slate-300 bg-slate-50">
+                    <th class="p-2 border-b border-slate-300 bg-slate-50">
                         <p class="block text-sm font-normal leading-none text-slate-500">
                             مقدار ویژگی
                         </p>
                     </th>
-                    <th class="p-4 border-b border-slate-300 bg-slate-50 sm-hidden">
+                    <th class="p-2 border-b border-slate-300 bg-slate-50 sm-hidden">
                         <p class="block text-sm font-normal leading-none text-slate-500">
-                            سنجاق شده
+                            سنجاق
+                        </p>
+                    </th>
+                    <th class="p-2 border-b border-slate-300 bg-slate-50 sm-hidden">
+                        <p class="block text-sm font-normal leading-none text-slate-500">
+                            مثبت/منفی
                         </p>
                     </th>
 
-                    <th class="p-4 border-b border-slate-300 bg-slate-50">
+                    <th class="p-2 border-b border-slate-300 bg-slate-50">
                         <p class="block text-sm font-normal leading-none text-slate-500">
                             عملیات
                         </p>
@@ -144,17 +166,17 @@ const togglePin = (id: number) => {
                 </thead>
                 <tbody v-if="properties && properties.length">
                 <tr v-for="(property, p) in properties" :key="p">
-                    <td class="p-4 border-b border-slate-200 py-1">
-                        <p class="block font-semibold text-sm text-slate-800">{{ property.id }}</p>
+                    <td class="p-2 border-b border-slate-200 py-1">
+                        <p class="block text-sm text-slate-800">{{ property.id }}</p>
                     </td>
-                    <td class="p-4 border-b border-slate-200 py-1">
+                    <td class="p-2 border-b border-slate-200 py-1">
                         <p class="text-sm text-slate-500">{{ property.property_name }}</p>
                     </td>
-                    <td class="p-4 border-b border-slate-200 py-1">
+                    <td class="p-2 border-b border-slate-200 py-1">
                         <p class="text-sm text-slate-500">{{ property.property_value }}</p>
                     </td>
 
-                    <td class="p-4 border-b border-slate-200 py-1 sm-hidden" style="direction: ltr;">
+                    <td class="p-2 border-b border-slate-200 py-1 sm-hidden" style="direction: ltr;">
                         <button
                             @click="togglePin(property.id)"
                             class="relative inline-flex h-4 w-8 items-center rounded-full transition-colors duration-300 cursor-pointer"
@@ -166,7 +188,19 @@ const togglePin = (id: number) => {
                                   />
                         </button>
                     </td>
-                    <td class="p-4 border-b border-slate-200 py-1">
+                    <td class="p-2 border-b border-slate-200 py-1 sm-hidden" style="direction: ltr;">
+                        <button
+                            @click="toggleStatus(property.id)"
+                            class="relative inline-flex h-4 w-8 items-center rounded-full transition-colors duration-300 cursor-pointer"
+                            :class="property.property_status ? 'bg-green-700' : 'bg-gray-300'"
+                        >
+                                  <span
+                                      class="inline-block h-3 w-3 transform rounded-full bg-gray-200 transition-transform duration-300"
+                                      :class="property.property_status ? 'translate-x-1' : 'translate-x-5'"
+                                  />
+                        </button>
+                    </td>
+                    <td class="p-2 border-b border-slate-200 py-1">
                         <button @click="setEditForm(property)"
                                 class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="button">
@@ -203,6 +237,13 @@ const togglePin = (id: number) => {
                                      :input_error="edit_form?.errors?.pinned"
                                      :value="edit_form.pinned"
                                      :options="[{id: 0, name: 'خیر'}, {id: 1, name: 'بله'}]"
+                    />
+                </div>
+                <div>
+                    <SelectComponent label="نوع نمایش" id="status" v-model="edit_form.property_status"
+                                     :input_error="edit_form?.errors?.property_status"
+                                     :value="edit_form.property_status"
+                                     :options="[{id: 0, name: 'منفی'}, {id: 1, name: 'مثبت'}]"
                     />
                 </div>
                 <div>

@@ -44,6 +44,7 @@ class UpdateWebsiteSettingRequest extends FormRequest
             'rubika' => 'bail|nullable|string|max:250',
             'soroush' => 'bail|nullable|string|max:250',
             'logo' => 'bail|nullable|string|max:250',
+            'favicon' => 'bail|nullable|string|max:250',
         ];
     }
 }

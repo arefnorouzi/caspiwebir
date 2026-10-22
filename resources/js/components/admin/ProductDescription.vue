@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import QuillEditor from "@/components/admin/QuillEditor.vue";
 import TextareaComponent from "@/components/form/TextareaComponent.vue";
+import SmallQuillEditor from '@/components/admin/SmallQuillEditor.vue';
 const props = defineProps({
     form: Object
 })
@@ -24,17 +25,24 @@ const props = defineProps({
                             :input_error="props.form?.errors?.meta"
                         />
                     </div>
-                    <div class="">
-                        <TextareaComponent
-                            id="product-note"
-                            label="یادداشت محصول"
-                            placeholder="نکته و یادداشت برای محصول"
-                            v-model="props.form.note"
-                            :value="props.form.note"
-                            :input_error="props.form?.errors?.note"
-                        />
+                    <div class="mb-10">
+<!--                        <TextareaComponent-->
+<!--                            id="product-note"-->
+<!--                            label="یادداشت محصول"-->
+<!--                            placeholder="نکته و یادداشت برای محصول"-->
+<!--                            v-model="props.form.note"-->
+<!--                            :value="props.form.note"-->
+<!--                            :input_error="props.form?.errors?.note"-->
+<!--                        />-->
+                        <label for="product-details"
+                               class="text-sm font-medium text-gray-900 block mb-2">یادداشت محصول</label>
+
+                        <SmallQuillEditor v-model="props.form.note" />
+                        <div v-if="props.form.errors.note" class="text-red-500 text-sm mt-1">
+                            {{ props.form.errors.note }}
+                        </div>
                     </div>
-                    <div class="">
+                    <div class=" my-10">
                         <TextareaComponent
                             id="excerpt_review"
                             label="بررسی تخصصی"

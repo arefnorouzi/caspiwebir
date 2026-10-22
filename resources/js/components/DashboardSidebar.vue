@@ -15,7 +15,7 @@ import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import {
     LayoutGrid,
-    NotepadText,
+    NotepadText, User,
     BadgeInfo, MessageCircleMore
 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
@@ -31,7 +31,11 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard/invoice',
         icon: NotepadText,
     },
-
+    {
+        title: 'پروفایل',
+        href: '/dashboard/profile',
+        icon: User,
+    },
     {
         title: 'پشتیبانی',
         href: '/dashboard/ticket',

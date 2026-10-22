@@ -45,7 +45,7 @@ async function restore(id: number) {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+            class="flex h-full flex-1 flex-col gap-2 overflow-x-auto rounded-xl p-2"
         >
             <div
                 class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
@@ -100,37 +100,37 @@ async function restore(id: number) {
                     <table class="w-full text-right table-auto min-w-max">
                         <thead>
                         <tr>
-                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                            <th class="p-2 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
                                     #
                                 </p>
                             </th>
-                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                            <th class="p-2 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
                                     مشتری
                                 </p>
                             </th>
-                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                            <th class="p-2 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
                                     نوع
                                 </p>
                             </th>
-                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                            <th class="p-2 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
                                     وضعیت
                                 </p>
                             </th>
-                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                            <th class="p-2 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
                                     مبلغ
                                 </p>
                             </th>
-                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                            <th class="p-2 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
                                     تاریخ
                                 </p>
                             </th>
-                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                            <th class="p-2 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
                                     عملیات
                                 </p>
@@ -139,39 +139,28 @@ async function restore(id: number) {
                         </thead>
                         <tbody v-if="models && models.data">
                         <tr v-for="(item, index) in models.data" :key="index" :class="item.deleted_at ? 'bg-red-100' : ''">
-                            <td class="p-4 border-b border-slate-200 py-1">
+                            <td class="p-2 border-b border-slate-200 py-1">
                                 <a :href="`/admin/invoice/${item.id}`" target="_blank">
                                 <p class="block font-semibold text-sm text-blue-600">{{ item.id }}</p>
                                 </a>
                             </td>
-                            <td class="p-4 border-b border-slate-200 py-1">
+                            <td class="p-2 border-b border-slate-200 py-1">
                                 <a :href="`/admin/user/${item.user_id}`" target="_blank"
                                    class="text-sm text-blue-500">{{ item?.user?.name}}</a>
                             </td>
-                            <td class="p-4 border-b border-slate-200 py-1">
-                                <div class="w-max">
-                                    <div
-                                         :class="`relative grid items-center px-2 py-1 font-sans text-xs font-bold uppercase rounded-md select-none whitespace-nowrap ${item.invoice_type.css_class}`">
-                                        <span class="">{{ item?.invoice_type?.name }}</span>
-                                    </div>
-
-                                </div>
+                            <td class="p-2 border-b border-slate-200 py-1">
+                                <span :class="`${item?.invoice_type?.css_class} text-xs`">{{ item?.invoice_type?.name }}</span>
                             </td>
-                            <td class="p-4 border-b border-slate-200 py-1">
-                                <div class="w-max">
-                                    <div
-                                         :class="`relative grid items-center px-2 py-1 font-sans text-xs font-bold uppercase rounded-md select-none whitespace-nowrap ${item.status.css_class}`">
-                                        <span class="">{{ item?.status?.name }}</span>
-                                    </div>
-                                </div>
+                            <td class="p-2 border-b border-slate-200 py-1">
+                                <span :class="`${item?.status?.css_class} text-xs`">{{ item?.status?.name }}</span>
                             </td>
-                            <td class="p-4 border-b border-slate-200 py-1">
+                            <td class="p-2 border-b border-slate-200 py-1">
                                 <p class="text-sm text-slate-500">{{ Number(item.amount).toLocaleString()}}</p>
                             </td>
-                            <td class="p-4 border-b border-slate-200 py-1" style="direction: ltr">
+                            <td class="p-2 border-b border-slate-200 py-1" style="direction: ltr">
                                 <p class="text-sm text-slate-500">{{ formatDate(item.created_at) }}</p>
                             </td>
-                            <td class="p-4 border-b border-slate-200 py-1">
+                            <td class="p-2 border-b border-slate-200 py-1">
                                 <a :href="`/admin/invoice/${item.id}`" target="_blank">
                                     <button
                                         class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"

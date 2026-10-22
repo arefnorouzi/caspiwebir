@@ -225,7 +225,6 @@ class ShoppingCartController extends Controller
                 if ($role_price)
                 {
                     $unit_price = $role_price->offer_price ?? $role_price->price;
-                    $product_price = $role_price->price;
                 }
             }
             $variant = null;
@@ -239,7 +238,6 @@ class ShoppingCartController extends Controller
                     return response()->json(['message' => 'درحال حاضر امکان افزودن این محصول با مشخصات انتخاب شده به سبد خرید وجود ندارد.'], 400);
                 }
                 $unit_price = $variant->active_price;
-                $product_price = $variant->price;
             }
 
 

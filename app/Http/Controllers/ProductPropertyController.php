@@ -98,4 +98,11 @@ class ProductPropertyController extends Controller
         $property->update();
         return back()->with('message', 'وضعیت رکورد تغییر کرد');
     }
+
+    public function toggle_status(ProductProperty $property): \Illuminate\Http\RedirectResponse
+    {
+        $property->property_status = !$property->property_status;
+        $property->update();
+        return back()->with('message', 'وضعیت رکورد تغییر کرد');
+    }
 }

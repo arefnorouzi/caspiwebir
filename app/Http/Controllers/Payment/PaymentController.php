@@ -29,6 +29,10 @@ class PaymentController extends Controller
             }
             $invoice->confirmed_by_user = true;
             $invoice->payment_method_id = $paymentMethod->id;
+            if ($paymentMethod->interest_rate)
+            {
+                $invoice->interest_amount = $invoice->amount * ($paymentMethod->interest_rate / 100);
+            }
             $invoice->update();
             if ($paymentMethod->code == 'zarinpal')
             {

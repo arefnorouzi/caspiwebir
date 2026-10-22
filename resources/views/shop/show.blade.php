@@ -1,9 +1,9 @@
 @extends('layouts.IranMarket')
 @section('title', $product->name)
-@section('meta', $product->meta ?? $product->name)
+@section('meta', $product->seo_meta ?? $product->meta)
 @section('page_meta')
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="canonical" href="/shop/product/slug/{{$product->slug}}">
 
     <!-- Open Graph -->
     <meta property="og:type" content="product">
@@ -18,8 +18,9 @@
     <meta name="twitter:description" content="{{ $product->meta ?? $product->name }}">
     <meta name="twitter:image" content="{{ $product->image }}">
 
+
     <!-- Product specific SEO -->
-    <meta property="product:price:amount" content="{{ $product->offer_price && $product->offer_price > 0 ? $product->offer_price * 10 : $product->price * 10 }}">
+    <meta property="product:price:amount" content="{{ $product->active_price < $product->price ? $product->active_price * 10 : $product->price * 10 }}">
     <meta property="product:price:currency" content="IRR">
     <meta property="product:availability" content="{{ $product->stock ? 'in stock' : 'out of stock' }}">
 
@@ -36,6 +37,96 @@
     <meta name="guarantee" content="{{$product->guarantee}}">
     <!-- torob robot meta data end -->
 
+    <style>
+        .product-note-content{
+            height: 180px;
+            overflow-y: scroll;
+        }
+        .product-note-content h3{
+            font-size: 1rem !important;
+        }
+        .product-note-content p{font-size: .7rem !important; color: rgba(107,114,128,var(--tw-text-opacity)) !important;}
+        .product-note-content li{font-size: .7rem !important; color: rgba(107,114,128,var(--tw-text-opacity)) !important;}
+        /* Quill checklist - version 2 */
+        .product-note-content ol:has(> li[data-list="checked"]),
+        .product-note-content ol:has(> li[data-list="unchecked"]) {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .product-note-content li[data-list="checked"],
+        .product-note-content li[data-list="unchecked"] {
+            position: relative;
+            list-style: none !important;
+            padding-inline-start: 1.8rem;
+            margin-bottom: 8px;
+            line-height: 1.8;
+        }
+
+        /* جایگاه مربع چک‌لیست */
+        .product-note-content li[data-list="checked"] > .ql-ui,
+        .product-note-content li[data-list="unchecked"] > .ql-ui {
+            position: absolute;
+            inset-inline-start: 0;
+            top: 0.2em;
+            width: 1.4rem;
+            line-height: 1.5;
+        }
+
+        /* مورد انتخاب‌شده */
+        .product-note-content li[data-list="checked"] > .ql-ui::before {
+            content: "☑";
+            color: #16a34a;
+            font-size: 17px;
+        }
+
+        /* مورد انتخاب‌نشده */
+        .product-note-content li[data-list="unchecked"] > .ql-ui::before {
+            content: "☐";
+            color: #6b7280;
+            font-size: .8rem;
+        }
+
+        /* فاصله و چینش لیست */
+        .product-note-content ol {
+            margin: 0.5rem 0 1rem;
+            padding: 0;
+        }
+
+        /* هر آیتم لیست نقطه‌ای */
+        .product-note-content li[data-list="bullet"] {
+            position: relative;
+            list-style: none !important;
+            padding-right: 1.4em;
+            padding-left: 0;
+            margin-bottom: 0.4rem;
+            line-height: 1.9;
+        }
+
+        /* نشانگر اصلی Quill */
+        .product-note-content li[data-list="bullet"] > .ql-ui {
+            display: block;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 1.2em;
+            line-height: inherit;
+        }
+
+        /* نقطه هم‌تراز با متن */
+        .product-note-content li[data-list="bullet"] > .ql-ui::before {
+            content: "✅";
+            display: inline-block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            font-size: 1em;
+            line-height: inherit;
+            vertical-align: baseline;
+        }
+    </style>
 @endsection
 @section('content')
 
@@ -58,7 +149,7 @@
                 <div class="w-full lg:w-2/3 flex flex-wrap">
                     <div class="lg:w-1/3">
                         <div>
-                            <div class="max-w-[300px] mx-auto">
+                            <div class="max-w-[300px] mx-auto mb-3">
                                 <img class="mySlides rounded-xl md:rounded-3xl" src="{{$product->image}}"
                                      style="width:100%">
                                 @foreach($product->galleries as $gallery)
@@ -68,6 +159,7 @@
                                 @endforeach
 
                             </div>
+                            @if(count($product->galleries) && isset($product->image))
                             <div class="flex justify-around gap-x-4 mt-3">
                                 <div class="max-w-[80px]">
                                     <img class="rounded-xl opacity-70 hover:opacity-100 transition"
@@ -82,14 +174,15 @@
                                     </div>
                                 @endforeach
                             </div>
+                            @endif
                         </div>
                     </div>
                     <div class="lg:w-2/3 sm:pr-7">
                         <div class="opacity-80 text-lg font-semibold">
                             {{$product->name}}
                         </div>
-                        <div class="opacity-50 text-xs mt-2 mb-4">
-                            {{$product->sub_title}}
+                        <div class="opacity-50 text-sm mt-2 mb-4">
+                            {{$product->sub_title ?? $product->meta}}
                         </div>
                         <div class="">
 
@@ -97,10 +190,10 @@
                                 <div class="mt-4 mb-2 opacity-80 text-sm font-semibold">
                                     ویژگی های محصول:
                                 </div>
-                                <div class="flex flex-col gap-2 text-xs">
-                                    @foreach($product->properties->where('pinned', true) as $property)
-                                        <div class="flex flex-wrap bg-gray-100 mb-2 p-2 rounded-md" style="max-width: 350px;">
-                                            <h3 class="opacity-60 ml-1">
+                                <div class="flex flex-wrap gap-2 text-xs">
+                                    @foreach($product->properties->where('pinned', true)->where('property_status', true) as $property)
+                                        <div class="flex flex-wrap border border-teal-500 mb-2 p-3 rounded-md" style="max-width: 350px;">
+                                            <h3 class="opacity-70 ml-1">
                                                 {{$property->property_name}}:
                                             </h3>
                                             <div class="opacity-80">
@@ -111,13 +204,32 @@
                                         </div>
                                     @endforeach
 
+                                        @foreach($product->properties->where('pinned', true)->where('property_status', false) as $property)
+                                            <div class="flex flex-wrap border border-red-500 mb-2 p-3 rounded-md" style="max-width: 350px;">
+                                                <h3 class="opacity-70 ml-1">
+                                                    {{$property->property_name}}:
+                                                </h3>
+                                                <div class="opacity-80">
+                                                    <div class="text-right">
+                                                        {{$property->property_value}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+
                                 </div>
 
                             </div>
 
-
                         </div>
+
+
                     </div>
+                    @if($product->note)
+                        <div class="product-note-content w-full rounded-xl mt-5 border border-gray-200 p-2">
+                            {!! $product->note !!}
+                        </div>
+                    @endif
 
 
 
@@ -132,7 +244,7 @@
                                 <!-- Aparat video position -->
                             </div>
                             <div class="p-3 border rounded-xl mx-auto divide-y lg:block">
-                                @if($product->offer_end_date && $product->offer_price)
+                                @if($product->offer_end_date && $product->offer_end_date > now() && $product->offer_price)
                                     <div class="sale-timer"
                                          data-end="{{ $product->offer_end_date }}">
 
@@ -167,13 +279,26 @@
                                     </div>
                                 @endif
 
+                                    @if($product->installment_purchase)
+                                        <div class="flex gap-x-1 items-center text-zinc-600 text-sm pb-3 pt-3">
+                                            <div>
+                                                <img src="/images/payment/torob.png" style="width: 30px; height: 30px; border-radius: .3rem">
+                                            </div>
+                                            <div>
+                                                <span>امکان خرید 4 قسطه</span>
+                                            </div>
+                                        </div>
+                                        <p class="text-green-700 text-sm mb-3">مبلغ حدودی هر قسط:
+                                            {{number_format(intval($product->active_price / 4))}} تومان
+                                        </p>
+                                    @endif
 
                                 <div class="flex flex-col justify-center py-5">
                                     <div class="text-zinc-600 text-center">
-                                        @if($product->offer_price && $product->price > $product->offer_price)
+                                        @if($product->price > $product->active_price)
                                             <s class="font-semibold text-sm mx-1">{{number_format($product->price)}}</s>
                                         @endif
-                                        <span class="font-semibold text-red-600 text-xl px-1 mx-1 product-price">{{number_format($product->offer_price > 0 ? $product->offer_price : $product->price)}}</span>
+                                        <span class="font-semibold text-red-600 text-xl px-1 mx-1 product-price">{{number_format($product->active_price)}}</span>
 
                                         <span class="text-xs px-1 mx-1">تومان</span>
                                     </div>
@@ -223,6 +348,34 @@
                                     </p>
                                 @endif
 
+                            </div>
+
+                            <div class="p-3 mt-5 border rounded-xl mx-auto  lg:block">
+                                <p class="mb-3">نیاز به مشاوره و راهنمایی دارید؟</p>
+                                <small>با لمس تصویر شبکه اجتماعی موردنظر، با پشتیبانی ما در تماس باشید.</small>
+
+                                <div class="flex flex-wrap justify-between mt-5">
+                                    <div class="mb-2">
+                                        <a href="https://ble.ir/join/8JmCqzpfTe" rel="nofollow" target="_blank">
+                                            <img src="/images/social/bale.png" class="w-10 rounded">
+                                        </a>
+                                    </div>
+                                    <div class="mb-2">
+                                        <a href="https://rubika.ir/caspiweb_ir" rel="nofollow" target="_blank">
+                                            <img src="/images/social/rubika.webp" class="w-10 rounded">
+                                        </a>
+                                    </div>
+                                    <div class="mb-2">
+                                        <a href="https://wa.me/989192138510" rel="nofollow" target="_blank">
+                                            <img src="/images/social/whatsapp.png" class="w-10 rounded">
+                                        </a>
+                                    </div>
+                                    <div class="mb-2">
+                                        <a href="https://t.me/caspiweb_ir" rel="nofollow" target="_blank">
+                                            <img src="/images/social/telegram.webp" class="w-10 rounded">
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -372,14 +525,14 @@
                                 <span class="text-sm opacity-80 mb-2 h-8 md:h-10">
                                   <a href="/shop/product/{{$related_product->slug}}" target="_blank">{{$related_product->name}}</a>
                                 </span>
-                                        @if($related_product->offer_price && $related_product->offer_price < $related_product->price)
+                                        @if($related_product->active_price < $related_product->price)
                                             <div class="flex justify-center text-xs opacity-75">
                                                 <div class="line-through mx-1">{{number_format($related_product->price)}}</div>
                                                 <div class="">تومان</div>
                                             </div>
                                         @endif
                                         <div class="flex justify-center mt-1 mb-2 text-sm text-red-500">
-                                            <div class="mx-1">{{$related_product->offer_price && $related_product->offer_price < $related_product->price ? number_format($related_product->offer_price) : number_format($related_product->price)}}</div>
+                                            <div class="mx-1">{{number_format($related_product->active_price)}}</div>
                                             <div>تومان</div>
                                         </div>
                                     </div>
@@ -491,7 +644,7 @@
                         }
                         //alert(data.message || 'محصول با موفقیت افزوده شد!')
                         this.show_toast(data.message || 'محصول با موفقیت افزوده شد!', 'success');
-                        await this.sleep(500)
+                        await this.sleep(200)
                         location.replace('/cart');
 
                     } catch (error) {

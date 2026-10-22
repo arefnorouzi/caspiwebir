@@ -49,6 +49,11 @@ const formatDate = (d) =>
                 class="relative min-h-[100vh] flex-1 rounded-xl md:min-h-min"
             >
                 <div class="w-full p-1 mb-5">
+                    <div class="w-full mb-2 pb-2 flex flex-wrap justify-end">
+                        <a href="/" target="_blank" class="p-2 m-1 bg-blue-700 text-white rounded-md shadow-md">مشاهده سایت</a>
+                        <a href="/shop" target="_blank" class="p-2 m-1 bg-blue-700 text-white rounded-md shadow-md">مشاهده فروشگاه</a>
+                        <a href="/dashboard" target="_blank" class="p-2 m-1 bg-blue-700 text-white rounded-md shadow-md">داشبورد مشتری</a>
+                    </div>
                     <div
                         class="grid auto-rows-min grid-cols-1 gap-3 md:grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mb-3"
                     >

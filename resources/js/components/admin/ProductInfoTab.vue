@@ -2,6 +2,7 @@
 import MediaPicker from "@/components/admin/MediaPicker.vue";
 import InputComponent from "@/components/form/InputComponent.vue";
 import SelectComponent from "@/components/form/SelectComponent.vue";
+import CheckboxComponent from '@/components/form/CheckboxComponent.vue';
 const props = defineProps({
     model: Object,
     categories: Object,
@@ -18,7 +19,7 @@ const props = defineProps({
 
 
         <div class="flex flex-wrap">
-            <div class="border border-gray-200 rounded-md mb-2 p-2 w-full">
+            <div class="border border-gray-200 rounded-md p-2 lg:w-3/4 w-full mb-5">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-3">
                     <div class="">
                         <InputComponent v-model="props.form.name"
@@ -43,6 +44,7 @@ const props = defineProps({
                     </div>
 
                 </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-3">
                     <div>
                         <InputComponent v-model="props.form.sku"
@@ -84,59 +86,7 @@ const props = defineProps({
                         />
 
                     </div>
-                    <div>
-                        <SelectComponent label="افزودنی (addons)"
-                                         :value="props.form.is_addon"
-                                         id="is_addon" v-model="props.form.is_addon"
-                                         :input_error="form?.errors?.is_addon"
-                                         :options="[{id: 0, name: 'خیر'}, {id: 1, name: 'بله'}]"
-                        />
-                    </div>
-                    <div>
-                        <SelectComponent label="کالا / سرویس"
-                                         :value="props.form.is_service"
-                                         id="is_service" v-model="props.form.is_service"
-                                         :input_error="form?.errors?.is_service"
-                                         :options="[{id: 0, name: 'محصول عادی'}, {id: 1, name: 'سرویس و خدمات'}]"
-                        />
-                    </div>
-                    <div>
-                        <SelectComponent label="نوع محصول"
-                                         :value="props.form.downloadable"
-                                         id="downloadable" v-model="props.form.downloadable"
-                                         :input_error="form?.errors?.downloadable"
-                                         :options="[{id: 0, name: 'عادی'}, {id: 1, name: 'فایل و دوره مجازی'}]"
-                        />
-                    </div>
-                    <div v-if="props.form.downloadable == 1">
-                        <SelectComponent label="دسترسی به منابع"
-                                         :value="props.form.source"
-                                         id="source" v-model="props.form.source"
-                                         :input_error="form?.errors?.source"
-                                         :options="[{id: 0, name: 'ندارد'}, {id: 1, name: 'دارد'}]"
-                        />
-                    </div>
-                    <div v-if="props.form.downloadable == 1">
-                        <InputComponent v-model="props.form.duration"
-                                        :value="props.form.duration"
-                                        label="تعداد جلسات"
-                                        id="duration"
-                                        placeholder="1"
-                                        :input_error="props.form?.errors?.duration"
-                                        type="number"
-                        />
 
-                    </div>
-                    <div v-if="props.form.downloadable == 1">
-                        <InputComponent v-model="props.form.course_time"
-                                        :value="props.form.course_time"
-                                        label="زمان دوره"
-                                        id="course_time"
-                                        placeholder="3 ساعت"
-                                        :input_error="props.form?.errors?.course_time"
-                        />
-
-                    </div>
                     <div>
                         <SelectComponent label="واحد شمارش محصول"
                                          :value="props.form.product_unit_id"
@@ -158,57 +108,6 @@ const props = defineProps({
                     </div>
 
                     <div>
-                        <SelectComponent label="برای قیمت تماس بگیرید" id="call_to_price"
-                                         v-model="props.form.call_to_price"
-                                         :value="props.form.call_to_price"
-                                         :input_error="props.form?.errors?.call_to_price"
-                                         :options="[{id: 0, name: 'غیرفعال'}, {id: 1, name: 'فعال'}]"
-                        />
-                    </div>
-                    <div v-if="props.form.call_to_price == 0">
-                        <InputComponent v-model="props.form.price"
-                                        :value="props.form.price"
-                                        label="قیمت عادی"
-                                        id="price"
-                                        placeholder="1000"
-                                        :input_error="props.form?.errors?.price"
-                                        css_class="ltr"
-                                        type="number"
-                        />
-                    </div>
-                    <div v-if="props.form.call_to_price == 0">
-                        <InputComponent v-model="props.form.offer_price"
-                                        :value="props.form.offer_price"
-                                        label="قیمت تخفیفی"
-                                        id="offer_price"
-                                        placeholder=""
-                                        :input_error="props.form?.errors?.offer_price"
-                                        css_class="ltr"
-                                        type="number"
-                        />
-                    </div>
-                    <div v-if="props.form.offer_price && props.form.call_to_price == 0">
-                        <InputComponent v-model="props.form.offer_end_date"
-                                        :value="props.form.offer_end_date"
-                                        label="انقضا تخفیف"
-                                        id="offer_end_date"
-                                        placeholder=""
-                                        :input_error="props.form?.errors?.offer_end_date"
-                                        css_class="ltr"
-                                        type="date"
-                        />
-                    </div>
-                    <div v-if="props.form.offer_price && props.form.call_to_price == 0">
-                        <InputComponent v-model="props.form.offer_end_date"
-                                        :value="props.form.offer_end_date"
-                                        label="انقضای تخفیف"
-                                        id="offer_end_date_input"
-                                        placeholder="2030-01-01"
-                                        :input_error="props.form?.errors?.offer_end_date"
-                                        css_class="ltr"
-                        />
-                    </div>
-                    <div>
                         <InputComponent v-model="props.form.min_buy"
                                         :value="props.form.min_buy"
                                         label="حداقل تعداد خرید"
@@ -219,61 +118,7 @@ const props = defineProps({
                                         type="number"
                         />
                     </div>
-                    <div>
-                        <SelectComponent label="وضعیت" id="status" v-model="props.form.status"
-                                         :value="props.form.status"
-                                         :input_error="props.form?.errors?.status"
-                                         :options="[{id: 0, name: 'پیشنویس'}, {id: 1, name: 'انتشار'}]"
-                        />
-                    </div>
-                    <div>
-                        <SelectComponent label="محصول ویژه" id="pinned" v-model="props.form.pinned"
-                                         :value="props.form.pinned"
-                                         :input_error="props.form?.errors?.pinned"
-                                         :options="[{id: 0, name: 'خیر'}, {id: 1, name: 'بله'}]"
-                        />
-                    </div>
-                    <div>
-                        <SelectComponent label="وضعیت فروش" id="buyable" v-model="props.form.buyable"
-                                         :value="props.form.buyable"
-                                         :input_error="props.form?.errors?.buyable"
-                                         :options="[{id: 0, name: 'توقف فروش'}, {id: 1, name: 'فعال'}]"
-                        />
-                    </div>
-                    <div>
-                        <SelectComponent label="پیش فروش" id="buyable" v-model="props.form.pre_order"
-                                         :value="props.form.pre_order"
-                                         :input_error="props.form?.errors?.pre_order"
-                                         :options="[{id: 0, name: 'غیرفعال'}, {id: 1, name: 'فعال'}]"
-                        />
-                    </div>
-                    <div>
-                        <SelectComponent label="فروش قسطی" id="buyable" v-model="props.form.installment_purchase"
-                                         :value="props.form.installment_purchase"
-                                         :input_error="props.form?.errors?.installment_purchase"
-                                         :options="[{id: 0, name: 'غیرفعال'}, {id: 1, name: 'فعال'}]"
-                        />
-                    </div>
-                    <div>
-                        <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر محصول</label>
-                        <MediaPicker @select="(url) => props.form.image = url" />
-                    </div>
-                    <div>
-                        <InputComponent v-model="props.form.image"
-                                        label="آدرس تصویر"
-                                        :value="props.form.image"
-                                        id="image-url"
-                                        placeholder="image-url"
-                                        :input_error="props.form?.errors?.image"
-                                        css_class="ltr"
-                        />
-                    </div>
-                    <div v-if="props.form.image">
-                        <img :src="props.form.image" class="w-32 h-32 object-fill border rounded" />
-                        <div v-if="props.form.errors.image" class="text-red-500 text-sm mt-1">
-                            {{ props.form.errors.image }}
-                        </div>
-                    </div>
+
                 </div>
 
                 <div class="grid grid-cols-1 gap-2 mt-3 w-full">
@@ -310,6 +155,251 @@ const props = defineProps({
 
                 </div>
 
+            </div>
+
+            <div class="mb-2 px-1 lg:w-1/4 w-full">
+                <div class="grid grid-cols-1 gap-2">
+                    <div class="border border-gray-200 mb-3">
+                        <div class="bg-gray-100 p-1">
+                            <h4 class="text-sm">تنظیمات محصول</h4>
+                        </div>
+                        <div class="px-1 py-3">
+                            <div class="mb-2">
+                                <CheckboxComponent label="افزودنی (addons)"
+                                                   :value="props.form.is_addon"
+                                                   id="is_addon" v-model="props.form.is_addon"
+                                                   />
+
+                            </div>
+                            <div class="mb-2">
+                                <CheckboxComponent label="سرویس یا خدمات"
+                                                   :value="props.form.is_service"
+                                                   id="is_service" v-model="props.form.is_service"
+                                />
+
+                            </div>
+                            <div class="mb-2">
+                                <CheckboxComponent label="دانلودی"
+                                                   :value="props.form.downloadable"
+                                                   id="downloadable" v-model="props.form.downloadable"
+                                />
+
+                            </div>
+
+                            <div class="mb-2">
+                                <CheckboxComponent
+                                    label="وضعیت فروش" id="buyable" v-model="props.form.buyable"
+                                    :value="props.form.buyable"
+                                    :input_error="props.form?.errors?.buyable"
+                                />
+
+                            </div>
+
+                            <div class="mb-2">
+                                <CheckboxComponent
+                                    label="پیش فروش" id="pre_order" v-model="props.form.pre_order"
+                                    :value="props.form.pre_order"
+                                    :input_error="props.form?.errors?.pre_order"
+                                />
+
+                            </div>
+
+                            <div class="mb-2">
+                                <CheckboxComponent
+                                    label="فروش قسطی" id="installment_purchase" v-model="props.form.installment_purchase"
+                                    :value="props.form.installment_purchase"
+                                />
+
+                            </div>
+
+                            <div class="mb-2 mt-5">
+                                <CheckboxComponent
+                                    label="انتشار / پیشنویس" id="status" v-model="props.form.status"
+                                    :value="props.form.status"
+                                    :input_error="props.form?.errors?.status"
+                                />
+                            </div>
+
+                            <div class="mb-2">
+                                <CheckboxComponent
+                                    label="محصول ویژه" id="pinned" v-model="props.form.pinned"
+                                    :value="props.form.pinned"
+                                    :input_error="props.form?.errors?.pinned"
+                                />
+                            </div>
+
+                            <div class="mb-2">
+                                <CheckboxComponent
+                                    label="برای قیمت تماس بگیرید" id="call_to_price"
+                                    v-model="props.form.call_to_price"
+                                    :value="props.form.call_to_price"
+                                    :input_error="props.form?.errors?.call_to_price"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div v-if="!props.form.call_to_price" class="border border-gray-200">
+                        <div class="bg-gray-100 p-1">
+                            <h4 class="text-sm">قیمت گذاری</h4>
+                        </div>
+                        <div class="px-1 py-3">
+
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.price"
+                                                :value="props.form.price"
+                                                label="قیمت عادی"
+                                                id="price"
+                                                placeholder="1000"
+                                                :input_error="props.form?.errors?.price"
+                                                css_class="ltr"
+                                                type="number"
+                                />
+                            </div>
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.offer_price"
+                                                :value="props.form.offer_price"
+                                                label="قیمت تخفیفی"
+                                                id="offer_price"
+                                                placeholder=""
+                                                :input_error="props.form?.errors?.offer_price"
+                                                css_class="ltr"
+                                                type="number"
+                                />
+                            </div>
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.offer_end_date"
+                                                :value="props.form.offer_end_date"
+                                                label="انقضا تخفیف"
+                                                id="offer_end_date"
+                                                placeholder=""
+                                                :input_error="props.form?.errors?.offer_end_date"
+                                                css_class="ltr"
+                                                type="date"
+                                />
+                            </div>
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.offer_end_date"
+                                                :value="props.form.offer_end_date"
+                                                label="انقضای تخفیف"
+                                                id="offer_end_date_input"
+                                                placeholder="2030-01-01"
+                                                :input_error="props.form?.errors?.offer_end_date"
+                                                css_class="ltr"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200">
+                        <div class="bg-gray-100 p-1">
+                            <h4 class="text-sm">تصویر محصول</h4>
+                        </div>
+                        <div class="px-1 py-3">
+
+                            <div class="mb-2">
+                                <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر محصول</label>
+                                <MediaPicker @select="(url) => props.form.image = url" />
+                            </div>
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.image"
+                                                label="آدرس تصویر"
+                                                :value="props.form.image"
+                                                id="image-url"
+                                                placeholder="image-url"
+                                                :input_error="props.form?.errors?.image"
+                                                css_class="ltr"
+                                />
+                            </div>
+                            <div  v-if="props.form.image" class="mb-2">
+                                <img :src="props.form.image" class="w-32 h-32 object-fill border rounded" />
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200">
+                        <div class="bg-gray-100 p-1">
+                            <h4 class="text-sm">ویدیو محصول</h4>
+                        </div>
+                        <div class="px-1 py-3">
+
+                            <div class="mb-2">
+                                <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر کاور ویدیو</label>
+                                <MediaPicker @select="(url) => props.form.video_poster = url" />
+                            </div>
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.video_poster"
+                                                label="تصویر کاور ویدیو"
+                                                :value="props.form.video_poster"
+                                                id="video_poster-url"
+                                                placeholder="video_poster-url"
+                                                :input_error="props.form?.errors?.video_poster"
+                                                css_class="ltr"
+                                />
+                            </div>
+                            <div  v-if="props.form.video_poster" class="mb-2">
+                                <img :src="props.form.video_poster" class="w-32 h-32 object-fill border rounded" />
+                            </div>
+
+
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.video"
+                                                label="آدرس ویدیو"
+                                                :value="props.form.video"
+                                                id="video-url"
+                                                placeholder="video_poster-url"
+                                                :input_error="props.form?.errors?.video"
+                                                css_class="ltr"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div v-if="props.form.downloadable" class="border border-gray-200">
+                        <div class="bg-gray-100 p-1">
+                            <h4 class="text-sm">مشخصات دوره</h4>
+                        </div>
+                        <div class="px-1 py-3">
+
+                            <div class="mb-2">
+                                <SelectComponent label="دسترسی به منابع"
+                                                 :value="props.form.source"
+                                                 id="source" v-model="props.form.source"
+                                                 :input_error="form?.errors?.source"
+                                                 :options="[{id: 0, name: 'ندارد'}, {id: 1, name: 'دارد'}]"
+                                />
+                            </div>
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.duration"
+                                                :value="props.form.duration"
+                                                label="تعداد جلسات"
+                                                id="duration"
+                                                placeholder="1"
+                                                :input_error="props.form?.errors?.duration"
+                                                type="number"
+                                />
+                            </div>
+                            <div class="mb-2">
+                                <InputComponent v-model="props.form.course_time"
+                                                :value="props.form.course_time"
+                                                label="زمان دوره"
+                                                id="course_time"
+                                                placeholder="3 ساعت"
+                                                :input_error="props.form?.errors?.course_time"
+                                />
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>

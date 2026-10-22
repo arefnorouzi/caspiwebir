@@ -51,6 +51,7 @@ const form = useForm({
     warranty: props.model.warranty,
     podcast: props.model.podcast,
     video: props.model.video,
+    video_poster: props.model.video_poster,
     note: props.model.note,
     stock: props.model.stock,
     min_buy: props.model.min_buy,

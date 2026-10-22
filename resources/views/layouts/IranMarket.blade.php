@@ -158,7 +158,7 @@
         .slider-img{
             width: 100%;
             height: auto;
-            max-height: 200px;
+            max-height: 280px;
         }
 
         .featured-slide{
@@ -312,7 +312,7 @@
             .swiper-slide{min-width: 280px;}
             .slider-img{
                 width: 100%;
-                height: 170px;
+                height: 260px;
             }
 
             .featured-slide{
@@ -343,7 +343,7 @@
             .swiper-slide{min-width: 200px;}
             .slider-img{
                 width: 100%;
-                height: 120px;
+                height: 220px;
             }
 
             .featured-slide{
@@ -420,7 +420,7 @@
             .swiper-slide{min-width: 200px;}
             .slider-img{
                 width: 100%;
-                height: 100px;
+                height: 200px;
             }
 
             .featured-slide{

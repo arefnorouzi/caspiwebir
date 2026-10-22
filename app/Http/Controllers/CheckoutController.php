@@ -57,8 +57,17 @@ class CheckoutController extends Controller
                 ->orderby('is_default', 'desc')
                 ->get(['id', 'name', 'code', 'image', 'is_default', 'description', 'interest_rate']);
         }
+        $default_payment_method = 1;
+        foreach ($payment_methods as $payment_method)
+        {
+            if ($payment_method->is_default)
+            {
+                $default_payment_method = $payment_method->id;
+                break;
+            }
+        }
         return view('checkout.index', compact(
-            'cart',  'user', 'invoices',
+            'cart',  'user', 'invoices', 'default_payment_method',
             'shipping_methods', 'provinces', 'payment_methods'
         ));
     }
@@ -74,12 +83,16 @@ class CheckoutController extends Controller
             if (auth()->check() && auth()->user()->role_id <= 4)
             {
                 $payment_methods = PaymentMethod::where('status', true)
+                    ->where('min_deposit', '<=', $invoice->amount)
+                    ->where('max_deposit', '>=', $invoice->amount)
                     ->orderby('is_default', 'desc')
                     ->get(['id', 'name', 'code', 'image', 'is_default', 'description', 'interest_rate']);
             }
             else{
                 $payment_methods = PaymentMethod::where('status', true)
                     ->where('code', '!=', 'bank-check')
+                    ->where('min_deposit', '<=', $invoice->amount)
+                    ->where('max_deposit', '>=', $invoice->amount)
                     ->orderby('is_default', 'desc')
                     ->get(['id', 'name', 'code', 'image', 'is_default', 'description', 'interest_rate']);
             }
@@ -172,7 +185,7 @@ class CheckoutController extends Controller
                     'unit_price' => $item->unit_price,
                     'item_price' => $item->item_price,
                     'qty' => $item->qty,
-                    'name'  => $item->product->name,
+                    'name'  => $item->name,
                 ]);
             }
             InvoiceStepService::store_step($invoice, 1);

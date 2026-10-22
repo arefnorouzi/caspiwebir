@@ -156,56 +156,60 @@ async function click_file_input(input_id: string)
 
             <div class="w-full p-1">
                 <div class="card border border-gray-100 rounded-md shadow-md">
-
+                    <div class="mb-2 flex flex-wrap justify-between">
+                        <div class="p-2 my-1">
+                            <h2 class="text-lg text-indigo-600">جزئیات سفارش: {{props.invoice.id}}</h2>
+                        </div>
+                        <div class="p-2 my-1">
+                            <a target="_blank" class="py-2 px-3 border border-indigo-600 text-indigo-600 rounded-md shadow-md"
+                               :href="`/dashboard/factor/${props.invoice.id}`">
+                                <span>مشاهده و چاپ پیش فاکتور</span>
+                            </a>
+                        </div>
+                    </div>
                     <!-- جدول کالاها -->
-                    <div class="p-2 my-1">
-                        <h2 class="text-lg text-indigo-500">جزئیات سفارش</h2>
-                    </div>
-                    <div class="p-2 my-1">
-                        <a class="py-2 px-3 bg-indigo-600 text-white rounded-md shadow-md"
-                            :href="`/dashboard/factor/${props.invoice.id}`">
-                            <span>مشاهده پیش فاکتور</span>
-                        </a>
-                    </div>
+
+
                     <div class="p-2 my-3 overflow-x-scroll">
+                        <p>* مبالغ به تومان میباشد</p>
                         <table class="w-full text-right table-auto min-w-max mb-5">
                             <thead>
                             <tr>
-                                <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
                                     <p class="block text-sm font-normal leading-none text-slate-500">
                                         ردیف
                                     </p>
                                 </th>
 
 
-                                <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
                                     <p class="block text-sm font-normal leading-none text-slate-500">
                                         محصول
                                     </p>
                                 </th>
-                                <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
                                     <p class="block text-sm font-normal leading-none text-slate-500">
                                         تعداد
                                     </p>
                                 </th>
-                                <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
                                     <p class="block text-sm font-normal leading-none text-slate-500">
-                                        قیمت واحد (تومان)
+                                        قیمت واحد
                                     </p>
                                 </th>
-                                <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
                                     <p class="block text-sm font-normal leading-none text-slate-500">
-                                        جمع واحد (تومان)
+                                        جمع واحد
                                     </p>
                                 </th>
-                                <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
                                     <p class="block text-sm font-normal leading-none text-slate-500">
-                                        تخفیف (تومان)
+                                        تخفیف
                                     </p>
                                 </th>
-                                <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
                                     <p class="block text-sm font-normal leading-none text-slate-500">
-                                        جمع (تومان)
+                                        جمع
                                     </p>
                                 </th>
 
@@ -213,63 +217,75 @@ async function click_file_input(input_id: string)
                             </thead>
                             <tbody>
                             <tr v-for="(item, i) in invoice.items" :key="item.id">
-                                <td class="p-4 border-b border-slate-200 py-2">
+                                <td class="p-2 border border-slate-200 py-2">
                                     <p class="block font-semibold text-sm text-blue-800">{{ i + 1 }}</p>
 
                                 </td>
 
-                                <td class="p-4 border-b border-slate-200 py-2">
+                                <td class="p-2 border border-slate-200 py-2">
                                     <p v-if="item.product_id">
                                         <a :href="`/shop/p/${item?.product_id}`" target="_blank">
                                             {{ item?.name }}
                                         </a>
                                     </p>
+                                    <p v-else>{{item?.name}}</p>
 
                                 </td>
 
-                                <td class="p-4 border-b border-slate-200 py-2">
+                                <td class="p-2 border border-slate-200 py-2">
                                     <p class="text-sm text-slate-500">{{ Number(item.qty).toLocaleString()}}</p>
                                 </td>
-                                <td class="p-4 border-b border-slate-200 py-2">
+                                <td class="p-2 border border-slate-200 py-2">
                                     <p class="text-sm text-slate-500">{{ Number(item.item_price).toLocaleString()}}</p>
                                 </td>
-                                <td class="p-4 border-b border-slate-200 py-2">
+                                <td class="p-2 border border-slate-200 py-2">
                                     <p class="text-sm text-slate-500">{{ Number(item.item_price * item.qty).toLocaleString()}}</p>
                                 </td>
-                                <td class="p-4 border-b border-slate-200 py-2">
+                                <td class="p-2 border border-slate-200 py-2">
                                     <p class="text-sm text-slate-500">{{ Number(item.discount * item.qty).toLocaleString()}}</p>
                                 </td>
-                                <td class="p-4 border-b border-slate-200 py-2">
+                                <td class="p-2 border border-slate-200 py-2">
                                     <p class="text-sm text-slate-500">{{ Number(item.unit_price * item.qty).toLocaleString()}}</p>
                                 </td>
 
                             </tr>
                             </tbody>
                             <tfoot>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">+</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">جمع سفارش</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.sub_total).toLocaleString()}} تومان</td>
+                            <tr class="text-teal-800">
+                                <td class="p-2 border border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">جمع سفارش</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.sub_total).toLocaleString()}} تومان</td>
                             </tr>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">+</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">مالیات</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.tax).toLocaleString()}} تومان</td>
+                            <tr class="text-teal-800">
+                                <td class="p-2 border border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">مالیات</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.tax).toLocaleString()}} تومان</td>
                             </tr>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">+</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">هزینه ارسال</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.shipping_cost).toLocaleString()}} تومان</td>
+                            <tr class="text-teal-800">
+                                <td class="p-2 border border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">هزینه ارسال</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.shipping_cost).toLocaleString()}} تومان</td>
                             </tr>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">-</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">تخفیف</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.discount).toLocaleString()}} تومان</td>
+
+                            <tr class="text-red-800">
+                                <td class="p-2 border border-slate-200">-</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">تخفیف</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.discount).toLocaleString()}} تومان</td>
                             </tr>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">*</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">مبلغ نهایی</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.amount).toLocaleString()}} تومان</td>
+                            <tr class="text-blue-800">
+                                <td class="p-2 border border-slate-200">=</td>
+                                <td colspan="2" class="p-2 border border-slate-200 font-bold">جمع نهایی <small>(پرداخت نقدی)</small></td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-sm">{{Number(invoice.amount).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr v-if="invoice.interest_amount" class="text-teal-800">
+                                <td class="p-2 border border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">کارمزد پرداخت قسطی</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.interest_amount).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr v-if="invoice.interest_amount"  class="text-blue-800">
+                                <td class="p-2 border border-slate-200">=</td>
+                                <td colspan="2" class="p-2 border border-slate-200 font-bold">جمع نهایی <small>(پرداخت قسطی)</small></td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-sm">{{Number(invoice.amount + invoice.interest_amount).toLocaleString()}} تومان</td>
                             </tr>
                             </tfoot>
                         </table>
@@ -280,7 +296,7 @@ async function click_file_input(input_id: string)
 
             </div>
 
-            <div v-if="!invoice.payment_status" class="lg:w-1/3 md:w-1/1 sm:w-1/1 w-1/1 p-1 my-2">
+            <div v-if="!invoice.payment_status" class="lg:w-1/3 w-full p-1 my-2">
                 <div class="card border border-gray-100 rounded-md mb-2 shadow">
                     <div class="card-header bg-gray-100 p-2">
                         <h4>روش های پرداخت</h4>
@@ -288,18 +304,19 @@ async function click_file_input(input_id: string)
                     <div class="card-body px-2 py-4">
 
                         <div class="mb-4 border border-gray-200 p-2">
-                            <h3 class="text-sm font-bold text-green-800">مبلغ قابل پرداخت: {{Number(invoice.amount).toLocaleString()}} تومان</h3>
+                            <h3 class="text-sm font-bold text-blue-800 mb-2">مبلغ قابل پرداخت <small>(نقدی)</small>: {{Number(invoice.amount).toLocaleString()}} تومان</h3>
+                            <h3 class="text-sm font-bold text-blue-800">مبلغ قابل پرداخت <small>(قسطی)</small>: {{Number(invoice.amount + invoice.interest_amount).toLocaleString()}} تومان</h3>
                         </div>
 
 
-                        <div class="mb-3 mt-5 grid grid-cols-1 md:grid-cols-2 sm:grid-cols-2 gap-2 w-full">
+                        <div class="mb-3 mt-5 grid grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-2 w-full">
                             <a v-for="payment_method in payment_methods"
                                :href="`/payment/${payment_method.code}/pay/${props.invoice.id}`"
                                   :key="payment_method.id">
-                                <div class="w-full text-center border border-teal-700 text-teal-800 rounded-md p-3 mb-1 shadow-md"
+                                <div class="w-full hover:bg-gray-100 text-center border border-teal-700 text-teal-800 rounded-md p-3 mb-1 shadow-md"
                                    >
                                     <div class="payment-icon text-center mb-2">
-                                        <img :src="payment_method.image" style="width: 50px; height: 50px; margin: auto">
+                                        <img :src="payment_method.image" style="width: 30px; height: 30px; margin: auto">
                                     </div>
                                     <p>پرداخت با
                                         {{payment_method.name}}</p>
@@ -312,7 +329,7 @@ async function click_file_input(input_id: string)
                 </div>
             </div>
 
-            <div v-if="props.documents.length" class="lg:w-1/3 md:w-1/1 sm:w-1/1 w-1/1 p-1 my-2">
+            <div v-if="props.documents.length" class="lg:w-1/3 w-full p-1 my-2">
                 <div class="card border border-gray-100 rounded-md mb-2 shadow">
                     <div class="card-header bg-gray-100 p-2">
                         <h4>اسناد</h4>

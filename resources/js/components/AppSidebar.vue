@@ -101,8 +101,8 @@ const mainNavItems: NavItem[] = [
         icon: Images,
     },
     {
-        title: 'انبارها',
-        href: '/admin/inventory',
+        title: 'آیکون باکس',
+        href: '/admin/box',
         icon: Warehouse,
     },
     {

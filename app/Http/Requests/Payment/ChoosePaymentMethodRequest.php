@@ -11,10 +11,7 @@ class ChoosePaymentMethodRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (auth()->check()) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**

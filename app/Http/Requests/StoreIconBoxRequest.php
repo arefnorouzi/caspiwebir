@@ -11,6 +11,10 @@ class StoreIconBoxRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        if (auth()->check())
+        {
+            return true;
+        }
         return false;
     }
 
@@ -22,7 +26,12 @@ class StoreIconBoxRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'bail|required|string|max:150',
+            'link' => 'bail|nullable|string|max:150',
+            'status' => 'bail|required|boolean',
+            'image' => 'bail|nullable|string|max:250',
+            'position' => 'bail|required|integer|between:1,100',
+            'page_section_id' => 'bail|nullable|integer|exists:page_sections,id',
         ];
     }
 }

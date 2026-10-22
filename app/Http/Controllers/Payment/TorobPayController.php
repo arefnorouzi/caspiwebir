@@ -34,7 +34,7 @@ class TorobPayController extends Controller
                 return redirect('/checkout')
                     ->with("error", "خطا در ارتباط با درگاه بانکی. لطفا درگاه بانکی دیگری را انتخاب نمایید");
             }
-            $Amount = intval($invoice->amount * 10); //YourAmount (Rials)
+            $Amount = intval(($invoice->amount + $invoice->interest_amount) * 10); //YourAmount (Rials)
             $eligible_request = $torob_pay_service->eligible(
                 amount: $Amount, access_token: $token_request['access_token']
             );
@@ -51,8 +51,8 @@ class TorobPayController extends Controller
                     "id" => $item->id,
                     "name" => $item->name,
                     "count" => $item->qty,
-                    "amount" => $item->unit_price,
-                    "category" => $item->plan_type->name,
+                    "amount" => intval($item->unit_price * 10),
+                    "category" => "خدمات نرم افزاری",
                     "commissionType" => "1"
                 ];
             }
@@ -60,9 +60,9 @@ class TorobPayController extends Controller
 
             $cart = [
                 "cartId" => "$invoice->id",
-                "totalAmount" => $invoice->amount,
+                "totalAmount" => intval($invoice->amount * 10),
                 "taxAmount" => 0,
-                "shippingAmount" => $invoice->shipping_cost,
+                "shippingAmount" => intval($invoice->shipping_cost * 10),
                 "isTaxIncluded" => true,
                 "isShipmentIncluded" => true,
                 "cartItems" => $items,

@@ -33,7 +33,8 @@ class SnappPayController extends Controller
                 return redirect('/checkout')
                     ->with("error", "خطا در ارتباط با درگاه بانکی. لطفا درگاه بانکی دیگری را انتخاب نمایید");
             }
-            $Amount = intval($invoice->amount * 10); //YourAmount (Rials)
+            $Amount = intval(($invoice->amount + $invoice->interest_amount) * 10); //YourAmount (Rials)
+
             $eligible_request = $snapp_pay_service->eligible(
                 amount: $Amount, access_token: $token_request['access_token']
             );
@@ -44,21 +45,20 @@ class SnappPayController extends Controller
             }
 
             $items = [];
-            foreach ($invoice->items() as $item)
-            {
+            $invoice->load('items');
+            foreach ($invoice->items as $item) {
                 $items[] = [
                     "id" => $item->id,
                     "name" => $item->name,
                     "count" => $item->qty,
                     "amount" => intval($item->unit_price * 10),
-                    "category" => $item->brand->name,
+                    "category" => "خدمات نرم افزاری",
                     "commissionType" => "1"
                 ];
             }
 
-
             $cart = [
-                "cartId" => "$invoice->id",
+                "cartId" => $invoice->id,
                 "totalAmount" => intval($invoice->amount * 10),
                 "taxAmount" => 0,
                 "shippingAmount" => intval($invoice->shipping_cost * 10),
@@ -70,8 +70,8 @@ class SnappPayController extends Controller
                 "amount" => $Amount,
                 'discountAmount' => intval($invoice->discount * 10),
                 'externalSourceAmount' => 0,
-                "returnURL" => route('payment.snapp.callback'),
-                //"returnURL" => "https://caspiweb.ir/payment/snapp/callback",
+               // "returnURL" => route('payment.snapp.callback'),
+                "returnURL" => "https://caspiweb.ir/payment/snapp/callback",
                 "transactionId" => $invoice->uuid,
                 "cartList" => [$cart],
                 "mobile" => "+98" . substr($invoice->customer_mobile,1)
@@ -112,7 +112,7 @@ class SnappPayController extends Controller
             try {
                 Log::info("snapppay callback was ok");
                 $invoice = Invoice::where('payment_status', false)
-                    ->where('id', intval($validated["transactionId"]))->first();
+                    ->where('uuid', $validated["transactionId"])->first();
                 if (!$invoice)
                 {
                     return redirect()->route('payment.fail');
@@ -172,7 +172,7 @@ class SnappPayController extends Controller
                                 status: "پرداخت شده"
                             );
                         }
-                        return redirect()->route('payment.success');
+                        return view('payment.success', ['invoice' => $invoice]);
                     }
 
                 }

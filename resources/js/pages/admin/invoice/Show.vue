@@ -93,7 +93,7 @@ const form_tabs = ref([
                     <div class="p-2 my-1">
                         <div class="w-full flex justify-between items-center mb-3 mt-1 pl-3">
                             <div>
-                                <h3 class="text-lg font-semibold text-slate-800">جزئیات فاکتور</h3>
+                                <h3 class="text-lg font-semibold text-indigo-800">جزئیات فاکتور: {{props.invoice.id}}</h3>
                             </div>
                             <div class="ml-3">
                                 <Link :href="`/admin/invoice/${invoice.id}/edit`" class="m-1">
@@ -129,44 +129,43 @@ const form_tabs = ref([
                     </div>
                     <div class="p-2 mb-2 ">
                         <p class="bg-orange-200 text-black p-2 rounded-md mb-2">قیمت ها براساس تومان میباشد</p>
-                        <table class="w-full text-right table-auto min-w-max mb-5 overflow-x-scroll">
+                        <table class="w-full text-right table-auto min-w-max mb-5">
                             <thead>
                             <tr>
-                                <th class="p-2 border-b border-slate-300 bg-slate-50">
-                                    <p class="block text-xs font-normal leading-none text-slate-500">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
+                                    <p class="block text-sm font-normal leading-none text-slate-500">
                                         ردیف
                                     </p>
                                 </th>
 
 
-                                <th class="p-2 border-b border-slate-300 bg-slate-50">
-                                    <p class="block text-xs font-normal leading-none text-slate-500">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
+                                    <p class="block text-sm font-normal leading-none text-slate-500">
                                         محصول
                                     </p>
                                 </th>
-
-                                <th class="p-2 border-b border-slate-300 bg-slate-50">
-                                    <p class="block text-xs font-normal leading-none text-slate-500">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
+                                    <p class="block text-sm font-normal leading-none text-slate-500">
                                         تعداد
                                     </p>
                                 </th>
-                                <th class="p-2 border-b border-slate-300 bg-slate-50">
-                                    <p class="block text-xs font-normal leading-none text-slate-500">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
+                                    <p class="block text-sm font-normal leading-none text-slate-500">
                                         قیمت واحد
                                     </p>
                                 </th>
-                                <th class="p-2 border-b border-slate-300 bg-slate-50">
-                                    <p class="block text-xs font-normal leading-none text-slate-500">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
+                                    <p class="block text-sm font-normal leading-none text-slate-500">
                                         جمع واحد
                                     </p>
                                 </th>
-                                <th class="p-2 border-b border-slate-300 bg-slate-50">
-                                    <p class="block text-xs font-normal leading-none text-slate-500">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
+                                    <p class="block text-sm font-normal leading-none text-slate-500">
                                         تخفیف
                                     </p>
                                 </th>
-                                <th class="p-2 border-b border-slate-300 bg-slate-50">
-                                    <p class="block text-xs font-normal leading-none text-slate-500">
+                                <th class="p-2 border border-slate-300 bg-slate-50">
+                                    <p class="block text-sm font-normal leading-none text-slate-500">
                                         جمع
                                     </p>
                                 </th>
@@ -175,61 +174,75 @@ const form_tabs = ref([
                             </thead>
                             <tbody>
                             <tr v-for="(item, i) in invoice.items" :key="item.id">
-                                <td class="p-2 border-b border-slate-200">
-                                    <p class="block font-semibold text-xs text-blue-800">{{ i + 1 }}</p>
+                                <td class="p-2 border border-slate-200 py-2">
+                                    <p class="block font-semibold text-sm text-blue-800">{{ i + 1 }}</p>
 
                                 </td>
 
-                                <td class="p-2 border-b border-slate-200">
-                                    <p v-if="item.product_id" class="text-xs">
-                                        <a :href="`/shop/p/${item?.product?.id}`" target="_blank">
+                                <td class="p-2 border border-slate-200 py-2">
+                                    <p v-if="item.product_id">
+                                        <a :href="`/shop/p/${item?.product_id}`" target="_blank">
                                             {{ item?.name }}
                                         </a>
                                     </p>
+                                    <p v-else>{{item?.name}}</p>
+
                                 </td>
 
-                                <td class="p-2 border-b border-slate-200">
-                                    <p class="text-xs text-slate-500">{{ Number(item.qty).toLocaleString()}}</p>
+                                <td class="p-2 border border-slate-200 py-2">
+                                    <p class="text-sm text-slate-500">{{ Number(item.qty).toLocaleString()}}</p>
                                 </td>
-                                <td class="p-2 border-b border-slate-200">
-                                    <p class="text-xs text-slate-500">{{ Number(item.item_price).toLocaleString()}}</p>
+                                <td class="p-2 border border-slate-200 py-2">
+                                    <p class="text-sm text-slate-500">{{ Number(item.item_price).toLocaleString()}}</p>
                                 </td>
-                                <td class="p-2 border-b border-slate-200">
-                                    <p class="text-xs text-slate-500">{{ Number(item.item_price * item.qty).toLocaleString()}}</p>
+                                <td class="p-2 border border-slate-200 py-2">
+                                    <p class="text-sm text-slate-500">{{ Number(item.item_price * item.qty).toLocaleString()}}</p>
                                 </td>
-                                <td class="p-2 border-b border-slate-200">
-                                    <p class="text-xs text-slate-500">{{ Number(item.discount * item.qty).toLocaleString()}}</p>
+                                <td class="p-2 border border-slate-200 py-2">
+                                    <p class="text-sm text-slate-500">{{ Number(item.discount * item.qty).toLocaleString()}}</p>
                                 </td>
-                                <td class="p-2 border-b border-slate-200">
-                                    <p class="text-xs text-slate-500">{{ Number(item.unit_price * item.qty).toLocaleString()}}</p>
+                                <td class="p-2 border border-slate-200 py-2">
+                                    <p class="text-sm text-slate-500">{{ Number(item.unit_price * item.qty).toLocaleString()}}</p>
                                 </td>
+
                             </tr>
                             </tbody>
                             <tfoot>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">+</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">جمع سفارش</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.sub_total).toLocaleString()}} تومان</td>
+                            <tr class="text-teal-800">
+                                <td class="p-2 border border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">جمع سفارش</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.sub_total).toLocaleString()}} تومان</td>
                             </tr>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">+</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">مالیات</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.tax).toLocaleString()}} تومان</td>
+                            <tr class="text-teal-800">
+                                <td class="p-2 border border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">مالیات</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.tax).toLocaleString()}} تومان</td>
                             </tr>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">+</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">هزینه ارسال</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.shipping_cost).toLocaleString()}} تومان</td>
+                            <tr class="text-teal-800">
+                                <td class="p-2 border border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">هزینه ارسال</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.shipping_cost).toLocaleString()}} تومان</td>
                             </tr>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">-</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">تخفیف</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.discount).toLocaleString()}} تومان</td>
+
+                            <tr class="text-red-800">
+                                <td class="p-2 border border-slate-200">-</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">تخفیف</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.discount).toLocaleString()}} تومان</td>
                             </tr>
-                            <tr>
-                                <td class="p-2 border-b border-slate-200">*</td>
-                                <td colspan="2" class="p-2 border-b border-slate-200 text-xs">مبلغ نهایی</td>
-                                <td colspan="4" class="p-2 border-b border-slate-200 text-xs">{{Number(invoice.amount).toLocaleString()}} تومان</td>
+                            <tr class="text-blue-800">
+                                <td class="p-2 border border-slate-200">=</td>
+                                <td colspan="2" class="p-2 border border-slate-200 font-bold">جمع نهایی <small>(پرداخت نقدی)</small></td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-sm">{{Number(invoice.amount).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr v-if="invoice.interest_amount" class="text-teal-800">
+                                <td class="p-2 border border-slate-200">+</td>
+                                <td colspan="2" class="p-2 border border-slate-200 text-xs">کارمزد پرداخت قسطی</td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-xs">{{Number(invoice.interest_amount).toLocaleString()}} تومان</td>
+                            </tr>
+                            <tr v-if="invoice.interest_amount"  class="text-blue-800">
+                                <td class="p-2 border border-slate-200">=</td>
+                                <td colspan="2" class="p-2 border border-slate-200 font-bold">جمع نهایی <small>(پرداخت قسطی)</small></td>
+                                <td colspan="4" class="p-2 border border-slate-200 text-sm">{{Number(invoice.amount + invoice.interest_amount).toLocaleString()}} تومان</td>
                             </tr>
                             </tfoot>
                         </table>
@@ -237,7 +250,29 @@ const form_tabs = ref([
                         <hr class="my-1">
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-1 mt-3">
+                            <div class="mb-1 border border-gray-200 p-2">
+                                <p class="text-sm">نام مشتری:
+                                    <a :href="`/admin/user/${invoice.user_id}`" target="_blank">
+                                        {{invoice.customer_name ?? invoice?.user?.name }}</a>
+                                </p>
+                            </div>
+                            <div class="mb-1 border border-gray-200 p-2">
+                                <p class="text-sm">شماره تماس:
+                                    {{invoice.customer_mobile ?? invoice?.user?.mobile }}
+                                </p>
+                            </div>
 
+                            <div class="mb-1 border border-gray-200 p-2">
+                                <p class="text-sm">تاریخ سفارش:
+                                    {{formatDate(invoice.created_at) }}
+                                </p>
+                            </div>
+                            <div class="mb-1 border border-gray-200 p-2">
+                                <p class="text-sm">تاریخ پرداخت:
+                                    <span v-if="invoice.pusrchased_at">{{formatDate(invoice.purchased_at) }}</span>
+                                    <span v-else class="text-red-600">پرداخت نشده</span>
+                                </p>
+                            </div>
 
                             <div class="mb-1 border border-gray-200 p-2">
                                 <p class="text-xs">استان / شهر:
@@ -313,32 +348,32 @@ const form_tabs = ref([
                 </TabContainer>
             </div>
 
-            <div class="w-full my-3">
-                <div class="card shadow-md rounded-md">
-                    <div class="bg-gray-100 p-2">
-                        <h4 class="text-sm">سیکل سفارش</h4>
-                    </div>
-                    <div class="card-body p-1">
-                        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-3 text-center">
-                            <div v-for="(invoice_status, inv_st) in status_steps" :key="inv_st"
-                                 class=" max-w-[100px] justify-between text-right cursor-pointer"
+<!--            <div class="w-full my-3">-->
+<!--                <div class="card shadow-md rounded-md">-->
+<!--                    <div class="bg-gray-100 p-2">-->
+<!--                        <h4 class="text-sm">سیکل سفارش</h4>-->
+<!--                    </div>-->
+<!--                    <div class="card-body p-1">-->
+<!--                        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-3 text-center">-->
+<!--                            <div v-for="(invoice_status, inv_st) in status_steps" :key="inv_st"-->
+<!--                                 class=" max-w-[100px] justify-between text-right cursor-pointer"-->
 
-                            >
-                                <div :class="invoice_steps.includes(invoice_status.id) ? 'is_done' : 'is_pending'">
-                                    <div
-                                        :class="`${invoice_steps.includes(invoice_status.id) ? 'border-green-700' : 'border-gray-500'} border cycle-icon rounded-full w-[50px] h-[50px] items-center content-center text-center`"
-                                    >
-                                        <img :src="invoice_status?.image" class="w-[30px] mx-auto">
-                                    </div>
-                                    <div class="cycle-name text-xs mt-1" style="word-break: break-word">{{invoice_status?.name}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!--                            >-->
+<!--                                <div :class="invoice_steps.includes(invoice_status.id) ? 'is_done' : 'is_pending'">-->
+<!--                                    <div-->
+<!--                                        :class="`${invoice_steps.includes(invoice_status.id) ? 'border-green-700' : 'border-gray-500'} border cycle-icon rounded-full w-[50px] h-[50px] items-center content-center text-center`"-->
+<!--                                    >-->
+<!--                                        <img :src="invoice_status?.image" class="w-[30px] mx-auto">-->
+<!--                                    </div>-->
+<!--                                    <div class="cycle-name text-xs mt-1" style="word-break: break-word">{{invoice_status?.name}}</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
 
 
-            </div>
+<!--            </div>-->
 
         </div>
 
