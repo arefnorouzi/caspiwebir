@@ -16,7 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const form = useForm({
     name: '',
-    slug: 'p-' + Math.floor(Math.random() * 1000000),
+    slug: 'p-' + Math.floor(Math.random() * 10000),
     video: null,
     video_poster: null,
     sku: String(new Date().getTime()),
@@ -25,8 +25,8 @@ const form = useForm({
     price: 1000,
     offer_price: null,
     offer_end_date: null,
-    guarantee: '',
-    warranty: '',
+    guarantee: null,
+    warranty: 'ضمانت بازگشت وجه تا 7 روز',
     meta: '',
     description: '',
     excerpt_review: '',
@@ -36,7 +36,7 @@ const form = useForm({
     pinned: 0,
     min_buy: 1,
     buyable: 1,
-    installment_purchase: 0,
+    installment_purchase: 1,
     pre_order: 0,
     call_to_price: 0,
     amazing: 0,

@@ -57,6 +57,7 @@ class UpdateProductRequest extends FormRequest
             'video' => 'bail|nullable|string|max:250',
             'video_poster' => 'bail|nullable|string|max:250',
             'image' => 'bail|nullable|string|max:255',
+            'brand_id' => 'bail|nullable|integer|min:1|exists:brands,id',
             'product_unit_id' => 'bail|required|integer|min:1|exists:product_units,id',
             'categories' => 'bail|required|array|min:1',
             'categories.*' => 'bail|required|integer|exists:categories,id'

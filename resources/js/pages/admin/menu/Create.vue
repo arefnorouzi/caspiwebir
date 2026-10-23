@@ -21,7 +21,7 @@ const props = defineProps<Props>()
 const form = useForm({
     name: null,
     slug: null,
-    status: 0,
+    status: 1,
     rank: 10,
     parent_id: null,
     position: props.position

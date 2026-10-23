@@ -29,7 +29,7 @@ class IconBox extends Model
             ->when($search_text, function ($query, $search_text) {
                 $query->where('name', 'like', '%'.$search_text.'%');
             })
-            ->with(['page_section:id,anem'])
+            ->with(['page_section:id,name'])
             ->orderBy('id', 'desc')
             ->paginate($perPage, $this->report_fields)->withQueryString();
     }
