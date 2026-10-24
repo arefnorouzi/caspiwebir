@@ -24,7 +24,9 @@ class BlogController extends Controller
             Log::error($e->getMessage());
             $posts = [];
         }
-        $categories = BlogCategory::where('status', true)->get(['id', 'name', 'slug', 'image']);
+        $categories = BlogCategory::where('status', true)
+            ->withCount('posts')
+            ->get(['id', 'name', 'slug', 'image']);
         return view('blog.index', ['posts' => $posts, 'categories' => $categories]);
     }
 
@@ -48,7 +50,10 @@ class BlogController extends Controller
             ->whereIn('blog_category_id', $category_ids)
             ->with(['author:id,name'])
             ->paginate(10, ['id', 'name', 'blog_category_id', 'slug', 'meta', 'user_id', 'image', 'published_at']);
-        return view('blog.index', ['posts' => $posts]);
+        $categories = BlogCategory::where('status', true)
+            ->withCount('posts')
+            ->get(['id', 'name', 'slug', 'image']);
+        return view('blog.index', ['posts' => $posts, 'categories' => $categories]);
     }
 
     public function show(string $slug)

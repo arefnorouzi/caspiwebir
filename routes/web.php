@@ -12,11 +12,13 @@ Route::get('/enamad', [HomeController::class, 'enamad'])->name('enamad');
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
 Route::get('/services', [HomeController::class, 'services'])->name('services');
 Route::get('/partner', [HomeController::class, 'partner'])->name('partner');
 Route::get('/page/{slug}', [HomeController::class, 'page_detail'])->name('page_detail');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
+Route::get('/blog/category/{slug}', [BlogController::class, 'blog_category'])->name('blog_category');
 Route::get('/blog/article/{Slug}', [BlogController::class, 'show'])->name('blog_show');
 
 

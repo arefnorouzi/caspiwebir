@@ -248,6 +248,14 @@ class HomeController extends Controller
         ]);
     }
 
+    public function terms()
+    {
+        $page = Page::where('slug', 'terms')->first();
+        return view('pages.show', [
+            'model' => $page
+        ]);
+    }
+
     public function page_detail(string $slug)
     {
         $slug = PregStr::preg_slug($slug);

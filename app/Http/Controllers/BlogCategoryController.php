@@ -46,11 +46,11 @@ class BlogCategoryController extends Controller
             BlogCategory::create($validated);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return to_route('admin.blog-category.index')
+            return to_route('admin.blog.category.index')
                 ->with('error', config('messages.error'))
                 ->withErrors($e->getMessage());
         }
-        return to_route('admin.blog-category.index')
+        return to_route('admin.blog.category.index')
             ->with('message', config('messages.created'));
     }
 

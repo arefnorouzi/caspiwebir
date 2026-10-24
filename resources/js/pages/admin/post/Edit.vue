@@ -34,25 +34,7 @@ const form = useForm({
     blog_category_id: props?.model?.blog_category_id
 });
 async function submit() {
-    validation_errors.value = null
-    await axios.patch('/admin/post/' + props?.model?.id, form)
-        .then(res => {
-            showToast("رکورد با موفقیت بروزرسانی شد", "success")
-            form.reset();
-        })
-        .catch(err => {
-            if (err?.response?.data?.errors)
-            {
-                validation_errors.value = err.response.data.errors
-            }
-            if (err?.response?.data?.message)
-            {
-                showToast(err.response.data.message, "error")
-            }
-            else {
-                showToast("خطا در بروزرسانی رکورد", "error")
-            }
-        })
+    form.patch("/admin/post/" + props.model.id)
 }
 
 async function handleFileChange(e) {

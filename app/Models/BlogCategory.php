@@ -38,8 +38,7 @@ class BlogCategory extends Model
 
     public function select_categories()
     {
-        return $this->where('parent_id', null)
-            ->with('children:id,name,parent_id')
+        return $this->where('status', 1)
             ->get(['id', 'name', 'parent_id']);
     }
 

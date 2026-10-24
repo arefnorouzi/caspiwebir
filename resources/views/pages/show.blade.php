@@ -7,30 +7,24 @@
 @section('content')
 
 
-    <section class="mt-4 md:mt-7 ">
-        <div class="container mx-auto px-5 relative">
-            <div class="flex flex-col justify-center items-center gap-5">
-                <div class="max-w-md rounded-3xl p-px bg-gradient-to-b from-[var(--secend)] to-[var(--crayola)] ">
-                    <div class="rounded-[calc(1.5rem-1px)] py-2 px-5 bg-white">
-                        <span class="text-gray-500 font-ligh text-sm md:text-base">{{$model->name}}</span>
+    <div class="max-w-[1440px] mx-auto px-3">
+        <div class="mt-0 mb-5 lg:mt-10 lg:mb-8 p-1 md:p-3">
+            <div class="md:flex w-full gap-x-7">
+                <div class="w-full md:w-8/12 lg:w-9/12">
+                    <div class="flex flex-col py-2 px-3 mt-6 lg:mt-0 max-w-5xl rounded-2xl bg-white">
+                        <div>
+                            <h1 class="text-2xl opacity-95 py-3 font-bold text-red-500">{{$model->name}}</h1>
+                            <div class="opacity-70 pb-3 leading-6 text-sm" id="post-content">
+                                {!! $model->description !!}
+                            </div>
+
+                        </div>
                     </div>
+                    <!-- BOX COMMENTS -->
                 </div>
-                <h2 class="font-extrabold text-2xl md:text-5xl md:w-[700px] leading-[40px] md:leading-[75px] mx-auto text-center text-slate-900">
-                    {{$model->name}}</h2>
-                <p class="md:w-3/5 text-[#4F4F4F] text-center text-sm md:text-base leading-7 md:leading-7">
-                    {{$model->meta}}
-                </p>
-
+            </div>
         </div>
-    </section>
-
-
-    <section class="mt-7 md:mt-16 ">
-        <div class="container mx-auto px-5 relative">
-            {!! $model->description !!}
-        </div>
-    </section>
-
+    </div>
 
 @endsection
 

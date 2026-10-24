@@ -42,7 +42,15 @@ class GenerateSitemap extends Command
         $staticPages = [
             URL::to('/'),
             URL::to('/shop'),
+            URL::to('/blog'),
+            URL::to('/shop/courses'),
             URL::to('/contact'),
+            URL::to('/faq'),
+            URL::to('/terms'),
+            URL::to('/partner'),
+            URL::to('/page/installment-payment'),
+            URL::to('/page/cryptocurrency-payment'),
+
             // ...
         ];
 
