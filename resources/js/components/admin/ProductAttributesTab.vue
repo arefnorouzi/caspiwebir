@@ -2,6 +2,7 @@
 import {router, useForm} from '@inertiajs/vue3';
 import InputComponent from "@/components/form/InputComponent.vue";
 import SelectComponent from "@/components/form/SelectComponent.vue";
+import {ref} from 'vue'
 
 const props = defineProps({
     product_id: Number,
@@ -71,13 +72,43 @@ const toggleStatus = (id: number) => {
         }
     )
 }
+const popular_items = [
+    {show: true, property_name: 'دسترسی دائمی به دوره', property_value: 'دارد', pinned: 1, property_status: 1},
+    {show: true, property_name: 'پیشنیاز', property_value: 'ندارد', pinned: 1, property_status: 1},
+    {show: true, property_name: 'پشتیبانی مدرس', property_value: 'دارد', pinned: 1, property_status: 1},
+    {show: true, property_name: 'سورس کد', property_value: 'دارد', pinned: 1, property_status: 1},
+    {show: true, property_name: 'دیتابیس', property_value: 'دارد', pinned: 1, property_status: 1},
+    {show: true, property_name: 'اجرا در سرور', property_value: 'دارد', pinned: 1, property_status: 1},
+    {show: true, property_name: 'احراز هویت', property_value: 'دارد', pinned: 1, property_status: 1},
+]
+async function addProperty(property_data: object, _index: number) {
+    property_form.property_name = property_data.property_name;
+    property_form.property_value = property_data.property_value;
+    property_form.pinned = property_data.pinned;
+    property_form.property_status = property_data.property_status;
+    await storeProperty()
+    popular_items[_index].show = false
+
+}
+
+
 </script>
 
 <template>
     <div class="border border-gray-200 rounded-md mb-5 flex flex-wrap">
+       
         <div class="w-full lg:w-2/5 p-2">
             <div class="w-full p-2 border bg-gray-200 rounded-md">
                 <h4>افزودن ویژگی های محصول</h4>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-3">
+                <div v-for="(p_item, _p) in popular_items" :key="_p">
+                    <div v-if="p_item.show"
+                         @click="addProperty(p_item, _p)"
+                         class="px-2 cursor-pointer hover:bg-gray-100 py-1 border border-teal-700 rounded-md text-center text-xs">
+                        <span>{{p_item.property_name}}: </span><span>{{p_item.property_value}}</span>
+                    </div>
+                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
                 <div>
