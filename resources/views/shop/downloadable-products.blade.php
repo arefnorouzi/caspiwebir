@@ -1,5 +1,9 @@
 @extends('layouts.IranMarket')
 @section('title', 'دوره ها و ویدیوهای آموزشی')
+@section('page_meta')
+    <!-- Canonical URL -->
+    <link rel="canonical" href="/shop/courses">
+@endsection
 @section('content')
 
     <div class="bg-white shadow-xl my-5 lg:my-10 rounded-xl md:rounded-2xl p-3 md:p-5">
@@ -153,7 +157,7 @@
             methods:{
                 async loadProducts(page = 1){
                     const params = new URLSearchParams()
-
+                    params.append('downloadable', 1)
                     if (this.filters.brands.length) params.append('brands', this.filters.brands)
                     if (this.filters.categories.length) params.append('categories', this.filters.categories)
 

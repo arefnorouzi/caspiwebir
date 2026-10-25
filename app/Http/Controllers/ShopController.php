@@ -42,7 +42,7 @@ class ShopController extends Controller
     {
         try {
             $product_model = new Product();
-            $products = $product_model->downloadable_products(per_page: 20);
+            $products = $product_model->downloadable_products(per_page: 30);
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -124,6 +124,10 @@ class ShopController extends Controller
             $query = Product::query();
             $query->where('status', true)
                 ->whereNotNull('published_at');
+            if (isset($request->downloadable) && $request->downloadable)
+            {
+                $query->where('downloadable', 1);
+            }
             // فیلتر دسته‌ها
             if ($request->categories) {
                 $cat_ids = explode(',', $request->categories);

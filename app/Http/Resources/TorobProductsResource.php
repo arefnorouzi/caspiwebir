@@ -17,7 +17,7 @@ class TorobProductsResource extends JsonResource
         return [
             'product_id' => $this->id,
             'product_name' => $this->name,
-            'product_image' => $this->thumbnail ?? $this->image,
+            'product_image' => $this->thumbnail ?  url($this->thumbnail) : url($this->image),
             'product_price' => $this->active_price ?? $this->price,
             'availability' => $this->stock > 0 ? "instock" : "outofstock",
             "guarantee" => $this->guarantee,

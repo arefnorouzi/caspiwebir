@@ -14,6 +14,7 @@ class TorobApiController extends Controller
     {
         try {
             $results = Product::where('status', true)
+                ->where('downloadable', 1)
                 ->whereNotNull('published_at')
                 ->paginate(100, ['id','name', 'price', 'offer_price', 'stock', 'image', 'thumbnail', 'guarantee']);
 

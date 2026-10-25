@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\ShoppingCartController;
-
+Route::get('/courses', [ShopController::class, 'downloadable_products'])->name('courses_products');
 Route::group(['prefix' => 'shop', 'as' => 'shop.'], function () {
     Route::get('/', [ShopController::class, 'index'])->name('index');
     Route::get('/courses', [ShopController::class, 'downloadable_products'])->name('downloadable_products');

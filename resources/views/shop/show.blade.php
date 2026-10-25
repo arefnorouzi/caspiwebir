@@ -9,14 +9,14 @@
     <meta property="og:type" content="product">
     <meta property="og:title" content="{{ $product->name }}">
     <meta property="og:description" content="{{ $product->meta ?? $product->name }}">
-    <meta property="og:image" content="{{ $product->image }}">
+    <meta property="og:image" content="{{ url($product->image) }}">
     <meta property="og:url" content="{{ url()->current() }}">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $product->name }}">
     <meta name="twitter:description" content="{{ $product->meta ?? $product->name }}">
-    <meta name="twitter:image" content="{{ $product->image }}">
+    <meta name="twitter:image" content="{{ url($product->image) }}">
 
 
     <!-- Product specific SEO -->

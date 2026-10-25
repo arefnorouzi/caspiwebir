@@ -275,7 +275,7 @@ class Product extends Model
             ->get($this->report_fields);
     }
 
-    public function recent_products($search_text = '', int $per_page = 20)
+    public function recent_products($search_text = '', int $per_page = 30)
     {
         return $this->active()
             ->orderby('rank', 'asc')
