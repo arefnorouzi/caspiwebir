@@ -1,5 +1,10 @@
 @extends('layouts.IranMarket')
 @section('title', "وبلاگ")
+@section('page_meta')
+    <link rel="canonical" href="/blog">
+    <meta name="googlebot" content="index, follow">
+    <meta name="robots" content="index">
+@endsection
 @section('css')
 <style>
     .posts-image{

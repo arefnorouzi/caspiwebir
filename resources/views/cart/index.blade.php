@@ -1,5 +1,10 @@
 @extends('layouts.IranMarket')
 @section('title', 'سبد خرید')
+@section('page_meta')
+    <link rel="canonical" href="/cart">
+    <meta name="googlebot" content="noindex">
+    <meta name="robots" content="noindex">
+@endsection
 @section('content')
 
     <div id="vueapp" class="bg-white shadow-xl my-5 lg:my-10 rounded-xl md:rounded-2xl p-3 md:p-5">

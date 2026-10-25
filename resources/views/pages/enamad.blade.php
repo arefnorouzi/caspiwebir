@@ -1,6 +1,11 @@
 @extends('layouts.IranMarket')
 @section('title', 'مجوزهای کسب و کار')
 @section('meta', 'نماد اعتماد')
+@section('page_meta')
+    <link rel="canonical" href="/page/{{$model->slug}}">
+    <meta name="googlebot" content="index">
+    <meta name="robots" content="index">
+@endsection
 @section('content')
 
     <section class=" mt-4 md:mt-7 mb-20">

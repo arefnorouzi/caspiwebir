@@ -1,7 +1,10 @@
 @extends('layouts.IranMarket')
 @section('title', $post->name)
 @section('meta', $post->meta ?? $post->name)
-@section('content')
+@section('page_meta')
+    <link rel="canonical" href="/blog/article/{{$post->slug}}">
+    <meta name="googlebot" content="index, follow">
+    <meta name="robots" content="index">
     <style>
         /* محفظه اصلی کد */
         #post-content .code-block-wrapper {
@@ -71,6 +74,9 @@
             }
         }
     </style>
+@endsection
+@section('content')
+
     <div class="max-w-[1440px] mx-auto px-3">
         <div class="mt-0 mb-5 lg:mt-10 lg:mb-8 p-1 md:p-3">
             <div class="md:flex w-full gap-x-7">

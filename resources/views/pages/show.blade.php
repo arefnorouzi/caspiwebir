@@ -2,7 +2,9 @@
 @section('title', $model->name)
 @section('meta', $model->meta)
 @section('page_meta')
-
+    <link rel="canonical" href="/page/{{$model->slug}}">
+    <meta name="googlebot" content="index">
+    <meta name="robots" content="index">
 @endsection
 @section('content')
 

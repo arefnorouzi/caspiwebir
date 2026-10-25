@@ -423,8 +423,9 @@ class ShopController extends Controller
         }
         $page = "shop";
         $category_name = $category->name;
-        return view('shop.caregory', compact('products',
-            'categories', 'page', 'authorized', 'brands', 'category_name'
+        $category_slug = $category->slug;
+        return view('shop.category', compact('products',
+            'categories', 'page', 'authorized', 'brands', 'category_name', 'category_slug'
         ));
     }
 
@@ -530,18 +531,18 @@ class ShopController extends Controller
             "@context" => "https://schema.org/",
             "@type" => "Product",
             "name" => $product->name,
-            "image" => [$product->image],
+            "image" => [url($product->image)],
             "description" => $product->meta ?? $product->name,
             "sku" => $product->id,
             "brand" => [
                 "@type" => "Brand",
-                "name" => $product?->brand?->name ?? null
+                "name" => $product?->brand?->name ?? 'مارلیک افزار'
             ],
             "offers" => [
                 "@type" => "Offer",
-                "url" => url()->current(),
+                "url" => url('/shop/product/' . $product->slug),
                 "priceCurrency" => "IRR",
-                "price" => $product->offer_price && $product->offer_price > 0 ? $product->offer_price : $product->price,
+                "price" => $product->active_price < $product->price ? intval($product->active_price * 10) : intval($product->price * 10),
                 "availability" => "https://schema.org/InStock",
                 "itemCondition" => "https://schema.org/NewCondition"
             ]

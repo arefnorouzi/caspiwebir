@@ -1,5 +1,10 @@
 @extends('layouts.IranMarket')
 @section('title', 'محصولات')
+@section('page_meta')
+    <link rel="canonical" href="/shop">
+    <meta name="googlebot" content="index, follow">
+    <meta name="robots" content="index">
+@endsection
 @section('content')
 
     <div class="bg-white shadow-xl my-5 lg:my-10 rounded-xl md:rounded-2xl p-3 md:p-5">

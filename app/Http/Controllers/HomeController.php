@@ -219,7 +219,7 @@ class HomeController extends Controller
     public function about()
     {
         $page = Page::where('slug', 'about')->first();
-        return view('pages.about', [
+        return view('pages.show', [
             'model' => $page
         ]);
     }
@@ -227,7 +227,7 @@ class HomeController extends Controller
     public function contact()
     {
         $page = Page::where('slug', 'contact')->first();
-        return view('pages.contact', [
+        return view('pages.show', [
             'model' => $page
         ]);
     }

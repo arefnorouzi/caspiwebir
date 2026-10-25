@@ -2,7 +2,9 @@
 @section('title', $model->name)
 @section('meta', $model->meta)
 @section('page_meta')
-
+    <link rel="canonical" href="/contact">
+    <meta name="googlebot" content="index">
+    <meta name="robots" content="index">
 @endsection
 @section('content')
 
@@ -14,7 +16,7 @@
                     <div class="flex flex-col py-2 px-3 mt-6 lg:mt-0 max-w-5xl rounded-2xl bg-white">
                         <div>
                             <h1 class="text-2xl opacity-95 py-3 font-bold text-red-500">{{$model->name}}</h1>
-                            <div class="opacity-70 pb-3 leading-6 text-sm" id="post-content">
+                            <div class="pb-3 leading-6 text-sm" id="post-content">
                                 {!! $model->description !!}
                             </div>
 

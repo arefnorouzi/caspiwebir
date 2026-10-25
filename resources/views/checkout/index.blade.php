@@ -1,5 +1,10 @@
 @extends('layouts.IranMarket')
 @section('title', 'تسویه حساب')
+@section('page_meta')
+    <link rel="canonical" href="/checkout">
+    <meta name="googlebot" content="noindex">
+    <meta name="robots" content="noindex">
+@endsection
 @section('content')
 
     <main class="max-w-[1500px] mx-auto px-3 md:px-5">

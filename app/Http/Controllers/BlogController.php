@@ -53,7 +53,7 @@ class BlogController extends Controller
         $categories = BlogCategory::where('status', true)
             ->withCount('posts')
             ->get(['id', 'name', 'slug', 'image']);
-        return view('blog.index', ['posts' => $posts, 'categories' => $categories]);
+        return view('blog.category', ['posts' => $posts, 'categories' => $categories, 'category_model' => $category]);
     }
 
     public function show(string $slug)

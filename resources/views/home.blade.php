@@ -1,7 +1,10 @@
 @extends('layouts.IranMarket')
 @section('title', 'آموزش برنامه نویسی | طراحی سایت | سئو')
 @section('meta', 'خدمات برنامه نویسی، طراحی سایت، میزبانی و سئو سایت. آموزش برنامه نویسی پایتون، php, javascript.')
-
+@section('page_meta')
+    <meta name="googlebot" content="index">
+    <meta name="robots" content="index">
+@endsection
 @section('content')
     <!-- HERO SLIDER -->
     @if(isset($sliders) && count($sliders))

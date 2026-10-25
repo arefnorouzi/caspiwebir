@@ -1,5 +1,9 @@
 @extends('layouts.IranMarket')
 @section('title', 'پرداخت فاکتور')
+@section('page_meta')
+    <meta name="googlebot" content="noindex">
+    <meta name="robots" content="noindex">
+@endsection
 @section('content')
 
     <main class="max-w-[1500px] mx-auto px-3 py-5 md:px-5">

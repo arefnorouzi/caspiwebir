@@ -2,6 +2,8 @@
 @section('title', $product->name)
 @section('meta', $product->seo_meta ?? $product->meta)
 @section('page_meta')
+    <meta name="googlebot" content="index, follow">
+    <meta name="robots" content="index">
     <!-- Canonical URL -->
     <link rel="canonical" href="/shop/product/slug/{{$product->slug}}">
 

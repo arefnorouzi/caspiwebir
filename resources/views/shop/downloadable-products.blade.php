@@ -3,6 +3,8 @@
 @section('page_meta')
     <!-- Canonical URL -->
     <link rel="canonical" href="/shop/courses">
+    <meta name="googlebot" content="index, follow">
+    <meta name="robots" content="index">
 @endsection
 @section('content')
 
