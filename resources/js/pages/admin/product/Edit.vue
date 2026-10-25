@@ -62,6 +62,7 @@ const form = useForm({
     description: props.model.description,
     excerpt_review: props.model.excerpt_review,
     image: props.model.image,
+    torob: props.model.torob,
     status: props.model.status,
     pinned: props.model.pinned,
     source: props.model.source,

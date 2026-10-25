@@ -40,6 +40,7 @@ class UpdateProductRequest extends FormRequest
             'source' => 'bail|required|boolean',
             'course_time' => 'bail|nullable|string',
             'duration' => 'bail|nullable|integer|min:1',
+            'torob' => 'bail|required|boolean',
             'pinned' => 'bail|required|boolean',
             'buyable' => 'bail|required|boolean',
             'installment_purchase' => 'bail|required|boolean',

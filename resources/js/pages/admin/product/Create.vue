@@ -32,6 +32,7 @@ const form = useForm({
     excerpt_review: '',
     image: '',
     thumbnail: '',
+    torob: 0,
     status: 0,
     pinned: 0,
     min_buy: 1,

@@ -230,6 +230,30 @@ const props = defineProps({
 
                             <div class="mb-2">
                                 <CheckboxComponent
+                                    label="محصول پیشنهادی" id="suggested" v-model="props.form.suggested"
+                                    :value="props.form.suggested"
+                                    :input_error="props.form?.errors?.suggested"
+                                />
+                            </div>
+
+                            <div class="mb-2">
+                                <CheckboxComponent
+                                    label="محصول شگفت انگیز" id="amazing" v-model="props.form.amazing"
+                                    :value="props.form.amazing"
+                                    :input_error="props.form?.errors?.amazing"
+                                />
+                            </div>
+
+                            <div class="mb-2">
+                                <CheckboxComponent
+                                    label="نمایش در ترب" id="torob" v-model="props.form.torob"
+                                    :value="props.form.torob"
+                                    :input_error="props.form?.errors?.torob"
+                                />
+                            </div>
+
+                            <div class="mb-2">
+                                <CheckboxComponent
                                     label="برای قیمت تماس بگیرید" id="call_to_price"
                                     v-model="props.form.call_to_price"
                                     :value="props.form.call_to_price"
