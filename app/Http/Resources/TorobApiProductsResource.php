@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use function Pest\Laravel\json;
 
 class TorobApiProductsResource extends JsonResource
 {
@@ -30,6 +31,12 @@ class TorobApiProductsResource extends JsonResource
             "short_desc" => $this->seo_meta ?? $this->meta,
             "date_added" => $this->created_at,
             "date_updated" => $this->updated_at,
+            "spec" => [
+              'شناسه دوره' => $this->id,
+              'تعداد جلسات' => $this->duration ?? 1,
+              'مدت دوره' => $this->course_time ?? "1 ساعت",
+              'تعداد دانشجو' => $this->sales ?? 1,
+            ]
         ];
     }
 }

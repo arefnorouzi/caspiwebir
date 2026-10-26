@@ -17,7 +17,7 @@ class TorobApiController extends Controller
         try {
             $fields = [
                 'id','name', 'price', 'offer_price', 'stock', 'image', 'thumbnail', 'guarantee',
-                'brand_id', 'seo_meta', 'meta', 'created_at', 'updated_at'
+                'brand_id', 'seo_meta', 'meta', 'created_at', 'updated_at', 'course_time', 'duration', 'sales'
             ];
             $products = Product::where('status', true)
                 ->where('downloadable', 1)
@@ -44,7 +44,7 @@ class TorobApiController extends Controller
         $product_ids = [];
         $fields = [
             'id','name', 'price', 'offer_price', 'stock', 'image', 'thumbnail', 'guarantee',
-            'brand_id', 'seo_meta', 'meta', 'created_at', 'updated_at'
+            'brand_id', 'created_at', 'updated_at', 'course_time', 'duration', 'sales'
         ];
         $q = Product::query();
         $q->where('status', true)
