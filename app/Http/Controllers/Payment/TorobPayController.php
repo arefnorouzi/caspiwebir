@@ -61,7 +61,7 @@ class TorobPayController extends Controller
             $cart = [
                 "cartId" => "$invoice->id",
                 "totalAmount" => intval($invoice->amount * 10),
-                "taxAmount" => 0,
+                "taxAmount" => intval($invoice->interest_amount * 10),
                 "shippingAmount" => intval($invoice->shipping_cost * 10),
                 "isTaxIncluded" => true,
                 "isShipmentIncluded" => true,
@@ -69,6 +69,7 @@ class TorobPayController extends Controller
             ];
             $payload = json_encode([
                 "amount" => $Amount,
+                'discountAmount' => intval($invoice->discount * 10),
                 "paymentMethodTypeDto" => "ONLINE_CREDIT",
                 "returnURL" => route('payment.torob.callback'),
                 "transactionId" => $invoice->id,

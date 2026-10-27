@@ -39,6 +39,10 @@ class InvoiceController extends Controller
             {
                 $models = $model->trash_items(search_text: $request->search ?? '');
             }
+            elseif (isset($request->status_id) && $request->status_id > 0)
+            {
+                $models = $model->all_items(search_text: $request->search ?? '', status_id: intval($request->status_id));
+            }
             else{
                 $models = $model->all_items(search_text: $request->search ?? '');
             }
@@ -49,8 +53,10 @@ class InvoiceController extends Controller
             Log::error($e->getMessage());
             $models = [];
         }
+        $statuses = InvoiceStatus::get(['id', 'name']);
         return Inertia::render('admin/invoice/Index', [
-            'models' => $models, 'search_text' => $request->search ?? ''
+            'models' => $models, 'search_text' => $request->search ?? '',
+            'status_id' => $request->status_id ?? 0, 'statuses' => $statuses
         ]);
     }
 

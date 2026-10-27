@@ -16,6 +16,39 @@ use Illuminate\Support\Facades\Log;
 
 class SnappPayController extends Controller
 {
+
+    public function check_eligible($id): object
+    {
+        $invoice_model = new Invoice();
+        $invoice = $invoice_model->find_for_pay($id);
+        if (!$invoice) {
+            return response()->json(["error" => "فاکتور برای پرداخت پیدا نشد"], 400);
+        }
+        try {
+            $snapp_pay_service = new SnappPayService();
+            $token_request = $snapp_pay_service->get_token();
+            if (!$token_request) {
+                return response()->json(["error" => "خطا در برقراری ارتباط با اسنپ پی"], 400);
+            }
+            $Amount = intval(($invoice->amount + $invoice->interest_amount) * 10); //YourAmount (Rials)
+
+            $eligible_request = $snapp_pay_service->eligible(
+                amount: $Amount, access_token: $token_request['access_token']
+            );
+            if ($eligible_request && isset($eligible_request['successful']) &&
+                $eligible_request['successful'] && isset($eligible_request['response']) &&
+                $eligible_request['response']['eligible']) {
+                return response()->json($eligible_request['response']);
+            }
+
+
+        } catch (\Exception $e){
+            Log::error($e->getMessage());
+
+        }
+        return response()->json(["error" => "امکان پرداخت فاکتور با اسنپ پی وجود ندارد"], 400);
+
+    }
     public function pay($id)
     {
         $invoice_model = new Invoice();
@@ -53,14 +86,14 @@ class SnappPayController extends Controller
                     "count" => $item->qty,
                     "amount" => intval($item->unit_price * 10),
                     "category" => "خدمات نرم افزاری",
-                    "commissionType" => "1"
+                    "commissionType" => "100"
                 ];
             }
 
             $cart = [
                 "cartId" => $invoice->id,
-                "totalAmount" => intval($invoice->amount * 10),
-                "taxAmount" => 0,
+                "totalAmount" => intval(($invoice->sub_total + $invoice->tax + $invoice->shipping_cost) * 10),
+                "taxAmount" => intval($invoice->tax * 10),
                 "shippingAmount" => intval($invoice->shipping_cost * 10),
                 "isTaxIncluded" => true,
                 "isShipmentIncluded" => true,
@@ -72,7 +105,7 @@ class SnappPayController extends Controller
                 'externalSourceAmount' => 0,
                // "returnURL" => route('payment.snapp.callback'),
                 "returnURL" => "https://caspiweb.ir/payment/snapp/callback",
-                "transactionId" => $invoice->uuid,
+                "transactionId" => "$invoice->id",
                 "cartList" => [$cart],
                 "mobile" => "+98" . substr($invoice->customer_mobile,1)
             ]);

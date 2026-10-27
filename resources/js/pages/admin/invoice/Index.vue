@@ -14,11 +14,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface Props {
     models: object;
     search_text: string;
+    status_id: number;
+    statuses: object;
 }
 const props = defineProps<Props>()
 const search = ref(props.search_text)
+const search_status = ref(props.status_id)
 watch(search, _.debounce(
     (q) => router.get("/admin/invoice", {search: q}, {preserveState: true}
+    ), 1000));
+watch(search_status, _.debounce(
+    (q) => router.get("/admin/invoice", {status_id: q}, {preserveState: true}
     ), 1000));
 
 const formatDate = (d) =>
@@ -95,6 +101,19 @@ async function restore(id: number) {
                         <span class="ms-1"> سطل زباله</span>
                     </button>
                 </Link>
+                <div class="inline-block">
+                    <select v-model="search_status"
+                            class="block w-[120px] rounded-md border border-gray-300 bg-white px-2 py-3 text-xs text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    >
+                        <option value="" disabled>تعیین وضعیت</option>
+                        <option
+                            :value="0">همه رکوردها</option>
+                        <option
+                            v-for="(status, _s) in statuses"
+                            :key="_s"
+                            :value="status.id">{{status.name}}</option>
+                    </select>
+                </div>
                 <div class="relative flex mt-2 flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
 
                     <table class="w-full text-right table-auto min-w-max">

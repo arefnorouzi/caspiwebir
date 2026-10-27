@@ -33,6 +33,7 @@ Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
     Route::post('/torob/callback', [TorobPayController::class, 'verify'])->name('torob.callback');
 
     Route::get('/snapp/pay/{id}', [SnappPayController::class, 'pay'])->name('snapp.pay');
+    Route::put('/snapp/eligible/{id}', [SnappPayController::class, 'check_eligible'])->name('snapp.check_eligible');
     Route::post('/snapp/callback', [SnappPayController::class, 'verify'])->name('snapp.callback');
 
     Route::get('/digipay/pay/{id}', [DigiPayController::class, 'pay'])->name('digipay.pay');

@@ -3,6 +3,19 @@
 @section('page_meta')
     <meta name="googlebot" content="noindex">
     <meta name="robots" content="noindex">
+    <style>
+        #snapp_gateway{
+            display: flex; flex-direction: row; width: 50%; margin-left: 1rem;
+            align-items: flex-start; padding: 1rem; gap: 16px;
+        }
+        .snapp-icon{width: 40px; height: 40px;}
+        @media only screen and (max-width: 920px) {
+            #snapp_gateway{
+                gap: 12px;
+            }
+            .snapp-icon{width: 32px; height: 32px;}
+        }
+    </style>
 @endsection
 @section('content')
 
@@ -91,7 +104,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#d02525" viewBox="0 0 256 256"><path d="M232,96v96a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V96Z" opacity="0.2"></path><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,16V88H32V64Zm0,128H32V104H224v88Zm-16-24a8,8,0,0,1-8,8H168a8,8,0,0,1,0-16h32A8,8,0,0,1,208,168Zm-64,0a8,8,0,0,1-8,8H120a8,8,0,0,1,0-16h16A8,8,0,0,1,144,168Z"></path></svg>
                             نحوه پرداخت
                         </div>
-                        <ul class="grid grid-cols-2 gap-3">
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3">
                             <li v-for="(payment_method, pm) in payment_methods" :key="pm"
                                 @click="changePaymentMethod(payment_method)">
                                 <input type="radio" :id="`pm-${payment_method.id}`" v-model="form.payment_method_id" name="pey" :value="payment_method.id" class="hidden peer" required>
@@ -104,6 +117,25 @@
                                     </div>
                                 </label>
                             </li>
+                            @if($snapp_gateway)
+                            <li :key="snapp_pay" class="border border-gray-200 rounded-lg"
+                                @click="check_eligible()">
+                                <input type="radio" id="pm-{{$snapp_gateway->id}}" v-model="form.payment_method_id" name="pey" value="{{$snapp_gateway->id}}" class="hidden peer" required>
+                                <label for="pm-{{$snapp_gateway->id}}" class="flex items-center justify-start gap-x-2 w-[150px] p-2 text-gray-600 bg-white  cursor-pointer peer-checked:border-red-400 peer-checked:text-red-400 hover:text-gray-600 hover:bg-gray-100">
+                                    <img src="{{$snapp_gateway->image}}"
+                                         class="snapp-icon"
+                                    >
+                                    <div class="text-center">
+                                        <span class="text-sm payment-method-name">{{ $snapp_gateway->name }} </span>
+                                    </div>
+
+                                </label>
+                                <div class="w-full mr-10">
+                                    <p class="text-xs">@{{snapp_title_message}}</p>
+                                    <small class="text-xs">@{{snapp_description}}</small>
+                                </div>
+                            </li>
+                            @endif
                         </ul>
                         <div v-if="payment_description" class="my-2 p-2 border bg-blue-100 text-blue-600 text-sm rounded-md">
                             <div v-html="payment_description"></div>
@@ -227,6 +259,10 @@
                     amount: {{$invoice->amount}},
                     interest: {{$invoice->interest_amount}},
                     gateway: true,
+                    snapp_title_message: '',
+                    snapp_description: '',
+                    eligible: true,
+                    snapp_gateway: <?=$snapp_gateway;?>
                 }
             },
             mounted(){
@@ -266,6 +302,55 @@
                     }
 
                 },
+                async check_eligible(){
+                    const requestOptions = {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json", "Accept": "application/json",
+                            "X-CSRF-TOKEN": csrf_token
+                        }
+                    };
+
+                    fetch("/payment/snapp/eligible/{{$invoice->id}}", requestOptions)
+                        .then(async response => {
+                            const data = await response.json()
+                            // check for error response
+                            if (response.ok) {
+                                if(data?.eligible)
+                                {
+                                    this.form.payment_method_id = this.snapp_gateway?.id;
+                                    this.payment_method_name = this.snapp_gateway?.name;
+                                    this.gateway = true;
+                                    if(this.snapp_gateway?.interest_rate)
+                                    {
+                                        this.interest = Math.round(this.amount * (this.months * this.snapp_gateway?.interest_rate / 100))
+                                    }
+                                    else {
+                                        this.interest = 0
+                                    }
+
+                                    this.show_toast('مجاز به پرداخت از طریق درگاه اسنپ پی', 'success');
+                                }
+                                else {
+                                    this.show_toast('امکان پرداخت از طریق درگاه اسنپ پی وجود ندارد', 'error');
+                                }
+                                this.snapp_title_message = data?.title_message;
+                                this.snapp_description = data?.description;
+                            }
+                            else {
+                                if (data?.error)
+                                {
+                                    this.show_toast(data?.error, 'error');
+                                }
+                            }
+
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            this.show_toast('خطا در ارتباط با درگاه پرداخت.', 'error');
+                        });
+
+                },
                 async generateOrder(){
                     this.validation_errors = null
                     const requestOptions = {
@@ -283,7 +368,7 @@
                             // check for error response
                             if (response.ok) {
                                 this.show_toast('درحال اتصال به سرویس پرداخت', 'success');
-                                await this.sleep(2000);
+                                await this.sleep(1000);
                                 window.location.replace(data.link)
                             }
                             else {

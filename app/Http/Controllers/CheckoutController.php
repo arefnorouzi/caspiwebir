@@ -83,6 +83,7 @@ class CheckoutController extends Controller
             if (auth()->check() && auth()->user()->role_id <= 4)
             {
                 $payment_methods = PaymentMethod::where('status', true)
+                    ->where('code', '!=', 'snapppay')
                     ->where('min_deposit', '<=', $invoice->amount)
                     ->where('max_deposit', '>=', $invoice->amount)
                     ->orderby('is_default', 'desc')
@@ -91,11 +92,16 @@ class CheckoutController extends Controller
             else{
                 $payment_methods = PaymentMethod::where('status', true)
                     ->where('code', '!=', 'bank-check')
+                    ->where('code', '!=', 'snapppay')
                     ->where('min_deposit', '<=', $invoice->amount)
                     ->where('max_deposit', '>=', $invoice->amount)
                     ->orderby('is_default', 'desc')
                     ->get(['id', 'name', 'code', 'image', 'is_default', 'description', 'interest_rate']);
             }
+            $snapp_gateway = PaymentMethod::where('status', true)
+                ->where('code', '=', 'snapppay')
+                ->where('min_deposit', '<=', $invoice->amount)
+                ->where('max_deposit', '>=', $invoice->amount)->first();
             $shipping_methods = ShippingMethod::where('status', 1)->get(['id', 'name', 'base_cost']);
             if ($invoice->payment_status)
             {
@@ -103,9 +109,10 @@ class CheckoutController extends Controller
                     'shop_setting', 'shipping_methods', 'payment_methods'));
             }
 
+
             return view('checkout.show',
                 compact('invoice', 'shop_setting',
-                    'payment_methods', 'shipping_methods'));
+                    'payment_methods', 'shipping_methods', 'snapp_gateway'));
         }
         catch (\Exception $e)
         {

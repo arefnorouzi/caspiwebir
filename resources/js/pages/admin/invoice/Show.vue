@@ -50,7 +50,7 @@ const form = useForm({
 
 
 const formatDate = (d) =>
-    new Date(d).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+    new Date(d).toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
 
 
 async function updateItemStepStatus(invoice_item_id: number, invoice_item_step_id: number){
@@ -269,7 +269,7 @@ const form_tabs = ref([
                             </div>
                             <div class="mb-1 border border-gray-200 p-2">
                                 <p class="text-sm">تاریخ پرداخت:
-                                    <span v-if="invoice.pusrchased_at">{{formatDate(invoice.purchased_at) }}</span>
+                                    <span v-if="invoice.purchased_at">{{formatDate(invoice.purchased_at) }}</span>
                                     <span v-else class="text-red-600">پرداخت نشده</span>
                                 </p>
                             </div>
