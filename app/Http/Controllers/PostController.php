@@ -51,6 +51,9 @@ class PostController extends Controller
     {
         try {
             $validated = $request->validated();
+            if (isset($validated['image']) && strlen($validated['image']) > 0 && $validated['status']) {
+                $validated['published_at'] = now();
+            }
             Post::create($validated);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

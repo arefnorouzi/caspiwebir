@@ -3,10 +3,10 @@ import { Head, Link } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3'
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { ref } from 'vue'
-import axios from 'axios'
 import QuillEditor from "@/components/admin/QuillEditor.vue";
 import FlashMessage from "@/components/FlashMessage.vue";
+import InputComponent from '@/components/form/InputComponent.vue';
+import MediaPicker from '@/components/admin/MediaPicker.vue';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'افزودن مقاله',
@@ -24,8 +24,7 @@ const form = useForm({
     pinned: false,
     blog_category_id: null
 });
-const preview = ref(null)
-const uploading = ref(false)
+
 defineProps({
     categories: Object
 })
@@ -34,34 +33,10 @@ async function submit() {
     form.post('/admin/post')
 }
 
-async function handleFileChange(e) {
-    const file = e.target.files[0]
-    if (!file) return
-
-    uploading.value = true
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('folder_name', 'blog')
-
-    try {
-        const res = await axios.post('/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        })
-
-        form.image = res.data.path   // آدرس در دیتابیس ذخیره میشه
-        preview.value = res.data.url // نمایش پیش‌نمایش
-    } catch (err) {
-        alert('خطا در آپلود تصویر')
-    } finally {
-        uploading.value = false
-    }
-}
-
 </script>
 <template>
     <Head title="افزودن مقاله" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <FlashMessage />
         <div
             class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
         >
@@ -86,13 +61,11 @@ async function handleFileChange(e) {
 
                 <div class="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
                     <form @submit.prevent="submit" class="space-y-4 p-2">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mt-3">
-                            <button type="submit"
-                                    class="me-1 cursor-pointer text-oklch(44.8% 0.119 151.328) bg-green-200 hover:bg-green-300 focus:ring-4 focus:ring-green-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">
-                                <svg width="15px" height="15px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z" fill="#008040"></path> </g></svg>
-                                <span class="ms-1">ذخیره اطلاعات</span>
-                            </button>
-                        </div>
+                        <button type="submit" style="max-width: 250px"
+                                class="me-1 cursor-pointer text-oklch(44.8% 0.119 151.328) bg-green-200 hover:bg-green-300 focus:ring-4 focus:ring-green-500 rounded-md inline-flex items-center px-5 py-2.5 text-center mr-2">
+                            <svg width="15px" height="15px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z" fill="#008040"></path> </g></svg>
+                            <span class="ms-1">ذخیره اطلاعات</span>
+                        </button>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
                             <div>
                                 <label for="product-name" class="text-sm font-medium text-gray-900 block mb-2">عنوان مقاله</label>
@@ -135,13 +108,26 @@ async function handleFileChange(e) {
                                 </select>
                             </div>
                             <div>
-                                <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر مقاله</label>
-                                <input type="file" @change="handleFileChange" name="image" id="product_image" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-                                <div v-if="uploading">در حال آپلود...</div>
+                                <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">تصویر</label>
+                                <MediaPicker @select="(url) => form.image = url" />
+                                <div v-if="form.errors.image" class="text-red-500 text-sm mt-1">
+                                    {{ form.errors.image }}
+                                </div>
                             </div>
-                            <div v-if="preview">
-                                <img :src="preview" class="w-32 h-32 object-cover border rounded" />
-
+                            <div>
+                                <InputComponent v-model="form.image"
+                                                label="آدرس تصویر"
+                                                :value="form.image"
+                                                id="image-url"
+                                                placeholder="image-url"
+                                                :input_error="form?.errors?.image"
+                                                css_class="ltr"
+                                />
+                            </div>
+                            <div>
+                                <div v-if="form.image" class="mt-2">
+                                    <img :src="form.image" class="w-20 h-20 object-fill border rounded" />
+                                </div>
                             </div>
 
                             <div class="col-span-3">
