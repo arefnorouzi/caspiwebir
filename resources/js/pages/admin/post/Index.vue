@@ -115,6 +115,11 @@ const toggleStatus = (id: number) => {
                             </th>
                             <th class="p-4 border-b border-slate-300 bg-slate-50">
                                 <p class="block text-sm font-normal leading-none text-slate-500">
+                                    بازدید
+                                </p>
+                            </th>
+                            <th class="p-4 border-b border-slate-300 bg-slate-50">
+                                <p class="block text-sm font-normal leading-none text-slate-500">
                                     وضعیت
                                 </p>
                             </th>
@@ -146,7 +151,9 @@ const toggleStatus = (id: number) => {
                             <td class="p-4 border-b border-slate-200 py-1">
                                 <p class="text-sm text-slate-500">{{ item?.category?.name }}</p>
                             </td>
-
+                            <td class="p-4 border-b border-slate-200 py-1">
+                                <p class="text-sm text-slate-500">{{ item.views }}</p>
+                            </td>
                             <td class="p-4 border-b border-slate-200 py-1" style="direction: ltr">
                                 <button
                                     @click="toggleStatus(item.id)"

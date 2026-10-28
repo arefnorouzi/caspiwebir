@@ -100,7 +100,16 @@ async function submit() {
                                 />
                             </div>
 
-
+                            <div>
+                                <InputComponent v-model="form.interest_rate"
+                                                :value="form.interest_rate"
+                                                label="نرخ کارمزد (عددی بین 0-100)"
+                                                id="interest_rate"
+                                                :input_error="form?.errors?.interest_rate"
+                                                css_class="ltr en-text"
+                                                type="number"
+                                />
+                            </div>
 
                             <div>
                                 <SelectComponent label="وضعیت" id="status" v-model="form.status"

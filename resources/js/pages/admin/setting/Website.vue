@@ -2,9 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import FlashMessage from '@/components/FlashMessage.vue';
 import MediaPicker from "@/components/admin/MediaPicker.vue";
 import InputComponent from '@/components/form/InputComponent.vue';
 const breadcrumbs: BreadcrumbItem[] = [

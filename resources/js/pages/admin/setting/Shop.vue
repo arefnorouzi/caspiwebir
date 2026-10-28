@@ -4,6 +4,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import FlashMessage from '@/components/FlashMessage.vue';
+import MediaPicker from '@/components/admin/MediaPicker.vue';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'تنظیمات فروشگاه',
@@ -14,7 +15,6 @@ interface Props {
     model: object;
 }
 const props = defineProps<Props>()
-
 const form = useForm({
     name: props.model.name,
     meta: props.model.meta,
@@ -22,13 +22,16 @@ const form = useForm({
     email: props.model.email,
     phone: props.model.phone,
     address: props.model.address,
+    factor_logo: props.model.factor_logo,
     zip_code: props.model.zip_code,
     order_expire: props.model.order_expire,
     tax: props.model.tax,
     sell_status: props.model.sell_status,
     stock_alert: props.model.stock_alert
 });
-
+function removeImage(){
+    form.factor_logo = props.model.factor_logo
+}
 async function updateRecord() {
     form.post('/admin/setting/shop')
 }
@@ -117,6 +120,20 @@ async function updateRecord() {
                         <div>
                             <label for="brand" class="text-sm font-medium text-gray-900 block mb-2">کمبود موجودی انبار</label>
                             <input type="number" min="1" max="10" v-model="form.stock_alert" name="whatsapp" id="stock" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="" required="">
+
+                        </div>
+
+                        <div>
+                            <label for="product_image" class="text-sm font-medium text-gray-900 block mb-2">لوگو فاکتور</label>
+                            <MediaPicker @select="(url) => form.factor_logo = url" />
+                            <div v-if="form.errors.factor_logo" class="text-red-500 text-sm mt-1">
+                                {{ form.errors.factor_logo }}
+                            </div>
+                        </div>
+                        <div v-if="form.factor_logo">
+                            <img :src="form.factor_logo" class="object-cover border rounded" />
+
+                            <button @click="removeImage" class="py-1 px-2 rounded-md bg-red-500 text-white">حذف</button>
 
                         </div>
 

@@ -27,6 +27,7 @@ class UpdatePaymentMethodRequest extends FormRequest
     {
         return [
             'name' => 'bail|required|string|max:100',
+            'interest_rate' => 'bail|nullable|numeric|min:0|max:100',
             'status' => 'bail|required|boolean',
             'is_default' => 'bail|required|boolean',
             'is_gateway' => 'bail|required|boolean',

@@ -20,7 +20,7 @@ class Post extends Model
     protected $guarded = [];
 
     private array $report_fields = [
-        'id', 'name', 'slug', 'status', 'pinned', 'image', 'user_id',
+        'id', 'name', 'slug', 'status', 'pinned', 'image', 'user_id', 'views',
         'published_at', 'created_at', 'updated_at', 'deleted_at', 'blog_category_id',
     ];
 

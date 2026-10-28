@@ -30,6 +30,7 @@ class UpdateShopSettingRequest extends FormRequest
             'email' => 'bail|nullable|email|max:70',
             'phone' => 'bail|nullable|string|max:50',
             'address' => 'bail|nullable|string|max:250',
+            'factor_logo' => 'bail|nullable|string|max:250',
             'zip_code' => 'bail|nullable|string|max:10',
             'tax' => 'bail|required|integer|min:0|max:100',
             'sell_status' => 'bail|required|boolean',

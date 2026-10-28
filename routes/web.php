@@ -46,4 +46,5 @@ require __DIR__.'/web/dashboard.php';
 #require __DIR__.'/web/support.php';
 require __DIR__.'/web/admin.php';
 require __DIR__.'/web/excel.php';
+require __DIR__.'/web/learning-paths.php';
 require __DIR__.'/web/shared.php';
